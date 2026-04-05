@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= isset($title) ? $title . ' — ' : '' ?>Panel Admin Ar-Razaq</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        hijau: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16'
+                        },
+                        kuning: {
+                            300: '#fde047',
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04'
+                        }
+                    },
+                    fontFamily: {
+                        arabic: ['Scheherazade New', 'serif'],
+                        display: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&family=Scheherazade+New:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        * {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .font-arabic {
+            font-family: 'Scheherazade New', serif;
+        }
+
+        /* Sidebar */
+        #sidebar {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: rgba(134, 239, 172, 0.7);
+            transition: background 0.2s, color 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #86efac;
+        }
+
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #facc15;
+            font-weight: 600;
+        }
+
+        .nav-link svg {
+            flex-shrink: 0;
+        }
+
+        /* Main content area */
+        #main-content {
+            margin-left: 224px;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+
+        @media(max-width:768px) {
+            #main-content {
+                margin-left: 0;
+            }
+        }
+
+        /* Toast */
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            padding: 14px 18px;
+            border-radius: 14px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 320px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            animation: toast-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes toast-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes toast-out {
+            to {
+                opacity: 0;
+                transform: translateY(10px) scale(0.95);
+            }
+        }
+
+        .toast.success {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .toast.error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .toast.info {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+            transform: translateY(20px) scale(0.97);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-overlay.open .modal-box {
+            transform: translateY(0) scale(1);
+        }
+
+        /* Form elements */
+        .form-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 0.875rem;
+            color: #111827;
+            background: #f9fafb;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: #166534;
+            box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.1);
+            background: #fff;
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 14px;
+            padding-right: 36px;
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #052e16, #166534);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 16px rgba(22, 101, 52, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .btn-danger:hover {
+            background: #fee2e2;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+        }
+
+        .btn-ghost:hover {
+            background: #f3f4f6;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 10px 16px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border-bottom: 1px solid #f3f4f6;
+            background: #fafafa;
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            font-size: 0.84rem;
+            color: #374151;
+            border-bottom: 1px solid #f9fafb;
+            vertical-align: middle;
+        }
+
+        .data-table tr:hover td {
+            background: #fafff8;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .badge-green {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-gray {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .badge-yellow {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        /* Stat card */
+        .stat-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 22px 24px;
+            border: 1px solid #f3f4f6;
+        }
+
+        /* Upload preview */
+        .upload-area {
+            border: 2px dashed #d1fae5;
+            border-radius: 12px;
+            padding: 28px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: #166534;
+            background: #f0fdf4;
+        }
+
+        #current-image-preview img {
+            max-height: 120px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d1fae5;
+            border-radius: 10px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .animate-spin {
+            animation: spin 0.8s linear infinite;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- ============================================================ -->
+    <!-- SIDEBAR -->
+    <!-- ============================================================ -->
+    <?php
+    $current_uri = uri_string();
+    $admin_nama  = $this->session->userdata('admin_nama') ?: 'Admin';
+    $admin_inisial = strtoupper(substr($admin_nama, 0, 1));
+
+    $nav_items = [
+        ['uri' => 'panel-admin/dashboard',  'label' => 'Dashboard',       'icon' => 'grid'],
+        ['uri' => 'panel-admin/profil',     'label' => 'Profil Yayasan',  'icon' => 'settings'],
+        ['uri' => 'panel-admin/statistik',  'label' => 'Statistik',       'icon' => 'bar-chart-2'],
+        ['uri' => 'panel-admin/sejarah',    'label' => 'Sejarah',         'icon' => 'clock'],
+        ['uri' => 'panel-admin/visi-misi',  'label' => 'Visi & Misi',     'icon' => 'eye'],
+        ['uri' => 'panel-admin/galeri',     'label' => 'Galeri',          'icon' => 'image'],
+        ['uri' => 'panel-admin/ekskul',     'label' => 'Ekstrakurikuler', 'icon' => 'star'],
+        ['uri' => 'panel-admin/berita',     'label' => 'Berita',          'icon' => 'file-text'],
+        ['uri' => 'panel-admin/ppdb',       'label' => 'PPDB',            'icon' => 'user-plus'],
+    ];
+    ?>
+
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-56 bg-hijau-950 flex flex-col z-40 overflow-hidden">
+        <!-- Pattern overlay -->
+        <div class="absolute inset-0 opacity-[0.04]" style="background-image:url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+
+        <div class="relative z-10 flex flex-col h-full">
+            <!-- Logo -->
+            <div class="px-4 py-5 border-b border-white/[0.06]">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 bg-gradient-to-br from-kuning-400 to-kuning-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-kuning-500/20">
+                        <span class="font-arabic text-hijau-950 text-base font-bold">ر</span>
+                    </div>
+                    <div>
+                        <div class="font-display text-white font-bold text-sm leading-tight">Ar-Razaq</div>
+                        <div class="text-hijau-400/50 text-[10px]">Panel Admin</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nav -->
+            <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+                <?php foreach ($nav_items as $item):
+                    $is_active = strpos($current_uri, $item['uri']) !== false;
+                ?>
+                    <a href="<?= base_url($item['uri']) ?>" class="nav-link <?= $is_active ? 'active' : '' ?>">
+                        <i data-feather="<?= $item['icon'] ?>" class="w-4 h-4"></i>
+                        <?= $item['label'] ?>
+                    </a>
+                <?php endforeach; ?>
+            </nav>
+
+            <!-- User + Logout -->
+            <div class="px-3 pb-4 pt-2 border-t border-white/[0.06]">
+                <div class="flex items-center gap-2.5 px-2 py-3 mb-1">
+                    <div class="w-8 h-8 bg-gradient-to-br from-kuning-400 to-kuning-600 rounded-lg flex items-center justify-center text-hijau-950 font-bold text-xs flex-shrink-0">
+                        <?= $admin_inisial ?>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="text-white text-xs font-semibold truncate"><?= $admin_nama ?></div>
+                        <div class="text-hijau-400/40 text-[10px]">Administrator</div>
+                    </div>
+                </div>
+                <a href="<?= base_url('panel-admin/logout') ?>" class="nav-link w-full" style="color:rgba(248,113,113,0.7);">
+                    <i data-feather="log-out" class="w-4 h-4"></i>
+                    Keluar
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Mobile overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden" onclick="closeSidebar()"></div>
+
+    <!-- ============================================================ -->
+    <!-- MAIN CONTENT WRAPPER -->
+    <!-- ============================================================ -->
+    <div id="main-content">
+
+        <!-- Top bar -->
+        <header class="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <!-- Mobile hamburger -->
+                <button onclick="toggleSidebar()" class="md:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors">
+                    <i data-feather="menu" class="w-5 h-5"></i>
+                </button>
+                <div>
+                    <h1 class="font-semibold text-gray-900 text-base leading-tight"><?= isset($title) ? $title : 'Dashboard' ?></h1>
+                    <p class="text-xs text-gray-400">Panel Admin Yayasan Ar-Razaq</p>
+                </div>
+            </div>
+            <a href="<?= base_url() ?>" target="_blank" class="flex items-center gap-1.5 text-xs text-hijau-700 font-semibold hover:text-hijau-900 transition-colors">
+                <i data-feather="external-link" class="w-3.5 h-3.5"></i>
+                Lihat Website
+            </a>
+        </header>
+
+        <!-- Page content starts here -->
+        <main class="p-6">
