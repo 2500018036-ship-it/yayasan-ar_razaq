@@ -4,8 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= isset($title) ? $title . ' - ' : '' ?><?= isset($profil) && $profil ? $profil->nama_yayasan : 'Yayasan Ar-Razaq' ?></title>
-    <meta name="description" content="<?= isset($profil) && $profil ? $profil->deskripsi_singkat : 'Website Profil Yayasan Ar-Razaq' ?>">
+    <title>
+        <?= isset($title) ? $title . ' - ' : '' ?><?= isset($profil) && $profil ? $profil->nama_yayasan : 'Yayasan Ar-Razaq' ?>
+    </title>
+    <meta name="description"
+        content="<?= isset($profil) && $profil ? $profil->deskripsi_singkat : 'Website Profil Yayasan Ar-Razaq' ?>">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -51,7 +54,9 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Scheherazade+New:wght@400;700&display=swap"
+        rel="stylesheet">
 
     <!-- Feather Icons -->
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -85,7 +90,8 @@
         /* ============================================================
            LENIS SMOOTH SCROLL
            ============================================================ */
-        html.lenis, html.lenis body {
+        html.lenis,
+        html.lenis body {
             height: auto;
         }
 
@@ -118,25 +124,45 @@
         }
 
         /* ============================================================
-           NAVBAR
+           NAVBAR — Transparent by default, solid on scroll
            ============================================================ */
         #navbar {
-            transform: translateY(-100%);
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                background-color 0.4s ease,
-                box-shadow 0.4s ease;
-        }
-
-        #navbar.visible {
-            transform: translateY(0);
+            transition: background-color 0.4s ease,
+                box-shadow 0.4s ease,
+                backdrop-filter 0.4s ease;
         }
 
         #navbar.scrolled {
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(24px) saturate(180%);
             -webkit-backdrop-filter: blur(24px) saturate(180%);
             box-shadow: 0 1px 40px rgba(5, 46, 22, 0.08);
         }
+
+        /* Nav link: white by default, dark when scrolled */
+        .nav-link-front {
+            color: rgba(255, 255, 255, 0.85);
+            transition: color 0.4s ease, background-color 0.3s ease;
+        }
+        .nav-link-front:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        #navbar.scrolled .nav-link-front {
+            color: rgba(20, 83, 45, 0.8);
+        }
+        #navbar.scrolled .nav-link-front:hover {
+            color: #14532d;
+            background: #f0fdf4;
+        }
+        /* Logo text color transition */
+        .logo-name { color: #ffffff; transition: color 0.4s ease; }
+        .logo-subtitle { color: rgba(255,255,255,0.6); transition: color 0.4s ease; }
+        #navbar.scrolled .logo-name { color: #14532d; }
+        #navbar.scrolled .logo-subtitle { color: rgba(21,128,61,0.7); }
+        /* Nav indicator */
+        .nav-link-front .nav-indicator { background: linear-gradient(to right, #facc15, #eab308); }
+        #navbar.scrolled .nav-link-front .nav-indicator { background: linear-gradient(to right, #166534, #eab308); }
 
         /* ============================================================
            SECTION REVEAL BASE STATES
@@ -222,35 +248,77 @@
            FLOATING ANIMATIONS
            ============================================================ */
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            33% { transform: translateY(-15px) rotate(1deg); }
-            66% { transform: translateY(-8px) rotate(-1deg); }
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            33% {
+                transform: translateY(-15px) rotate(1deg);
+            }
+
+            66% {
+                transform: translateY(-8px) rotate(-1deg);
+            }
         }
 
         @keyframes floatSlow {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-25px) rotate(3deg); }
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-25px) rotate(3deg);
+            }
         }
 
         @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(234, 179, 8, 0.3); }
-            50% { box-shadow: 0 0 40px rgba(234, 179, 8, 0.6); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(234, 179, 8, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(234, 179, 8, 0.6);
+            }
         }
 
         @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
         }
 
         @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         @keyframes spin-slow {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .floating {
@@ -295,6 +363,8 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
             pointer-events: none;
             z-index: 1;
+            will-change: auto;
+            transform: translateZ(0);
         }
 
         /* ============================================================
@@ -313,14 +383,15 @@
             display: block;
             width: 100%;
             height: auto;
-        }
-
-        .wave-top {
-            top: -1px;
+            min-height: 60px;
         }
 
         .wave-bottom {
             bottom: -1px;
+        }
+
+        .wave-top {
+            top: -1px;
         }
 
         /* ============================================================
@@ -438,17 +509,19 @@
                 <!-- Logo -->
                 <a href="<?= base_url() ?>" class="flex items-center gap-3 group">
                     <?php if (isset($profil) && $profil && $profil->logo): ?>
-                        <img src="<?= base_url('assets/images/uploads/profil/' . $profil->logo) ?>" alt="Logo" class="h-10 w-10 object-contain">
+                        <img src="<?= base_url('assets/images/uploads/profil/' . $profil->logo) ?>" alt="Logo"
+                            class="h-10 w-10 object-contain">
                     <?php else: ?>
-                        <div class="w-10 h-10 bg-gradient-to-br from-hijau-800 to-hijau-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-hijau-800/30 transition-shadow">
+                        <div
+                            class="w-10 h-10 bg-hijau-800 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-hijau-800/30 transition-shadow">
                             <span class="text-white font-arabic text-lg font-bold">ر</span>
                         </div>
                     <?php endif; ?>
                     <div>
-                        <div class="font-display font-bold text-hijau-900 text-sm leading-tight">
+                        <div class="logo-name font-display font-bold text-sm leading-tight">
                             <?= isset($profil) && $profil ? $profil->nama_yayasan : 'Yayasan Ar-Razaq' ?>
                         </div>
-                        <div class="text-xs text-hijau-600/70 font-medium">Pesantren Modern</div>
+                        <div class="logo-subtitle text-xs font-medium">Pesantren Modern</div>
                     </div>
                 </a>
 
@@ -458,40 +531,47 @@
                     $current_url = current_url();
                     $nav_items = [
                         ['url' => base_url(), 'label' => 'Beranda'],
-                        ['url' => '#sejarah', 'label' => 'Profil'],
-                        ['url' => '#galeri', 'label' => 'Galeri'],
-                        ['url' => '#ekskul', 'label' => 'Ekskul'],
+                        ['url' => base_url() . '#sejarah', 'label' => 'Profil'],
+                        ['url' => base_url('galeri'), 'label' => 'Galeri'],
+                        ['url' => base_url('ekskul'), 'label' => 'Ekskul'],
                         ['url' => base_url('berita'), 'label' => 'Berita'],
                         ['url' => base_url('ppdb'), 'label' => 'PPDB'],
                     ];
                     foreach ($nav_items as $item):
-                    ?>
-                        <a href="<?= $item['url'] ?>" class="px-4 py-2 rounded-xl text-sm font-semibold text-hijau-900/80 hover:text-hijau-900 hover:bg-hijau-50 transition-all duration-300 relative group">
+                        ?>
+                        <a href="<?= $item['url'] ?>"
+                            class="nav-link-front px-4 py-2 rounded-xl text-sm font-semibold relative group">
                             <?= $item['label'] ?>
-                            <span class="absolute bottom-1 left-4 right-4 h-0.5 bg-gradient-to-r from-hijau-600 to-kuning-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left rounded-full"></span>
+                            <span
+                                class="nav-indicator absolute bottom-1 left-4 right-4 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left rounded-full"></span>
                         </a>
                     <?php endforeach; ?>
-                    <a href="<?= base_url('ppdb') ?>" class="magnetic-btn ml-3 bg-gradient-to-r from-hijau-800 to-hijau-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg hover:shadow-hijau-800/25 transition-all duration-500 hover:-translate-y-0.5">
+                    <a href="<?= base_url('ppdb') ?>" id="nav-cta-btn"
+                        class="magnetic-btn ml-3 bg-hijau-800 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg hover:shadow-hijau-800/25 transition-all duration-500 hover:-translate-y-0.5">
                         Daftar Santri
                     </a>
                 </div>
 
                 <!-- Mobile Toggle -->
-                <button id="menu-toggle" class="lg:hidden p-2 rounded-xl text-hijau-800 hover:bg-hijau-50 transition-colors">
+                <button id="menu-toggle"
+                    class="lg:hidden p-2 rounded-xl text-white hover:bg-white/10 transition-colors" aria-label="Menu">
                     <i data-feather="menu" class="w-6 h-6"></i>
                 </button>
             </div>
 
             <!-- Mobile Menu -->
-            <div id="mobile-menu" class="lg:hidden bg-white/95 backdrop-blur-xl border-t border-hijau-100/50 rounded-b-2xl">
+            <div id="mobile-menu"
+                class="lg:hidden bg-white/95 backdrop-blur-xl border-t border-hijau-100/50 rounded-b-2xl">
                 <div class="py-4 space-y-1">
                     <?php foreach ($nav_items as $item): ?>
-                        <a href="<?= $item['url'] ?>" class="block px-4 py-3 text-sm font-semibold text-hijau-900 hover:bg-hijau-50 rounded-xl mx-2 transition-colors">
+                        <a href="<?= $item['url'] ?>"
+                            class="block px-4 py-3 text-sm font-semibold text-hijau-900 hover:bg-hijau-50 rounded-xl mx-2 transition-colors">
                             <?= $item['label'] ?>
                         </a>
                     <?php endforeach; ?>
                     <div class="px-2 pt-2">
-                        <a href="<?= base_url('ppdb') ?>" class="block text-center bg-gradient-to-r from-hijau-800 to-hijau-700 text-white px-4 py-3 rounded-xl text-sm font-bold">
+                        <a href="<?= base_url('ppdb') ?>"
+                            class="block text-center bg-hijau-800 text-white px-4 py-3 rounded-xl text-sm font-bold">
                             Daftar Santri Baru
                         </a>
                     </div>

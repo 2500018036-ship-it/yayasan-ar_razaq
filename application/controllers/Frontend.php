@@ -36,6 +36,58 @@ class Frontend extends CI_Controller
         $this->load->view('templates/footer', $data);
     }
 
+    public function profil()
+    {
+        // Render halaman utama lalu JS smooth-scroll ke section #sejarah
+        $data = $this->_get_base_data();
+        $data['title']      = 'Profil';
+        $data['sejarah']    = $this->model->get_sejarah_aktif();
+        $data['visi']       = $this->model->get_visi_misi('visi');
+        $data['misi']       = $this->model->get_visi_misi('misi');
+        $data['nilai']      = $this->model->get_visi_misi('nilai');
+        $data['galeri']     = $this->model->get_galeri_aktif(null, 8);
+        $data['ekskul']     = $this->model->get_ekskul_aktif();
+        $data['berita']     = $this->model->get_berita_aktif(3);
+        $data['ppdb']       = $this->model->get_ppdb_aktif();
+        $data['scroll_to']  = 'sejarah';
+        $this->load->view('templates/header', $data);
+        $this->load->view('frontend/home', $data);
+        $this->load->view('templates/footer', $data);
+    }
+
+    public function visi_misi()
+    {
+        $data = $this->_get_base_data();
+        $data['title']   = 'Visi & Misi';
+        $data['visi']    = $this->model->get_visi_misi('visi');
+        $data['misi']    = $this->model->get_visi_misi('misi');
+        $data['nilai']   = $this->model->get_visi_misi('nilai');
+        $this->load->view('templates/header', $data);
+        $this->load->view('frontend/visi_misi', $data);
+        $this->load->view('templates/footer', $data);
+    }
+
+    public function galeri()
+    {
+        $data = $this->_get_base_data();
+        $data['title']      = 'Galeri';
+        $data['galeri']     = $this->model->get_galeri_aktif();
+        $data['kategori']   = $this->model->get_kategori_galeri();
+        $this->load->view('templates/header', $data);
+        $this->load->view('frontend/galeri', $data);
+        $this->load->view('templates/footer', $data);
+    }
+
+    public function ekskul()
+    {
+        $data = $this->_get_base_data();
+        $data['title']  = 'Ekstrakurikuler';
+        $data['ekskul'] = $this->model->get_ekskul_aktif();
+        $this->load->view('templates/header', $data);
+        $this->load->view('frontend/ekskul', $data);
+        $this->load->view('templates/footer', $data);
+    }
+
     public function berita()
     {
         $data = $this->_get_base_data();

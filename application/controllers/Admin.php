@@ -173,19 +173,26 @@ class Admin extends CI_Controller
     {
         $this->_check_auth();
         $update_data = [
-            'nama_yayasan'      => $this->input->post('nama_yayasan', TRUE),
-            'tagline'           => $this->input->post('tagline', TRUE),
-            'deskripsi_singkat' => $this->input->post('deskripsi_singkat', TRUE),
-            'deskripsi_lengkap' => $this->input->post('deskripsi_lengkap', TRUE),
-            'alamat'            => $this->input->post('alamat', TRUE),
-            'telepon'           => $this->input->post('telepon', TRUE),
-            'email'             => $this->input->post('email', TRUE),
-            'website'           => $this->input->post('website', TRUE),
-            'facebook'          => $this->input->post('facebook', TRUE),
-            'instagram'         => $this->input->post('instagram', TRUE),
-            'youtube'           => $this->input->post('youtube', TRUE),
-            'whatsapp'          => $this->input->post('whatsapp', TRUE),
-            'maps_embed'        => $this->input->post('maps_embed', TRUE),
+            'nama_yayasan'       => $this->input->post('nama_yayasan', TRUE),
+            'tagline'            => $this->input->post('tagline', TRUE),
+            'deskripsi_singkat'  => $this->input->post('deskripsi_singkat', TRUE),
+            'deskripsi_lengkap'  => $this->input->post('deskripsi_lengkap', TRUE),
+            'alamat'             => $this->input->post('alamat', TRUE),
+            'telepon'            => $this->input->post('telepon', TRUE),
+            'email'              => $this->input->post('email', TRUE),
+            'website'            => $this->input->post('website', TRUE),
+            'facebook'           => $this->input->post('facebook', TRUE),
+            'instagram'          => $this->input->post('instagram', TRUE),
+            'youtube'            => $this->input->post('youtube', TRUE),
+            'whatsapp'           => $this->input->post('whatsapp', TRUE),
+            'maps_embed'         => $this->input->post('maps_embed', TRUE),
+            'tahun_berdiri'      => $this->input->post('tahun_berdiri', TRUE),
+            'status_akreditasi'  => $this->input->post('status_akreditasi', TRUE),
+            // Hero section settings
+            'hero_overlay_color'   => $this->input->post('hero_overlay_color', TRUE) ?: '#052e16',
+            'hero_overlay_opacity' => $this->input->post('hero_overlay_opacity', TRUE) ?: 80,
+            'hero_title'           => $this->input->post('hero_title', TRUE),
+            'hero_subtitle'        => $this->input->post('hero_subtitle', TRUE),
         ];
 
         if (!empty($_FILES['logo']['name'])) {
@@ -202,6 +209,20 @@ class Admin extends CI_Controller
             if ($upload_result['status']) {
                 $update_data['hero_image'] = $upload_result['file_name'];
             }
+        }
+
+        // Visi Misi background settings
+        $update_data['visimisi_overlay_color'] = $this->input->post('visimisi_overlay_color', TRUE) ?: '#052e16';
+        $update_data['visimisi_overlay_opacity'] = $this->input->post('visimisi_overlay_opacity', TRUE) ?: 80;
+
+        if (!empty($_FILES['visimisi_bg_image']['name'])) {
+            $up = $this->_upload_file('visimisi_bg_image', 'profil');
+            if ($up['status']) $update_data['visimisi_bg_image'] = $up['file_name'];
+        }
+
+        if (!empty($_FILES['visimisi_bg_video']['name'])) {
+            $up = $this->_upload_video('visimisi_bg_video', 'profil');
+            if ($up['status']) $update_data['visimisi_bg_video'] = $up['file_name'];
         }
 
         $this->model->update_profil($update_data);
@@ -283,9 +304,32 @@ class Admin extends CI_Controller
         $this->_check_auth();
         $data['title']     = 'Manajemen Visi Misi';
         $data['visi_misi'] = $this->model->get_all_visi_misi();
+        $data['profil']    = $this->model->get_profil();
         $this->load->view('admin/layout/header', $data);
         $this->load->view('admin/visi_misi', $data);
         $this->load->view('admin/layout/footer');
+    }
+
+    public function visi_misi_bg_save()
+    {
+        $this->_check_auth();
+        $update_data = [
+            'visimisi_overlay_color'   => $this->input->post('visimisi_overlay_color', TRUE) ?: '#052e16',
+            'visimisi_overlay_opacity' => $this->input->post('visimisi_overlay_opacity', TRUE) ?: 80,
+        ];
+
+        if (!empty($_FILES['visimisi_bg_image']['name'])) {
+            $up = $this->_upload_file('visimisi_bg_image', 'profil');
+            if ($up['status']) $update_data['visimisi_bg_image'] = $up['file_name'];
+        }
+
+        if (!empty($_FILES['visimisi_bg_video']['name'])) {
+            $up = $this->_upload_video('visimisi_bg_video', 'profil');
+            if ($up['status']) $update_data['visimisi_bg_video'] = $up['file_name'];
+        }
+
+        $this->model->update_profil($update_data);
+        $this->_json('success', 'Background Visi & Misi berhasil diperbarui!');
     }
 
     public function visi_misi_get($id)
@@ -607,6 +651,7 @@ class Admin extends CI_Controller
             'alur_pendaftaran'  => $this->input->post('alur_pendaftaran', TRUE),
             'kontak_info'       => $this->input->post('kontak_info', TRUE),
             'link_pendaftaran'  => $this->input->post('link_pendaftaran', TRUE),
+            'maps_url'          => $this->input->post('maps_url', TRUE),
             'status'            => $this->input->post('status', TRUE) ?: 1,
         ];
         $this->model->insert('ppdb', $data);
@@ -628,6 +673,7 @@ class Admin extends CI_Controller
             'alur_pendaftaran'  => $this->input->post('alur_pendaftaran', TRUE),
             'kontak_info'       => $this->input->post('kontak_info', TRUE),
             'link_pendaftaran'  => $this->input->post('link_pendaftaran', TRUE),
+            'maps_url'          => $this->input->post('maps_url', TRUE),
             'status'            => $this->input->post('status', TRUE) ?: 1,
         ];
         $this->model->update('ppdb', $data, $id);
@@ -753,13 +799,17 @@ class Admin extends CI_Controller
     private function _upload_file($field_name, $subfolder = '')
     {
         $upload_path = FCPATH . 'assets/images/uploads/' . ($subfolder ? $subfolder . '/' : '');
-        if (!is_dir($upload_path)) mkdir($upload_path, 0755, TRUE);
+        if (!is_dir($upload_path)) {
+            mkdir($upload_path, 0755, TRUE);
+            @chmod($upload_path, 0755);
+        }
 
+        // Catatan: file_name dan encrypt_name tidak boleh digunakan bersamaan.
+        // encrypt_name=TRUE akan otomatis menghasilkan nama unik yang aman.
         $config = [
             'upload_path'   => $upload_path,
             'allowed_types' => 'jpg|jpeg|png|gif|webp',
             'max_size'      => 5120,
-            'file_name'     => uniqid() . '_' . time(),
             'encrypt_name'  => TRUE,
         ];
 
@@ -777,5 +827,33 @@ class Admin extends CI_Controller
     {
         $full_path = FCPATH . 'assets/images/uploads/' . $path;
         if (file_exists($full_path)) unlink($full_path);
+    }
+
+    // ============================================================
+    // HELPER: UPLOAD VIDEO
+    // ============================================================
+    private function _upload_video($field_name, $subfolder = '')
+    {
+        $upload_path = FCPATH . 'assets/images/uploads/' . ($subfolder ? $subfolder . '/' : '');
+        if (!is_dir($upload_path)) {
+            mkdir($upload_path, 0755, TRUE);
+            @chmod($upload_path, 0755);
+        }
+
+        $config = [
+            'upload_path'   => $upload_path,
+            'allowed_types' => 'mp4|webm|ogg',
+            'max_size'      => 51200, // 50MB
+            'encrypt_name'  => TRUE,
+        ];
+
+        $this->upload->initialize($config);
+
+        if ($this->upload->do_upload($field_name)) {
+            $upload_data = $this->upload->data();
+            return ['status' => TRUE, 'file_name' => $upload_data['file_name']];
+        } else {
+            return ['status' => FALSE, 'message' => $this->upload->display_errors('', '')];
+        }
     }
 }

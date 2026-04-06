@@ -56,7 +56,28 @@
 
         /* Sidebar */
         #sidebar {
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #sidebar.collapsed {
+            width: 64px;
+        }
+        #sidebar.collapsed .sidebar-text,
+        #sidebar.collapsed .sidebar-subtitle {
+            display: none;
+        }
+        #sidebar.collapsed .nav-link {
+            justify-content: center;
+            padding: 10px;
+        }
+        #sidebar.collapsed .nav-link span {
+            display: none;
+        }
+        #sidebar.collapsed .sidebar-user-info {
+            display: none;
+        }
+        #sidebar.collapsed .sidebar-logo-text {
+            display: none;
         }
 
         .nav-link {
@@ -92,10 +113,18 @@
             margin-left: 224px;
             min-height: 100vh;
             background: #f8fafc;
+            transition: margin-left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body.sidebar-collapsed #main-content {
+            margin-left: 64px;
         }
 
         @media(max-width:768px) {
             #main-content {
+                margin-left: 0;
+            }
+            body.sidebar-collapsed #main-content {
                 margin-left: 0;
             }
         }
@@ -256,11 +285,12 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #052e16, #166534);
+            background: #166534;
             color: #fff;
         }
 
         .btn-primary:hover {
+            background: #14532d;
             box-shadow: 0 4px 16px rgba(22, 101, 52, 0.35);
             transform: translateY(-1px);
         }
@@ -420,6 +450,7 @@
         ['uri' => 'panel-admin/ekskul',     'label' => 'Ekstrakurikuler', 'icon' => 'star'],
         ['uri' => 'panel-admin/berita',     'label' => 'Berita',          'icon' => 'file-text'],
         ['uri' => 'panel-admin/ppdb',       'label' => 'PPDB',            'icon' => 'user-plus'],
+        ['uri' => 'panel-admin/akun',       'label' => 'Akun Saya',      'icon' => 'user'],
     ];
     ?>
 
@@ -431,10 +462,10 @@
             <!-- Logo -->
             <div class="px-4 py-5 border-b border-white/[0.06]">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-9 h-9 bg-gradient-to-br from-kuning-400 to-kuning-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-kuning-500/20">
+                    <div class="w-9 h-9 bg-kuning-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-kuning-500/20">
                         <span class="font-arabic text-hijau-950 text-base font-bold">ر</span>
                     </div>
-                    <div>
+                    <div class="sidebar-logo-text">
                         <div class="font-display text-white font-bold text-sm leading-tight">Ar-Razaq</div>
                         <div class="text-hijau-400/50 text-[10px]">Panel Admin</div>
                     </div>
@@ -446,9 +477,9 @@
                 <?php foreach ($nav_items as $item):
                     $is_active = strpos($current_uri, $item['uri']) !== false;
                 ?>
-                    <a href="<?= base_url($item['uri']) ?>" class="nav-link <?= $is_active ? 'active' : '' ?>">
+                    <a href="<?= base_url($item['uri']) ?>" class="nav-link <?= $is_active ? 'active' : '' ?>" title="<?= $item['label'] ?>">
                         <i data-feather="<?= $item['icon'] ?>" class="w-4 h-4"></i>
-                        <?= $item['label'] ?>
+                        <span><?= $item['label'] ?></span>
                     </a>
                 <?php endforeach; ?>
             </nav>
@@ -456,17 +487,17 @@
             <!-- User + Logout -->
             <div class="px-3 pb-4 pt-2 border-t border-white/[0.06]">
                 <div class="flex items-center gap-2.5 px-2 py-3 mb-1">
-                    <div class="w-8 h-8 bg-gradient-to-br from-kuning-400 to-kuning-600 rounded-lg flex items-center justify-center text-hijau-950 font-bold text-xs flex-shrink-0">
+                    <div class="w-8 h-8 bg-kuning-500 rounded-lg flex items-center justify-center text-hijau-950 font-bold text-xs flex-shrink-0">
                         <?= $admin_inisial ?>
                     </div>
-                    <div class="min-w-0">
+                    <div class="min-w-0 sidebar-user-info">
                         <div class="text-white text-xs font-semibold truncate"><?= $admin_nama ?></div>
                         <div class="text-hijau-400/40 text-[10px]">Administrator</div>
                     </div>
                 </div>
-                <a href="<?= base_url('panel-admin/logout') ?>" class="nav-link w-full" style="color:rgba(248,113,113,0.7);">
+                <a href="<?= base_url('panel-admin/logout') ?>" class="nav-link w-full" style="color:rgba(248,113,113,0.7);" title="Keluar">
                     <i data-feather="log-out" class="w-4 h-4"></i>
-                    Keluar
+                    <span>Keluar</span>
                 </a>
             </div>
         </div>
@@ -483,8 +514,8 @@
         <!-- Top bar -->
         <header class="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <!-- Mobile hamburger -->
-                <button onclick="toggleSidebar()" class="md:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors">
+                <!-- Sidebar toggle (all screens) -->
+                <button onclick="toggleSidebar()" class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors" title="Toggle Sidebar">
                     <i data-feather="menu" class="w-5 h-5"></i>
                 </button>
                 <div>

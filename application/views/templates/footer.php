@@ -4,10 +4,10 @@
 <footer class="bg-hijau-950 text-white relative overflow-hidden">
     <div class="absolute inset-0 pattern-bg opacity-[0.03]"></div>
 
-    <!-- Wave top -->
+    <!-- Wave top (connects with previous section) -->
     <div class="wave-divider wave-top">
-        <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,30 C480,60 960,0 1440,30 L1440,0 L0,0 Z" fill="#f9fafb" />
+        <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M0,40 C240,0 480,80 720,40 C960,0 1200,80 1440,40 L1440,0 L0,0 Z" fill="#f9fafb" />
         </svg>
     </div>
 
@@ -16,7 +16,7 @@
             <!-- Brand -->
             <div class="lg:col-span-2">
                 <div class="flex items-center gap-3 mb-6">
-                    <div class="w-12 h-12 bg-gradient-to-br from-kuning-400 to-kuning-600 rounded-xl flex items-center justify-center shadow-lg shadow-kuning-500/20">
+                    <div class="w-12 h-12 bg-kuning-500 rounded-xl flex items-center justify-center shadow-lg shadow-kuning-500/20">
                         <span class="font-arabic text-hijau-950 text-xl font-bold">ر</span>
                     </div>
                     <div>
@@ -145,13 +145,14 @@
     //     The standalone requestAnimationFrame(raf) loop has been removed.
     // ============================================================
     const lenis = new Lenis({
-        duration: 1.2,
+        duration: 1.0,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         orientation: 'vertical',
         smoothWheel: true,
-        lerp: 0.08, // smoother interpolation
-        wheelMultiplier: 1,
-        touchMultiplier: 2,
+        lerp: 0.1,
+        wheelMultiplier: 0.9,
+        touchMultiplier: 1.8,
+        infinite: false,
     });
 
     // Register GSAP plugin first
@@ -176,13 +177,23 @@
     const menuToggle = document.getElementById('menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
 
+    const menuToggleBtn = document.getElementById('menu-toggle');
+
     window.addEventListener('scroll', () => {
         const currentScroll = window.scrollY;
 
-        if (currentScroll > 100) {
-            navbar.classList.add('visible', 'scrolled');
+        if (currentScroll > 80) {
+            navbar.classList.add('scrolled');
+            if (menuToggleBtn) {
+                menuToggleBtn.classList.remove('text-white', 'hover:bg-white/10');
+                menuToggleBtn.classList.add('text-hijau-800', 'hover:bg-hijau-50');
+            }
         } else {
-            navbar.classList.remove('visible', 'scrolled');
+            navbar.classList.remove('scrolled');
+            if (menuToggleBtn) {
+                menuToggleBtn.classList.add('text-white', 'hover:bg-white/10');
+                menuToggleBtn.classList.remove('text-hijau-800', 'hover:bg-hijau-50');
+            }
         }
 
         // Back to top button

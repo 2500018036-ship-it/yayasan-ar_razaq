@@ -10,12 +10,20 @@
 <script>
     feather.replace();
 
-    // Sidebar mobile
+    // Sidebar toggle — desktop: collapse, mobile: slide
     function toggleSidebar() {
         const s = document.getElementById('sidebar');
         const o = document.getElementById('sidebar-overlay');
-        s.classList.toggle('-translate-x-full');
-        o.classList.toggle('hidden');
+        if (window.innerWidth >= 768) {
+            // Desktop: collapse/expand
+            s.classList.toggle('collapsed');
+            document.body.classList.toggle('sidebar-collapsed');
+            localStorage.setItem('sidebar_collapsed', s.classList.contains('collapsed') ? '1' : '0');
+        } else {
+            // Mobile: slide in/out
+            s.classList.toggle('-translate-x-full');
+            o.classList.toggle('hidden');
+        }
     }
 
     function closeSidebar() {
@@ -23,10 +31,18 @@
         document.getElementById('sidebar-overlay').classList.add('hidden');
     }
 
-    // On mobile, hide sidebar by default
-    if (window.innerWidth < 768) {
-        document.getElementById('sidebar').classList.add('-translate-x-full');
-    }
+    // On load: restore sidebar state
+    (function() {
+        const s = document.getElementById('sidebar');
+        if (window.innerWidth < 768) {
+            s.classList.add('-translate-x-full');
+        } else {
+            if (localStorage.getItem('sidebar_collapsed') === '1') {
+                s.classList.add('collapsed');
+                document.body.classList.add('sidebar-collapsed');
+            }
+        }
+    })();
 
     // ============================================================
     // TOAST SYSTEM
@@ -65,7 +81,26 @@
             method: 'POST',
             body: formData
         });
-        return res.json();
+        const text = await res.text();
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            // Server mengembalikan respons bukan JSON (misalnya error PHP)
+            console.error('Non-JSON response:', text.substring(0, 500));
+            throw new Error('Server mengembalikan respons tidak valid. Periksa log server.');
+        }
+    }
+
+    async function ajaxSubmit(url, formData, onSuccess) {
+        try {
+            const d = await ajaxPost(url, formData);
+            showToast(d.message, d.status === 'success' ? 'success' : 'error');
+            if (d.status === 'success' && typeof onSuccess === 'function') {
+                onSuccess(d);
+            }
+        } catch (e) {
+            showToast(e.message || 'Terjadi kesalahan pada server.', 'error');
+        }
     }
 
     // ============================================================

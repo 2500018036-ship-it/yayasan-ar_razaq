@@ -10,6 +10,7 @@ $route['translate_uri_dashes'] = FALSE;
 
 // Frontend Pages
 $route['beranda']          = 'Frontend/index';
+$route['profil']           = 'Frontend/profil';
 $route['sejarah']          = 'Frontend/sejarah';
 $route['visi-misi']        = 'Frontend/visi_misi';
 $route['galeri']           = 'Frontend/galeri';
@@ -24,22 +25,27 @@ $route['kontak']           = 'Frontend/kontak';
 // ============================================================
 $route['panel-admin']                   = 'Admin/dashboard';
 $route['panel-admin/login']             = 'Admin/login';
+$route['panel-admin/do-login']          = 'Admin/do_login';
 $route['panel-admin/logout']            = 'Admin/logout';
 $route['panel-admin/dashboard']         = 'Admin/dashboard';
 
 // Admin - Profil
 $route['panel-admin/profil']            = 'Admin/profil';
 $route['panel-admin/profil/update']     = 'Admin/profil_update';
+$route['panel-admin/profil/save']       = 'Admin/profil_update'; // alias used by view
 
 // Admin - Sejarah
 $route['panel-admin/sejarah']           = 'Admin/sejarah';
 $route['panel-admin/sejarah/store']     = 'Admin/sejarah_store';
+$route['panel-admin/sejarah/save']      = 'Admin/sejarah_store'; // alias used by view
 $route['panel-admin/sejarah/update/(:num)'] = 'Admin/sejarah_update/$1';
 $route['panel-admin/sejarah/delete/(:num)'] = 'Admin/sejarah_delete/$1';
+$route['panel-admin/sejarah/delete']    = 'Admin/sejarah_delete'; // alias used by view
 $route['panel-admin/sejarah/get/(:num)']    = 'Admin/sejarah_get/$1';
 
 // Admin - Visi Misi
 $route['panel-admin/visi-misi']                  = 'Admin/visi_misi';
+$route['panel-admin/visi-misi/bg-save']          = 'Admin/visi_misi_bg_save';
 $route['panel-admin/visi-misi/store']            = 'Admin/visi_misi_store';
 $route['panel-admin/visi-misi/update/(:num)']    = 'Admin/visi_misi_update/$1';
 $route['panel-admin/visi-misi/delete/(:num)']    = 'Admin/visi_misi_delete/$1';
@@ -55,15 +61,20 @@ $route['panel-admin/galeri/get/(:num)']     = 'Admin/galeri_get/$1';
 // Admin - Ekskul
 $route['panel-admin/ekskul']                = 'Admin/ekskul';
 $route['panel-admin/ekskul/store']          = 'Admin/ekskul_store';
+$route['panel-admin/ekskul/save']           = 'Admin/ekskul_store'; // alias used by view
 $route['panel-admin/ekskul/update/(:num)']  = 'Admin/ekskul_update/$1';
 $route['panel-admin/ekskul/delete/(:num)']  = 'Admin/ekskul_delete/$1';
+$route['panel-admin/ekskul/delete']         = 'Admin/ekskul_delete'; // alias used by view
 $route['panel-admin/ekskul/get/(:num)']     = 'Admin/ekskul_get/$1';
 
 // Admin - Berita
 $route['panel-admin/berita']                = 'Admin/berita';
 $route['panel-admin/berita/store']          = 'Admin/berita_store';
+$route['panel-admin/berita-store']          = 'Admin/berita_store'; // alias used by view
 $route['panel-admin/berita/update/(:num)']  = 'Admin/berita_update/$1';
+$route['panel-admin/berita-update/(:num)']  = 'Admin/berita_update/$1'; // alias used by view
 $route['panel-admin/berita/delete/(:num)']  = 'Admin/berita_delete/$1';
+$route['panel-admin/berita-delete/(:num)']  = 'Admin/berita_delete/$1'; // alias used by view
 $route['panel-admin/berita/get/(:num)']     = 'Admin/berita_get/$1';
 
 // Admin - PPDB
@@ -83,3 +94,4 @@ $route['panel-admin/statistik/get/(:num)']     = 'Admin/statistik_get/$1';
 // Admin - Profil Akun Admin
 $route['panel-admin/akun']              = 'Admin/akun';
 $route['panel-admin/akun/update']       = 'Admin/akun_update';
+

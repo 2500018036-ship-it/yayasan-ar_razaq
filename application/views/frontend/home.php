@@ -4,41 +4,54 @@
 <!-- HERO SECTION - IMMERSIVE FULLSCREEN -->
 <!-- ============================================================ -->
 <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden bg-hijau-950 grain">
-    <!-- Parallax background layers -->
-    <div class="absolute inset-0 pattern-bg opacity-20" data-parallax-bg="0.15"></div>
-
-    <!-- Animated gradient orbs with parallax -->
-    <div class="absolute top-1/4 -left-20 w-[500px] h-[500px] bg-hijau-700/15 rounded-full blur-[120px] floating-slow" data-parallax-bg="0.2"></div>
-    <div class="absolute bottom-1/3 -right-20 w-[400px] h-[400px] bg-kuning-500/8 rounded-full blur-[100px] floating" data-parallax-bg="0.3"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-hijau-600/5 rounded-full blur-[150px]"></div>
-
-    <!-- Hero background image if exists -->
+    <!-- Hero background image if exists (FIRST layer, full cover) -->
+    <?php
+    $hero_overlay_color = isset($profil) && $profil && !empty($profil->hero_overlay_color) ? $profil->hero_overlay_color : '#052e16';
+    $hero_overlay_opacity = isset($profil) && $profil && isset($profil->hero_overlay_opacity) ? $profil->hero_overlay_opacity : 80;
+    ?>
     <?php if (isset($profil) && $profil && $profil->hero_image): ?>
-        <div class="absolute inset-0" data-parallax-bg="0.1">
-            <img src="<?= base_url('assets/images/uploads/profil/' . $profil->hero_image) ?>" alt="Hero" class="w-full h-full object-cover opacity-15">
-            <div class="absolute inset-0 bg-gradient-to-b from-hijau-950/80 via-hijau-950/60 to-hijau-950"></div>
+        <div class="absolute inset-0 z-[1]">
+            <img src="<?= base_url('assets/images/uploads/profil/' . $profil->hero_image) ?>" alt="Hero"
+                class="w-full h-full object-cover">
+            <div class="absolute inset-0"
+                style="background: <?= $hero_overlay_color ?>; opacity: <?= $hero_overlay_opacity / 100 ?>;"></div>
         </div>
     <?php endif; ?>
 
+    <!-- Parallax background layers -->
+    <div class="absolute inset-0 pattern-bg opacity-20 z-[2]" data-parallax-bg="0.15"></div>
+
+    <!-- Animated gradient orbs with parallax -->
+    <div class="absolute top-1/4 -left-20 w-[500px] h-[500px] bg-hijau-700/15 rounded-full blur-[120px] floating-slow z-[2]"
+        data-parallax-bg="0.2"></div>
+    <div class="absolute bottom-1/3 -right-20 w-[400px] h-[400px] bg-kuning-500/8 rounded-full blur-[100px] floating z-[2]"
+        data-parallax-bg="0.3"></div>
+    <div
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-hijau-600/5 rounded-full blur-[150px] z-[2]">
+    </div>
+
     <!-- Decorative geometric elements with parallax -->
-    <div class="absolute top-24 right-20 opacity-20" data-parallax-bg="0.4">
+    <div class="absolute top-24 right-20 opacity-20 z-[2]" data-parallax-bg="0.4">
         <div class="w-20 h-20 border border-kuning-400/40 rotate-45 floating"></div>
     </div>
-    <div class="absolute bottom-40 left-16 opacity-15" data-parallax-bg="0.25">
+    <div class="absolute bottom-40 left-16 opacity-15 z-[2]" data-parallax-bg="0.25">
         <div class="w-14 h-14 border border-hijau-400/30 rotate-12 floating-delay"></div>
     </div>
-    <div class="absolute top-1/3 right-[15%] w-3 h-3 bg-kuning-400/50 rounded-full floating-slow" data-parallax-bg="0.5"></div>
-    <div class="absolute top-2/3 left-[20%] w-2 h-2 bg-hijau-400/40 rounded-full floating" data-parallax-bg="0.35"></div>
+    <div class="absolute top-1/3 right-[15%] w-3 h-3 bg-kuning-400/50 rounded-full floating-slow z-[2]"
+        data-parallax-bg="0.5"></div>
+    <div class="absolute top-2/3 left-[20%] w-2 h-2 bg-hijau-400/40 rounded-full floating z-[2]" data-parallax-bg="0.35">
+    </div>
 
     <!-- Spinning ornament -->
-    <div class="absolute top-[15%] left-[10%] opacity-[0.06] spin-slow hidden lg:block" data-parallax-bg="0.2">
+    <div class="absolute top-[15%] left-[10%] opacity-[0.06] spin-slow hidden lg:block z-[2]" data-parallax-bg="0.2">
         <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
-            <path d="M60 0L67 53L120 60L67 67L60 120L53 67L0 60L53 53L60 0Z" fill="#facc15"/>
+            <path d="M60 0L67 53L120 60L67 67L60 120L53 67L0 60L53 53L60 0Z" fill="#facc15" />
         </svg>
     </div>
-    <div class="absolute bottom-[20%] right-[8%] opacity-[0.05] spin-slow hidden lg:block" data-parallax-bg="0.15" style="animation-direction: reverse;">
+    <div class="absolute bottom-[20%] right-[8%] opacity-[0.05] spin-slow hidden lg:block z-[2]" data-parallax-bg="0.15"
+        style="animation-direction: reverse;">
         <svg width="80" height="80" viewBox="0 0 120 120" fill="none">
-            <path d="M60 0L67 53L120 60L67 67L60 120L53 67L0 60L53 53L60 0Z" fill="#4ade80"/>
+            <path d="M60 0L67 53L120 60L67 67L60 120L53 67L0 60L53 53L60 0Z" fill="#4ade80" />
         </svg>
     </div>
 
@@ -49,27 +62,27 @@
             بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيمِ
         </div>
 
-        <div id="hero-badge" class="inline-flex items-center gap-2 bg-kuning-500/10 border border-kuning-500/20 text-kuning-300 px-5 py-2 rounded-full text-sm font-medium mb-8 opacity-0 translate-y-8">
-            <span class="w-2 h-2 bg-kuning-400 rounded-full animate-pulse"></span>
-            Lembaga Pendidikan Islam Terpercaya
-        </div>
-
-        <h1 id="hero-title" class="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight opacity-0 split-text">
-            <?= isset($profil) && $profil ? $profil->nama_yayasan : 'Yayasan Ar-Razaq' ?>
+        <h1 id="hero-title"
+            class="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight opacity-0 split-text">
+            <?= isset($profil) && $profil && !empty($profil->hero_title) ? $profil->hero_title : (isset($profil) && $profil ? $profil->nama_yayasan : 'Yayasan Ar-Razaq') ?>
         </h1>
 
-        <p id="hero-tagline" class="text-hijau-200/80 text-lg md:text-xl lg:text-2xl mb-12 font-light max-w-3xl mx-auto leading-relaxed opacity-0 translate-y-8">
-            <?= isset($profil) && $profil && $profil->tagline ? $profil->tagline : 'Membentuk Generasi Qurani yang Berakhlak Mulia' ?>
+        <p id="hero-tagline"
+            class="text-hijau-200/80 text-lg md:text-xl lg:text-2xl mb-12 font-light max-w-3xl mx-auto leading-relaxed opacity-0 translate-y-8">
+            <?= isset($profil) && $profil && !empty($profil->hero_subtitle) ? $profil->hero_subtitle : (isset($profil) && $profil && $profil->tagline ? $profil->tagline : 'Membentuk Generasi Qurani yang Berakhlak Mulia') ?>
         </p>
 
         <!-- CTA Buttons -->
         <div id="hero-cta" class="flex flex-col sm:flex-row gap-4 justify-center items-center opacity-0 translate-y-8">
-            <a href="<?= base_url('ppdb') ?>" class="magnetic-btn group bg-gradient-to-r from-kuning-500 to-kuning-600 text-hijau-950 font-bold px-8 py-4 rounded-2xl text-base shadow-xl shadow-kuning-500/20 hover:shadow-kuning-500/40 transition-all duration-500 hover:-translate-y-1 flex items-center gap-2">
+            <a href="<?= base_url('ppdb') ?>"
+                class="magnetic-btn group bg-kuning-500 text-hijau-950 font-bold px-8 py-4 rounded-2xl text-base shadow-xl shadow-kuning-500/20 hover:shadow-kuning-500/40 transition-all duration-500 hover:-translate-y-1 flex items-center gap-2">
                 <i data-feather="user-plus" class="w-5 h-5"></i>
                 Daftar Santri Baru
-                <i data-feather="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300"></i>
+                <i data-feather="arrow-right"
+                    class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300"></i>
             </a>
-            <a href="#sejarah" class="magnetic-btn border border-white/15 text-white font-semibold px-8 py-4 rounded-2xl text-base hover:bg-white/10 transition-all duration-500 hover:-translate-y-1 flex items-center gap-2 backdrop-blur-sm">
+            <a href="#sejarah"
+                class="magnetic-btn border border-white/15 text-white font-semibold px-8 py-4 rounded-2xl text-base hover:bg-white/10 transition-all duration-500 hover:-translate-y-1 flex items-center gap-2 backdrop-blur-sm">
                 <i data-feather="info" class="w-5 h-5"></i>
                 Profil Yayasan
             </a>
@@ -77,7 +90,8 @@
     </div>
 
     <!-- Scroll indicator -->
-    <div id="scroll-indicator" class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 opacity-0 z-10">
+    <div id="scroll-indicator"
+        class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 opacity-0 z-10">
         <span class="text-hijau-400/60 text-[10px] font-semibold tracking-[0.3em] uppercase">Scroll</span>
         <div class="w-5 h-9 border-2 border-hijau-400/30 rounded-full flex items-start justify-center p-1.5">
             <div class="w-1 h-2 bg-kuning-400/70 rounded-full animate-bounce"></div>
@@ -85,9 +99,9 @@
     </div>
 
     <!-- Wave divider at bottom -->
-    <div class="wave-divider wave-bottom">
-        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,60 C360,120 720,0 1080,60 C1260,90 1380,80 1440,60 L1440,120 L0,120 Z" fill="white"/>
+    <div class="wave-divider wave-bottom z-20">
+        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;">
+            <path d="M0,80 C240,120 480,40 720,80 C960,120 1200,40 1440,80 L1440,120 L0,120 Z" fill="white" />
         </svg>
     </div>
 </section>
@@ -96,30 +110,35 @@
 <!-- STATISTIK SECTION - STANDALONE -->
 <!-- ============================================================ -->
 <?php if (!empty($statistik)): ?>
-<section id="statistik" class="py-16 md:py-20 bg-white relative overflow-hidden">
-    <div class="absolute inset-0 pattern-bg opacity-30"></div>
+    <section id="statistik" class="py-16 md:py-20 bg-white relative overflow-hidden">
+        <div class="absolute inset-0 pattern-bg opacity-30"></div>
 
-    <div class="container mx-auto px-4 lg:px-8 relative z-10">
-        <div class="max-w-5xl mx-auto">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-                <?php foreach ($statistik as $idx => $stat): ?>
-                    <div class="stat-card reveal text-center group" style="transition-delay: <?= $idx * 100 ?>ms;">
-                        <div class="bg-gradient-to-br from-hijau-50 to-white border border-hijau-100/60 rounded-3xl p-6 md:p-8 card-hover relative overflow-hidden">
-                            <!-- Decorative accent -->
-                            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-gradient-to-r from-hijau-500 to-kuning-500 rounded-b-full"></div>
+        <div class="container mx-auto px-4 lg:px-8 relative z-10">
+            <div class="max-w-5xl mx-auto">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                    <?php foreach ($statistik as $idx => $stat): ?>
+                        <div class="stat-card reveal text-center group" style="transition-delay: <?= $idx * 100 ?>ms;">
+                            <div
+                                class="bg-gradient-to-br from-hijau-50 to-white border border-hijau-100/60 rounded-3xl p-6 md:p-8 card-hover relative overflow-hidden">
+                                <!-- Decorative accent -->
+                                <div
+                                    class="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-gradient-to-r from-hijau-500 to-kuning-500 rounded-b-full">
+                                </div>
 
-                            <div class="counter-number font-display font-bold text-3xl md:text-4xl lg:text-5xl text-hijau-800 mb-1" data-count="<?= $stat->nilai ?>">
-                                0
+                                <div class="counter-number font-display font-bold text-3xl md:text-4xl lg:text-5xl text-hijau-800 mb-1"
+                                    data-count="<?= $stat->nilai ?>">
+                                    0
+                                </div>
+                                <div class="text-kuning-600 text-xs font-semibold tracking-wider uppercase mb-1">
+                                    <?= $stat->satuan ?></div>
+                                <div class="text-gray-600 text-sm font-medium"><?= $stat->label ?></div>
                             </div>
-                            <div class="text-kuning-600 text-xs font-semibold tracking-wider uppercase mb-1"><?= $stat->satuan ?></div>
-                            <div class="text-gray-600 text-sm font-medium"><?= $stat->label ?></div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 <?php endif; ?>
 
 <!-- ============================================================ -->
@@ -136,8 +155,10 @@
             <div class="ornament-divider mb-5 max-w-xs mx-auto">
                 <span class="font-arabic text-hijau-600/70 text-xl">الجذور</span>
             </div>
-            <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-hijau-900 mb-5 split-text" data-split-reveal>Sejarah Yayasan</h2>
-            <p class="text-gray-500 max-w-lg mx-auto text-base">Perjalanan panjang kami dalam mendidik generasi terbaik bangsa</p>
+            <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-hijau-900 mb-5 split-text"
+                data-split-reveal>Sejarah Yayasan</h2>
+            <p class="text-gray-500 max-w-lg mx-auto text-base">Perjalanan panjang kami dalam mendidik generasi terbaik
+                bangsa</p>
         </div>
 
         <!-- Timeline -->
@@ -145,15 +166,21 @@
             <div class="relative max-w-4xl mx-auto">
                 <!-- Timeline line (grows on scroll) -->
                 <div class="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-hijau-100 hidden md:block"></div>
-                <div class="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-hijau-500 via-hijau-600 to-kuning-500 hidden md:block timeline-progress" id="timeline-line"></div>
+                <div class="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-hijau-500 via-hijau-600 to-kuning-500 hidden md:block timeline-progress"
+                    id="timeline-line"></div>
 
-                <?php foreach ($sejarah as $idx => $item): $is_even = $idx % 2 === 0; ?>
-                    <div class="relative flex flex-col md:flex-row items-center gap-8 mb-20 <?= $is_even ? 'md:flex-row' : 'md:flex-row-reverse' ?>">
+                <?php foreach ($sejarah as $idx => $item):
+                    $is_even = $idx % 2 === 0; ?>
+                    <div
+                        class="relative flex flex-col md:flex-row items-center gap-8 mb-20 <?= $is_even ? 'md:flex-row' : 'md:flex-row-reverse' ?>">
                         <!-- Content -->
-                        <div class="flex-1 <?= $is_even ? 'md:text-right md:pr-16' : 'md:text-left md:pl-16' ?> reveal<?= $is_even ? '-left' : '-right' ?>">
+                        <div
+                            class="flex-1 <?= $is_even ? 'md:text-right md:pr-16' : 'md:text-left md:pl-16' ?> reveal<?= $is_even ? '-left' : '-right' ?>">
                             <?php if ($item->gambar): ?>
                                 <div class="rounded-3xl overflow-hidden mb-5 aspect-video bg-hijau-50 shadow-lg shadow-hijau-900/5">
-                                    <img src="<?= base_url('assets/images/uploads/sejarah/' . $item->gambar) ?>" alt="<?= $item->judul ?>" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                                    <img src="<?= base_url('assets/images/uploads/sejarah/' . $item->gambar) ?>"
+                                        alt="<?= $item->judul ?>"
+                                        class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
                                 </div>
                             <?php endif; ?>
                             <div class="bg-white rounded-3xl p-7 border border-hijau-100/50 card-hover shadow-sm">
@@ -163,7 +190,8 @@
                         </div>
 
                         <!-- Timeline dot -->
-                        <div class="hidden md:flex w-12 h-12 bg-white border-2 border-hijau-500 rounded-full items-center justify-center shadow-lg shadow-hijau-500/10 flex-shrink-0 z-10 reveal-scale">
+                        <div
+                            class="hidden md:flex w-12 h-12 bg-white border-2 border-hijau-500 rounded-full items-center justify-center shadow-lg shadow-hijau-500/10 flex-shrink-0 z-10 reveal-scale">
                             <span class="text-hijau-800 font-bold text-sm"><?= str_pad($idx + 1, 2, '0', STR_PAD_LEFT) ?></span>
                         </div>
 
@@ -175,10 +203,10 @@
         <?php endif; ?>
     </div>
 
-    <!-- Wave divider -->
+    <!-- Wave divider to dark section -->
     <div class="wave-divider wave-bottom">
-        <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,40 C480,100 960,0 1440,40 L1440,100 L0,100 Z" fill="#052e16"/>
+        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;">
+            <path d="M0,60 C360,110 720,10 1080,60 C1260,85 1380,75 1440,60 L1440,120 L0,120 Z" fill="#052e16" />
         </svg>
     </div>
 </section>
@@ -186,15 +214,33 @@
 <!-- ============================================================ -->
 <!-- VISI MISI SECTION -->
 <!-- ============================================================ -->
-<section id="visi-misi" class="py-24 md:py-32 bg-hijau-950 relative overflow-hidden grain">
-    <div class="absolute inset-0 pattern-bg opacity-15"></div>
+<?php
+$vm_overlay_color = isset($profil) && $profil && !empty($profil->isimisi_overlay_color) ? $profil->isimisi_overlay_color : '#052e16';
+$vm_overlay_opacity = isset($profil) && $profil && isset($profil->isimisi_overlay_opacity) ? $profil->isimisi_overlay_opacity : 85;
+$vm_bg_image = isset($profil) && $profil && !empty($profil->isimisi_bg_image) ? $profil->isimisi_bg_image : null;
+$vm_bg_video = isset($profil) && $profil && !empty($profil->isimisi_bg_video) ? $profil->isimisi_bg_video : null;
+?>
+<section id="visi-misi" class="py-24 md:py-32 bg-hijau-950 relative overflow-hidden">
+    <!-- Video or image background (full cover) -->
+    <?php if ($vm_bg_video): ?>
+        <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover" style="z-index:1;">
+            <source src="<?= base_url('assets/images/uploads/profil/' . $vm_bg_video) ?>" type="video/mp4">
+        </video>
+    <?php elseif ($vm_bg_image): ?>
+        <img src="<?= base_url('assets/images/uploads/profil/' . $vm_bg_image) ?>" alt="Visi Misi Background"
+            class="absolute inset-0 w-full h-full object-cover" style="z-index:1;">
+    <?php endif; ?>
+    <!-- Color overlay -->
+    <div class="absolute inset-0" style="z-index:2; background: <?= $vm_overlay_color ?>; opacity: <?= $vm_overlay_opacity / 100 ?>;"></div>
+    <!-- Pattern overlay -->
+    <div class="absolute inset-0 pattern-bg opacity-15" style="z-index:3;"></div>
 
-    <!-- Animated gradient blobs -->
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-kuning-500/5 rounded-full blur-[150px] animated-gradient" style="background: radial-gradient(circle, rgba(234,179,8,0.08) 0%, transparent 70%);"></div>
-    <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-hijau-400/5 rounded-full blur-[120px]"></div>
+    <!-- Decorative blobs -->
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[150px]" style="z-index:3; background: radial-gradient(circle, rgba(234,179,8,0.08) 0%, transparent 70%);"></div>
+    <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-hijau-400/5 rounded-full blur-[120px]" style="z-index:3;"></div>
 
     <!-- Floating particles -->
-    <div id="visi-particles" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+    <div id="visi-particles" class="absolute inset-0 overflow-hidden pointer-events-none" style="z-index:3;"></div>
 
     <div class="container mx-auto px-4 lg:px-8 relative z-10">
         <!-- Section header -->
@@ -202,17 +248,24 @@
             <div class="ornament-divider mb-5 max-w-xs mx-auto">
                 <span class="font-arabic text-kuning-400/70 text-xl">الرؤية</span>
             </div>
-            <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 split-text" data-split-reveal>Visi & Misi</h2>
+            <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 split-text"
+                data-split-reveal>Visi & Misi</h2>
             <p class="text-hijau-300/70 max-w-lg mx-auto text-base">Fondasi dan arah perjalanan Yayasan Ar-Razaq</p>
         </div>
 
         <!-- VISI -->
-        <?php if (!empty($visi)): $v = $visi[0]; ?>
+        <?php if (!empty($visi)):
+            $v = $visi[0]; ?>
             <div class="max-w-3xl mx-auto mb-20 reveal">
-                <div class="relative bg-gradient-to-br from-kuning-500/8 to-transparent border border-kuning-500/15 rounded-[2rem] p-8 md:p-14 text-center backdrop-blur-sm overflow-hidden">
+                <div
+                    class="relative bg-gradient-to-br from-kuning-500/8 to-transparent border border-kuning-500/15 rounded-[2rem] p-8 md:p-14 text-center backdrop-blur-sm overflow-hidden">
                     <!-- Corner accents -->
-                    <div class="absolute top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-kuning-500/20 rounded-tl-[2rem]"></div>
-                    <div class="absolute bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-kuning-500/20 rounded-br-[2rem]"></div>
+                    <div
+                        class="absolute top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-kuning-500/20 rounded-tl-[2rem]">
+                    </div>
+                    <div
+                        class="absolute bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-kuning-500/20 rounded-br-[2rem]">
+                    </div>
 
                     <div class="w-14 h-14 bg-kuning-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <i data-feather="eye" class="w-7 h-7 text-kuning-400"></i>
@@ -232,8 +285,10 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto stagger-parent">
                     <?php foreach ($misi as $idx => $item): ?>
                         <div class="stagger-child group">
-                            <div class="flex gap-5 bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6 hover:border-kuning-500/20 hover:bg-white/[0.06] transition-all duration-500 card-3d h-full">
-                                <div class="w-11 h-11 bg-hijau-800/60 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-kuning-500/20 transition-colors duration-500">
+                            <div
+                                class="flex gap-5 bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6 hover:border-kuning-500/20 hover:bg-white/[0.06] transition-all duration-500 card-3d h-full">
+                                <div
+                                    class="w-11 h-11 bg-hijau-800/60 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-kuning-500/20 transition-colors duration-500">
                                     <i data-feather="<?= $item->ikon ?: 'check-circle' ?>" class="w-5 h-5 text-kuning-400"></i>
                                 </div>
                                 <div>
@@ -254,8 +309,10 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-5 max-w-3xl mx-auto stagger-parent">
                     <?php foreach ($nilai as $item): ?>
                         <div class="stagger-child text-center group">
-                            <div class="w-16 h-16 bg-gradient-to-br from-hijau-800 to-hijau-900 group-hover:from-kuning-500 group-hover:to-kuning-600 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all duration-700 shadow-lg group-hover:shadow-kuning-500/20 group-hover:-translate-y-1">
-                                <i data-feather="<?= $item->ikon ?: 'star' ?>" class="w-7 h-7 text-kuning-400 group-hover:text-hijau-950 transition-colors duration-500"></i>
+                            <div
+                                class="w-16 h-16 bg-gradient-to-br from-hijau-800 to-hijau-900 group-hover:from-kuning-500 group-hover:to-kuning-600 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all duration-700 shadow-lg group-hover:shadow-kuning-500/20 group-hover:-translate-y-1">
+                                <i data-feather="<?= $item->ikon ?: 'star' ?>"
+                                    class="w-7 h-7 text-kuning-400 group-hover:text-hijau-950 transition-colors duration-500"></i>
                             </div>
                             <h4 class="text-white font-semibold text-sm mb-1"><?= $item->judul ?></h4>
                             <p class="text-hijau-400/50 text-xs leading-relaxed"><?= $item->konten ?></p>
@@ -266,10 +323,10 @@
         <?php endif; ?>
     </div>
 
-    <!-- Wave divider -->
-    <div class="wave-divider wave-bottom">
-        <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,60 C240,10 480,90 720,50 C960,10 1200,80 1440,40 L1440,100 L0,100 Z" fill="#f9fafb"/>
+    <!-- Wave divider to light section -->
+    <div class="wave-divider wave-bottom" style="z-index:10;">
+        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;">
+            <path d="M0,60 C360,110 720,10 1080,60 C1260,85 1380,75 1440,60 L1440,120 L0,120 Z" fill="#f9fafb" />
         </svg>
     </div>
 </section>
@@ -278,15 +335,19 @@
 <!-- GALERI SECTION - HORIZONTAL SCROLL -->
 <!-- ============================================================ -->
 <section id="galeri" class="py-24 md:py-32 bg-gray-50 relative overflow-hidden">
-    <div class="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-gray-50 to-transparent z-10 pointer-events-none"></div>
+    <div
+        class="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-gray-50 to-transparent z-10 pointer-events-none">
+    </div>
 
     <div class="container mx-auto px-4 lg:px-8 relative z-10">
         <div class="text-center mb-16 reveal">
             <div class="ornament-divider mb-5 max-w-xs mx-auto">
                 <span class="font-arabic text-hijau-600/70 text-xl">الصور</span>
             </div>
-            <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-hijau-900 mb-5 split-text" data-split-reveal>Galeri Yayasan</h2>
-            <p class="text-gray-500 max-w-lg mx-auto text-base">Mengabadikan setiap momen berharga dalam perjalanan yayasan kami</p>
+            <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-hijau-900 mb-5 split-text"
+                data-split-reveal>Galeri Yayasan</h2>
+            <p class="text-gray-500 max-w-lg mx-auto text-base">Mengabadikan setiap momen berharga dalam perjalanan
+                yayasan kami</p>
         </div>
     </div>
 
@@ -299,23 +360,28 @@
                         <div class="gallery-card group relative rounded-3xl overflow-hidden bg-hijau-100 cursor-pointer flex-shrink-0 shadow-lg shadow-hijau-900/5"
                             onclick="openLightbox('<?= base_url('assets/images/uploads/galeri/' . $foto->gambar) ?>', '<?= htmlspecialchars($foto->judul) ?>')">
                             <?php if ($foto->gambar && strpos($foto->gambar, 'placeholder') === false): ?>
-                                <img src="<?= base_url('assets/images/uploads/galeri/' . $foto->gambar) ?>" alt="<?= $foto->judul ?>"
+                                <img src="<?= base_url('assets/images/uploads/galeri/' . $foto->gambar) ?>"
+                                    alt="<?= $foto->judul ?>"
                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                     onerror="this.src='<?= base_url('assets/images/placeholder.jpg') ?>'">
                             <?php else: ?>
-                                <div class="w-full h-full bg-gradient-to-br from-hijau-100 to-hijau-200 flex items-center justify-center">
+                                <div
+                                    class="w-full h-full bg-gradient-to-br from-hijau-100 to-hijau-200 flex items-center justify-center">
                                     <i data-feather="image" class="w-12 h-12 text-hijau-300"></i>
                                 </div>
                             <?php endif; ?>
-                            <div class="absolute inset-0 img-overlay opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end p-6">
+                            <div
+                                class="absolute inset-0 img-overlay opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end p-6">
                                 <div>
                                     <p class="text-white font-semibold text-base mb-1"><?= $foto->judul ?></p>
                                     <?php if ($foto->kategori): ?>
-                                        <span class="bg-kuning-500/90 text-hijau-950 text-xs font-semibold px-3 py-1 rounded-full"><?= ucfirst($foto->kategori) ?></span>
+                                        <span
+                                            class="bg-kuning-500/90 text-hijau-950 text-xs font-semibold px-3 py-1 rounded-full"><?= ucfirst($foto->kategori) ?></span>
                                     <?php endif; ?>
                                 </div>
                             </div>
-                            <div class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:scale-100 scale-75">
+                            <div
+                                class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:scale-100 scale-75">
                                 <i data-feather="zoom-in" class="w-4 h-4 text-white"></i>
                             </div>
                         </div>
@@ -327,8 +393,11 @@
 </section>
 
 <!-- Lightbox -->
-<div id="lightbox" class="fixed inset-0 bg-black/95 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 invisible transition-all duration-500" data-lenis-prevent>
-    <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white/60 hover:text-white transition-colors z-10">
+<div id="lightbox"
+    class="fixed inset-0 bg-black/95 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 invisible transition-all duration-500"
+    data-lenis-prevent>
+    <button onclick="closeLightbox()"
+        class="absolute top-6 right-6 text-white/60 hover:text-white transition-colors z-10">
         <i data-feather="x" class="w-8 h-8"></i>
     </button>
     <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[85vh] rounded-2xl object-contain shadow-2xl">
@@ -343,8 +412,8 @@
 <section id="ekskul" class="py-24 md:py-32 bg-white relative overflow-hidden">
     <!-- Wave top -->
     <div class="wave-divider wave-top">
-        <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,40 C360,0 720,80 1080,40 C1260,20 1380,30 1440,40 L1440,0 L0,0 Z" fill="#f9fafb"/>
+        <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;">
+            <path d="M0,40 C360,0 720,80 1080,40 C1260,20 1380,30 1440,40 L1440,0 L0,0 Z" fill="#f9fafb" />
         </svg>
     </div>
 
@@ -357,8 +426,10 @@
             <div class="ornament-divider mb-5 max-w-xs mx-auto">
                 <span class="font-arabic text-hijau-600/70 text-xl">النشاطات</span>
             </div>
-            <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-hijau-900 mb-5 split-text" data-split-reveal>Ekstrakurikuler</h2>
-            <p class="text-gray-500 max-w-lg mx-auto text-base">Mengembangkan bakat dan potensi santri melalui berbagai kegiatan unggulan</p>
+            <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-hijau-900 mb-5 split-text"
+                data-split-reveal>Ekstrakurikuler</h2>
+            <p class="text-gray-500 max-w-lg mx-auto text-base">Mengembangkan bakat dan potensi santri melalui berbagai
+                kegiatan unggulan</p>
         </div>
 
         <?php if (!empty($ekskul)): ?>
@@ -369,22 +440,28 @@
                             <!-- Image or gradient header -->
                             <?php if ($item->gambar): ?>
                                 <div class="h-48 overflow-hidden relative">
-                                    <img src="<?= base_url('assets/images/uploads/ekskul/' . $item->gambar) ?>" alt="<?= $item->nama ?>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                    <img src="<?= base_url('assets/images/uploads/ekskul/' . $item->gambar) ?>"
+                                        alt="<?= $item->nama ?>"
+                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                                 </div>
                             <?php else: ?>
-                                <div class="h-44 bg-gradient-to-br from-hijau-800 to-hijau-900 flex items-center justify-center relative overflow-hidden">
+                                <div
+                                    class="h-44 bg-gradient-to-br from-hijau-800 to-hijau-900 flex items-center justify-center relative overflow-hidden">
                                     <div class="absolute inset-0 pattern-bg opacity-20"></div>
-                                    <i data-feather="<?= $item->ikon ?: 'star' ?>" class="w-14 h-14 text-kuning-400/30 relative z-10 group-hover:scale-110 transition-transform duration-500"></i>
+                                    <i data-feather="<?= $item->ikon ?: 'star' ?>"
+                                        class="w-14 h-14 text-kuning-400/30 relative z-10 group-hover:scale-110 transition-transform duration-500"></i>
                                 </div>
                             <?php endif; ?>
 
                             <div class="p-6">
                                 <div class="flex items-start justify-between mb-4">
-                                    <div class="w-10 h-10 bg-hijau-50 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-hijau-100 transition-colors duration-300">
+                                    <div
+                                        class="w-10 h-10 bg-hijau-50 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-hijau-100 transition-colors duration-300">
                                         <i data-feather="<?= $item->ikon ?: 'star' ?>" class="w-5 h-5 text-hijau-700"></i>
                                     </div>
-                                    <span class="text-xs font-semibold text-hijau-600 bg-hijau-50 px-3 py-1 rounded-full">Aktif</span>
+                                    <span
+                                        class="text-xs font-semibold text-hijau-600 bg-hijau-50 px-3 py-1 rounded-full">Aktif</span>
                                 </div>
                                 <h3 class="font-display text-lg font-bold text-hijau-900 mb-2"><?= $item->nama ?></h3>
                                 <p class="text-gray-500 text-sm leading-relaxed mb-4"><?= $item->deskripsi ?></p>
@@ -415,8 +492,8 @@
 
     <!-- Wave divider -->
     <div class="wave-divider wave-bottom">
-        <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,30 C360,80 720,0 1080,50 C1260,70 1380,40 1440,30 L1440,80 L0,80 Z" fill="#f9fafb"/>
+        <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;">
+            <path d="M0,30 C360,80 720,0 1080,50 C1260,70 1380,40 1440,30 L1440,80 L0,80 Z" fill="#f9fafb" />
         </svg>
     </div>
 </section>
@@ -424,19 +501,22 @@
 <!-- ============================================================ -->
 <!-- BERITA SECTION -->
 <!-- ============================================================ -->
-<section id="berita" class="py-24 md:py-32 bg-gray-50 relative overflow-hidden">
+<section id="berita" class="pt-24 md:pt-32 pb-0 bg-gray-50 relative overflow-hidden">
     <div class="container mx-auto px-4 lg:px-8 relative z-10">
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
             <div class="reveal">
                 <div class="ornament-divider mb-5 max-w-[200px]">
                     <span class="font-arabic text-hijau-600/70 text-xl">الأخبار</span>
                 </div>
-                <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-hijau-900 mb-3 split-text" data-split-reveal>Berita Terkini</h2>
+                <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-hijau-900 mb-3 split-text"
+                    data-split-reveal>Berita Terkini</h2>
                 <p class="text-gray-500 text-base">Informasi terbaru dari Yayasan Ar-Razaq</p>
             </div>
-            <a href="<?= base_url('berita') ?>" class="reveal inline-flex items-center gap-2 text-hijau-700 font-semibold hover:text-hijau-900 transition-colors group self-start md:self-auto">
+            <a href="<?= base_url('berita') ?>"
+                class="reveal inline-flex items-center gap-2 text-hijau-700 font-semibold hover:text-hijau-900 transition-colors group self-start md:self-auto">
                 Lihat Semua
-                <i data-feather="arrow-right" class="w-4 h-4 group-hover:translate-x-2 transition-transform duration-300"></i>
+                <i data-feather="arrow-right"
+                    class="w-4 h-4 group-hover:translate-x-2 transition-transform duration-300"></i>
             </a>
         </div>
 
@@ -444,21 +524,25 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-7 stagger-parent">
                 <?php foreach ($berita as $idx => $post): ?>
                     <article class="stagger-child group">
-                        <a href="<?= base_url('berita/' . $post->slug) ?>" class="block bg-white rounded-3xl overflow-hidden border border-gray-100/80 shadow-sm card-hover h-full">
+                        <a href="<?= base_url('berita/' . $post->slug) ?>"
+                            class="block bg-white rounded-3xl overflow-hidden border border-gray-100/80 shadow-sm card-hover h-full">
                             <!-- Thumbnail -->
                             <div class="aspect-video overflow-hidden bg-hijau-50 relative">
                                 <?php if ($post->gambar): ?>
-                                    <img src="<?= base_url('assets/images/uploads/berita/' . $post->gambar) ?>" alt="<?= $post->judul ?>"
+                                    <img src="<?= base_url('assets/images/uploads/berita/' . $post->gambar) ?>"
+                                        alt="<?= $post->judul ?>"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                         onerror="this.parentElement.innerHTML='<div class=\'w-full h-full bg-gradient-to-br from-hijau-100 to-hijau-200 flex items-center justify-center\'><i data-feather=\'image\' class=\'w-10 h-10 text-hijau-400\'></i></div>'">
                                 <?php else: ?>
-                                    <div class="w-full h-full bg-gradient-to-br from-hijau-50 to-hijau-100 flex items-center justify-center">
+                                    <div
+                                        class="w-full h-full bg-gradient-to-br from-hijau-50 to-hijau-100 flex items-center justify-center">
                                         <i data-feather="file-text" class="w-10 h-10 text-hijau-300"></i>
                                     </div>
                                 <?php endif; ?>
                                 <!-- Category overlay -->
                                 <div class="absolute top-4 left-4">
-                                    <span class="bg-white/90 backdrop-blur-sm text-hijau-800 text-xs font-bold px-3 py-1.5 rounded-full capitalize shadow-sm"><?= $post->kategori ?></span>
+                                    <span
+                                        class="bg-white/90 backdrop-blur-sm text-hijau-800 text-xs font-bold px-3 py-1.5 rounded-full capitalize shadow-sm"><?= $post->kategori ?></span>
                                 </div>
                             </div>
 
@@ -471,7 +555,8 @@
                                     </span>
                                 </div>
 
-                                <h3 class="font-display font-bold text-hijau-900 text-lg mb-3 leading-snug line-clamp-2 group-hover:text-hijau-700 transition-colors duration-300">
+                                <h3
+                                    class="font-display font-bold text-hijau-900 text-lg mb-3 leading-snug line-clamp-2 group-hover:text-hijau-700 transition-colors duration-300">
                                     <?= $post->judul ?>
                                 </h3>
 
@@ -479,9 +564,11 @@
                                     <p class="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-5"><?= $post->ringkasan ?></p>
                                 <?php endif; ?>
 
-                                <div class="flex items-center text-hijau-600 text-sm font-semibold group-hover:gap-3 transition-all duration-300 gap-1.5">
+                                <div
+                                    class="flex items-center text-hijau-600 text-sm font-semibold group-hover:gap-3 transition-all duration-300 gap-1.5">
                                     Baca Selengkapnya
-                                    <i data-feather="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300"></i>
+                                    <i data-feather="arrow-right"
+                                        class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300"></i>
                                 </div>
                             </div>
                         </a>
@@ -490,15 +577,23 @@
             </div>
         <?php endif; ?>
     </div>
+
+    <!-- Wave ke section berikutnya (PPDB hijau-900 atau footer hijau-950) -->
+    <?php $wave_fill = !empty($ppdb) ? '#1a4731' : '#052e16'; ?>
+    <div class="wave-divider wave-bottom" style="z-index:10; margin-top:80px;">
+        <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;">
+            <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z" fill="<?= $wave_fill ?>" />
+        </svg>
+    </div>
 </section>
 
 <!-- ============================================================ -->
 <!-- PPDB SECTION (CTA Banner) -->
 <!-- ============================================================ -->
 <?php if (!empty($ppdb)): ?>
-    <section id="ppdb" class="py-24 md:py-32 relative overflow-hidden grain">
-        <!-- Animated gradient background -->
-        <div class="absolute inset-0 bg-gradient-to-br from-hijau-800 via-hijau-900 to-hijau-950 animated-gradient" style="background-size: 200% 200%;"></div>
+    <section id="ppdb" class="pt-24 md:pt-32 pb-0 relative overflow-hidden grain">
+        <!-- Solid background -->
+        <div class="absolute inset-0 bg-hijau-900"></div>
         <div class="absolute inset-0 pattern-bg opacity-15"></div>
 
         <!-- Decorative elements -->
@@ -508,23 +603,25 @@
         <!-- Floating crescents -->
         <div class="absolute top-20 left-[10%] opacity-[0.06] floating hidden lg:block">
             <svg width="60" height="60" viewBox="0 0 60 60" fill="white">
-                <path d="M30 5C16.2 5 5 16.2 5 30s11.2 25 25 25c-8.3 0-15-11.2-15-25S21.7 5 30 5z"/>
+                <path d="M30 5C16.2 5 5 16.2 5 30s11.2 25 25 25c-8.3 0-15-11.2-15-25S21.7 5 30 5z" />
             </svg>
         </div>
         <div class="absolute bottom-32 right-[12%] opacity-[0.05] floating-delay hidden lg:block">
             <svg width="40" height="40" viewBox="0 0 60 60" fill="white">
-                <path d="M30 5C16.2 5 5 16.2 5 30s11.2 25 25 25c-8.3 0-15-11.2-15-25S21.7 5 30 5z"/>
+                <path d="M30 5C16.2 5 5 16.2 5 30s11.2 25 25 25c-8.3 0-15-11.2-15-25S21.7 5 30 5z" />
             </svg>
         </div>
 
         <div class="container mx-auto px-4 lg:px-8 relative z-10">
             <div class="max-w-4xl mx-auto text-center reveal">
-                <div class="inline-flex items-center gap-2 bg-kuning-400/10 border border-kuning-400/20 text-kuning-300 px-5 py-2 rounded-full text-sm font-medium mb-10">
+                <div
+                    class="inline-flex items-center gap-2 bg-kuning-400/10 border border-kuning-400/20 text-kuning-300 px-5 py-2 rounded-full text-sm font-medium mb-10">
                     <span class="w-2 h-2 bg-kuning-400 rounded-full animate-pulse"></span>
                     Pendaftaran Tahun Ajaran <?= $ppdb->tahun_ajaran ?>
                 </div>
 
-                <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 split-text" data-split-reveal>
+                <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 split-text"
+                    data-split-reveal>
                     <?= $ppdb->judul ?>
                 </h2>
 
@@ -540,7 +637,8 @@
                         <div class="bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] rounded-2xl p-6 card-hover">
                             <div class="text-kuning-400 mb-3"><i data-feather="calendar" class="w-6 h-6 mx-auto"></i></div>
                             <div class="text-white text-sm font-semibold">Periode Pendaftaran</div>
-                            <div class="text-hijau-300/60 text-xs mt-1"><?= date('d M Y', strtotime($ppdb->tanggal_buka)) ?> - <?= date('d M Y', strtotime($ppdb->tanggal_tutup)) ?></div>
+                            <div class="text-hijau-300/60 text-xs mt-1"><?= date('d M Y', strtotime($ppdb->tanggal_buka)) ?> -
+                                <?= date('d M Y', strtotime($ppdb->tanggal_tutup)) ?></div>
                         </div>
                     <?php endif; ?>
 
@@ -556,24 +654,34 @@
                         <div class="bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] rounded-2xl p-6 card-hover">
                             <div class="text-kuning-400 mb-3"><i data-feather="credit-card" class="w-6 h-6 mx-auto"></i></div>
                             <div class="text-white text-sm font-semibold">Biaya Pendaftaran</div>
-                            <div class="text-hijau-300/60 text-xs mt-1">Rp <?= number_format($ppdb->biaya_pendaftaran, 0, ',', '.') ?></div>
+                            <div class="text-hijau-300/60 text-xs mt-1">Rp
+                                <?= number_format($ppdb->biaya_pendaftaran, 0, ',', '.') ?></div>
                         </div>
                     <?php endif; ?>
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="<?= base_url('ppdb') ?>" class="magnetic-btn bg-gradient-to-r from-kuning-500 to-kuning-600 text-hijau-950 font-bold px-10 py-4 rounded-2xl text-base shadow-xl shadow-kuning-500/20 hover:shadow-kuning-500/40 transition-all duration-500 hover:-translate-y-1 flex items-center justify-center gap-2 pulse-glow">
+                    <a href="<?= base_url('ppdb') ?>"
+                        class="magnetic-btn bg-kuning-500 text-hijau-950 font-bold px-10 py-4 rounded-2xl text-base shadow-xl shadow-kuning-500/20 hover:shadow-kuning-500/40 transition-all duration-500 hover:-translate-y-1 flex items-center justify-center gap-2 pulse-glow">
                         <i data-feather="user-plus" class="w-5 h-5"></i>
                         Daftar Sekarang
                     </a>
                     <?php if ($ppdb->link_pendaftaran): ?>
-                        <a href="<?= $ppdb->link_pendaftaran ?>" target="_blank" class="magnetic-btn border border-white/15 text-white font-semibold px-10 py-4 rounded-2xl text-base hover:bg-white/10 transition-all duration-500 flex items-center justify-center gap-2">
+                        <a href="<?= $ppdb->link_pendaftaran ?>" target="_blank"
+                            class="magnetic-btn border border-white/15 text-white font-semibold px-10 py-4 rounded-2xl text-base hover:bg-white/10 transition-all duration-500 flex items-center justify-center gap-2">
                             <i data-feather="external-link" class="w-5 h-5"></i>
                             Daftar Online
                         </a>
                     <?php endif; ?>
                 </div>
             </div>
+        </div>
+
+        <!-- Wave bottom to footer -->
+        <div class="wave-divider wave-bottom" style="z-index:10; margin-top:80px;">
+            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;">
+                <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z" fill="#052e16" />
+            </svg>
         </div>
     </section>
 <?php endif; ?>
