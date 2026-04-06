@@ -1,14 +1,22 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
+<?php
+$permission_codes = isset($permission_codes) && is_array($permission_codes) ? $permission_codes : [];
+$can_create = in_array('berita.create', $permission_codes, true);
+$can_edit = in_array('berita.edit', $permission_codes, true);
+$can_delete = in_array('berita.delete', $permission_codes, true);
+?>
 
 <!-- Page Header -->
 <div class="flex items-center justify-between mb-6">
     <div>
         <p class="text-xs text-gray-400">Kelola semua artikel dan pengumuman</p>
     </div>
-    <button onclick="openModal('modal-tambah')" class="btn btn-primary">
-        <i data-feather="plus" class="w-4 h-4"></i>
-        Tambah Berita
-    </button>
+    <?php if ($can_create): ?>
+        <button onclick="openModal('modal-tambah')" class="btn btn-primary">
+            <i data-feather="plus" class="w-4 h-4"></i>
+            Tambah Berita
+        </button>
+    <?php endif; ?>
 </div>
 
 <!-- Filter / Search bar -->
@@ -61,14 +69,22 @@
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <div class="flex items-center justify-end gap-2">
-                                    <button onclick='editBerita(<?= json_encode($b) ?>)' class="btn btn-ghost py-1.5 px-3 text-xs">
-                                        <i data-feather="edit-2" class="w-3 h-3"></i> Edit
-                                    </button>
-                                    <button onclick="confirmDelete('<?= base_url('panel-admin/berita-delete/' . $b->id) ?>','<?= addslashes($b->judul) ?>')" class="btn btn-danger py-1.5 px-3 text-xs">
-                                        <i data-feather="trash-2" class="w-3 h-3"></i>
-                                    </button>
-                                </div>
+                                <?php if ($can_edit || $can_delete): ?>
+                                    <div class="flex items-center justify-end gap-2">
+                                        <?php if ($can_edit): ?>
+                                            <button onclick='editBerita(<?= json_encode($b) ?>)' class="btn btn-ghost py-1.5 px-3 text-xs">
+                                                <i data-feather="edit-2" class="w-3 h-3"></i> Edit
+                                            </button>
+                                        <?php endif; ?>
+                                        <?php if ($can_delete): ?>
+                                            <button onclick="confirmDelete('<?= base_url('panel-admin/berita-delete/' . $b->id) ?>','<?= addslashes($b->judul) ?>')" class="btn btn-danger py-1.5 px-3 text-xs">
+                                                <i data-feather="trash-2" class="w-3 h-3"></i>
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php else: ?>
+                                    <span class="text-xs text-gray-300">-</span>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -87,152 +103,159 @@
 <!-- ============================================================ -->
 <!-- MODAL TAMBAH -->
 <!-- ============================================================ -->
-<div id="modal-tambah" class="modal-overlay">
-    <div class="modal-box">
-        <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-            <h3 class="font-semibold text-gray-900">Tambah Berita</h3>
-            <button onclick="closeModal('modal-tambah')" class="text-gray-400 hover:text-gray-600 transition-colors">
-                <i data-feather="x" class="w-5 h-5"></i>
-            </button>
-        </div>
-        <form id="form-tambah" enctype="multipart/form-data">
-            <div class="px-6 py-5 space-y-4">
-                <div>
-                    <label class="form-label">Judul *</label>
-                    <input type="text" name="judul" class="form-input" placeholder="Judul berita..." required>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="form-label">Kategori</label>
-                        <select name="kategori" class="form-input form-select">
-                            <option value="berita">Berita</option>
-                            <option value="pengumuman">Pengumuman</option>
-                            <option value="kegiatan">Kegiatan</option>
-                            <option value="prestasi">Prestasi</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="form-label">Tanggal Publish</label>
-                        <input type="date" name="tanggal_publish" class="form-input" value="<?= date('Y-m-d') ?>">
-                    </div>
-                </div>
-                <div>
-                    <label class="form-label">Penulis</label>
-                    <input type="text" name="penulis" class="form-input" placeholder="Nama penulis" value="Admin Yayasan">
-                </div>
-                <div>
-                    <label class="form-label">Ringkasan</label>
-                    <textarea name="ringkasan" class="form-input" rows="2" placeholder="Ringkasan singkat berita…"></textarea>
-                </div>
-                <div>
-                    <label class="form-label">Isi Berita *</label>
-                    <textarea name="isi" class="form-input" rows="5" placeholder="Tulis isi berita di sini…" required></textarea>
-                </div>
-                <div>
-                    <label class="form-label">Foto Utama</label>
-                    <div class="upload-area" onclick="document.getElementById('tambah-gambar').click()">
-                        <i data-feather="image" class="w-6 h-6 text-hijau-400 mx-auto mb-2"></i>
-                        <p class="text-xs text-gray-500">Klik untuk upload foto (JPG, PNG, WebP — maks 5MB)</p>
-                    </div>
-                    <input type="file" id="tambah-gambar" name="gambar" class="hidden" accept="image/*"
-                        onchange="previewImage(this,'preview-tambah-gambar')">
-                    <div id="preview-tambah-gambar" class="mt-2"></div>
-                </div>
-                <div>
-                    <label class="form-label">Status</label>
-                    <select name="status" class="form-input form-select">
-                        <option value="1">Aktif (Tampil)</option>
-                        <option value="0">Draft (Tersembunyi)</option>
-                    </select>
-                </div>
-            </div>
-            <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
-                <button type="button" onclick="closeModal('modal-tambah')" class="btn btn-ghost">Batal</button>
-                <button type="button" onclick="submitTambah()" class="btn btn-primary" id="btn-tambah-submit">
-                    <i data-feather="save" class="w-4 h-4"></i>
-                    Simpan Berita
+<?php if ($can_create): ?>
+    <div id="modal-tambah" class="modal-overlay">
+        <div class="modal-box">
+            <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                <h3 class="font-semibold text-gray-900">Tambah Berita</h3>
+                <button onclick="closeModal('modal-tambah')" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i data-feather="x" class="w-5 h-5"></i>
                 </button>
             </div>
-        </form>
+            <form id="form-tambah" enctype="multipart/form-data">
+                <div class="px-6 py-5 space-y-4">
+                    <div>
+                        <label class="form-label">Judul *</label>
+                        <input type="text" name="judul" class="form-input" placeholder="Judul berita..." required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label">Kategori</label>
+                            <select name="kategori" class="form-input form-select">
+                                <option value="berita">Berita</option>
+                                <option value="pengumuman">Pengumuman</option>
+                                <option value="kegiatan">Kegiatan</option>
+                                <option value="prestasi">Prestasi</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Tanggal Publish</label>
+                            <input type="date" name="tanggal_publish" class="form-input" value="<?= date('Y-m-d') ?>">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Penulis</label>
+                        <input type="text" name="penulis" class="form-input" placeholder="Nama penulis" value="Admin Yayasan">
+                    </div>
+                    <div>
+                        <label class="form-label">Ringkasan</label>
+                        <textarea name="ringkasan" class="form-input" rows="2" placeholder="Ringkasan singkat berita…"></textarea>
+                    </div>
+                    <div>
+                        <label class="form-label">Isi Berita *</label>
+                        <textarea name="isi" class="form-input" rows="5" placeholder="Tulis isi berita di sini…" required></textarea>
+                    </div>
+                    <div>
+                        <label class="form-label">Foto Utama</label>
+                        <div class="upload-area" onclick="document.getElementById('tambah-gambar').click()">
+                            <i data-feather="image" class="w-6 h-6 text-hijau-400 mx-auto mb-2"></i>
+                            <p class="text-xs text-gray-500">Klik untuk upload foto (JPG, PNG, WebP — maks 5MB)</p>
+                        </div>
+                        <input type="file" id="tambah-gambar" name="gambar" class="hidden" accept="image/*"
+                            onchange="previewImage(this,'preview-tambah-gambar')">
+                        <div id="preview-tambah-gambar" class="mt-2"></div>
+                    </div>
+                    <div>
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-input form-select">
+                            <option value="1">Aktif (Tampil)</option>
+                            <option value="0">Draft (Tersembunyi)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+                    <button type="button" onclick="closeModal('modal-tambah')" class="btn btn-ghost">Batal</button>
+                    <button type="button" onclick="submitTambah()" class="btn btn-primary" id="btn-tambah-submit">
+                        <i data-feather="save" class="w-4 h-4"></i>
+                        Simpan Berita
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+<?php endif; ?>
 
 <!-- ============================================================ -->
 <!-- MODAL EDIT -->
 <!-- ============================================================ -->
-<div id="modal-edit" class="modal-overlay">
-    <div class="modal-box">
-        <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-            <h3 class="font-semibold text-gray-900">Edit Berita</h3>
-            <button onclick="closeModal('modal-edit')" class="text-gray-400 hover:text-gray-600">
-                <i data-feather="x" class="w-5 h-5"></i>
-            </button>
-        </div>
-        <form id="form-edit" enctype="multipart/form-data">
-            <input type="hidden" name="edit_id" id="edit-id">
-            <div class="px-6 py-5 space-y-4">
-                <div>
-                    <label class="form-label">Judul *</label>
-                    <input type="text" name="judul" id="edit-judul" class="form-input" required>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="form-label">Kategori</label>
-                        <select name="kategori" id="edit-kategori" class="form-input form-select">
-                            <option value="berita">Berita</option>
-                            <option value="pengumuman">Pengumuman</option>
-                            <option value="kegiatan">Kegiatan</option>
-                            <option value="prestasi">Prestasi</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="form-label">Tanggal Publish</label>
-                        <input type="date" name="tanggal_publish" id="edit-tanggal" class="form-input">
-                    </div>
-                </div>
-                <div>
-                    <label class="form-label">Penulis</label>
-                    <input type="text" name="penulis" id="edit-penulis" class="form-input">
-                </div>
-                <div>
-                    <label class="form-label">Ringkasan</label>
-                    <textarea name="ringkasan" id="edit-ringkasan" class="form-input" rows="2"></textarea>
-                </div>
-                <div>
-                    <label class="form-label">Isi Berita *</label>
-                    <textarea name="isi" id="edit-isi" class="form-input" rows="5" required></textarea>
-                </div>
-                <div>
-                    <label class="form-label">Foto Utama (kosongkan jika tidak ingin mengganti)</label>
-                    <div id="edit-current-img" class="mb-2"></div>
-                    <div class="upload-area" onclick="document.getElementById('edit-gambar').click()">
-                        <i data-feather="refresh-cw" class="w-5 h-5 text-hijau-400 mx-auto mb-1"></i>
-                        <p class="text-xs text-gray-500">Klik untuk mengganti foto</p>
-                    </div>
-                    <input type="file" id="edit-gambar" name="gambar" class="hidden" accept="image/*"
-                        onchange="previewImage(this,'preview-edit-gambar')">
-                    <div id="preview-edit-gambar" class="mt-2"></div>
-                </div>
-                <div>
-                    <label class="form-label">Status</label>
-                    <select name="status" id="edit-status" class="form-input form-select">
-                        <option value="1">Aktif (Tampil)</option>
-                        <option value="0">Draft (Tersembunyi)</option>
-                    </select>
-                </div>
-            </div>
-            <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
-                <button type="button" onclick="closeModal('modal-edit')" class="btn btn-ghost">Batal</button>
-                <button type="button" onclick="submitEdit()" class="btn btn-primary">
-                    <i data-feather="save" class="w-4 h-4"></i>
-                    Update Berita
+<?php if ($can_edit): ?>
+    <div id="modal-edit" class="modal-overlay">
+        <div class="modal-box">
+            <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                <h3 class="font-semibold text-gray-900">Edit Berita</h3>
+                <button onclick="closeModal('modal-edit')" class="text-gray-400 hover:text-gray-600">
+                    <i data-feather="x" class="w-5 h-5"></i>
                 </button>
             </div>
-        </form>
+            <form id="form-edit" enctype="multipart/form-data">
+                <input type="hidden" name="edit_id" id="edit-id">
+                <div class="px-6 py-5 space-y-4">
+                    <div>
+                        <label class="form-label">Judul *</label>
+                        <input type="text" name="judul" id="edit-judul" class="form-input" required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label">Kategori</label>
+                            <select name="kategori" id="edit-kategori" class="form-input form-select">
+                                <option value="berita">Berita</option>
+                                <option value="pengumuman">Pengumuman</option>
+                                <option value="kegiatan">Kegiatan</option>
+                                <option value="prestasi">Prestasi</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Tanggal Publish</label>
+                            <input type="date" name="tanggal_publish" id="edit-tanggal" class="form-input">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Penulis</label>
+                        <input type="text" name="penulis" id="edit-penulis" class="form-input">
+                    </div>
+                    <div>
+                        <label class="form-label">Ringkasan</label>
+                        <textarea name="ringkasan" id="edit-ringkasan" class="form-input" rows="2"></textarea>
+                    </div>
+                    <div>
+                        <label class="form-label">Isi Berita *</label>
+                        <textarea name="isi" id="edit-isi" class="form-input" rows="5" required></textarea>
+                    </div>
+                    <div>
+                        <label class="form-label">Foto Utama (kosongkan jika tidak ingin mengganti)</label>
+                        <div id="edit-current-img" class="mb-2"></div>
+                        <div class="upload-area" onclick="document.getElementById('edit-gambar').click()">
+                            <i data-feather="refresh-cw" class="w-5 h-5 text-hijau-400 mx-auto mb-1"></i>
+                            <p class="text-xs text-gray-500">Klik untuk mengganti foto</p>
+                        </div>
+                        <input type="file" id="edit-gambar" name="gambar" class="hidden" accept="image/*"
+                            onchange="previewImage(this,'preview-edit-gambar')">
+                        <div id="preview-edit-gambar" class="mt-2"></div>
+                    </div>
+                    <div>
+                        <label class="form-label">Status</label>
+                        <select name="status" id="edit-status" class="form-input form-select">
+                            <option value="1">Aktif (Tampil)</option>
+                            <option value="0">Draft (Tersembunyi)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+                    <button type="button" onclick="closeModal('modal-edit')" class="btn btn-ghost">Batal</button>
+                    <button type="button" onclick="submitEdit()" class="btn btn-primary">
+                        <i data-feather="save" class="w-4 h-4"></i>
+                        Update Berita
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+<?php endif; ?>
 
 <script>
+    const canCreateBerita = <?= $can_create ? 'true' : 'false' ?>;
+    const canEditBerita = <?= $can_edit ? 'true' : 'false' ?>;
+
     // Filter table
     function filterTable() {
         const q = document.getElementById('search-input').value.toLowerCase();
@@ -248,6 +271,10 @@
 
     // Submit tambah
     async function submitTambah() {
+        if (!canCreateBerita) {
+            showToast('Anda tidak punya izin tambah berita.', 'error');
+            return;
+        }
         const btn = document.getElementById('btn-tambah-submit');
         btn.disabled = true;
         btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> Menyimpan…';
@@ -269,6 +296,10 @@
 
     // Edit — populate modal
     function editBerita(b) {
+        if (!canEditBerita) {
+            showToast('Anda tidak punya izin edit berita.', 'error');
+            return;
+        }
         document.getElementById('edit-id').value = b.id;
         document.getElementById('edit-judul').value = b.judul;
         document.getElementById('edit-ringkasan').value = b.ringkasan || '';
@@ -290,6 +321,10 @@
 
     // Submit edit
     async function submitEdit() {
+        if (!canEditBerita) {
+            showToast('Anda tidak punya izin edit berita.', 'error');
+            return;
+        }
         try {
             const id = document.getElementById('edit-id').value;
             const fd = new FormData(document.getElementById('form-edit'));

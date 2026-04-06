@@ -374,7 +374,10 @@ $vm_bg_video = isset($profil) && $profil && !empty($profil->isimisi_bg_video) ? 
                                 class="absolute inset-0 img-overlay opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end p-6">
                                 <div>
                                     <p class="text-white font-semibold text-base mb-1"><?= $foto->judul ?></p>
-                                    <?php if ($foto->kategori): ?>
+                                    <?php if (!empty($foto->label)): ?>
+                                        <span
+                                            class="bg-kuning-500/90 text-hijau-950 text-xs font-semibold px-3 py-1 rounded-full"><?= htmlspecialchars($foto->label, ENT_QUOTES) ?></span>
+                                    <?php elseif ($foto->kategori): ?>
                                         <span
                                             class="bg-kuning-500/90 text-hijau-950 text-xs font-semibold px-3 py-1 rounded-full"><?= ucfirst($foto->kategori) ?></span>
                                     <?php endif; ?>
@@ -435,6 +438,7 @@ $vm_bg_video = isset($profil) && $profil && !empty($profil->isimisi_bg_video) ? 
         <?php if (!empty($ekskul)): ?>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 stagger-parent">
                 <?php foreach ($ekskul as $idx => $item): ?>
+                    <?php $ekskul_slug = !empty($item->slug) ? $item->slug : ('ekskul-' . (int) $item->id); ?>
                     <div class="stagger-child group">
                         <div class="bg-white rounded-3xl overflow-hidden border border-gray-100/80 shadow-sm card-hover h-full">
                             <!-- Image or gradient header -->
@@ -482,6 +486,13 @@ $vm_bg_video = isset($profil) && $profil && !empty($profil->isimisi_bg_video) ? 
                                         <?php endif; ?>
                                     </div>
                                 <?php endif; ?>
+
+                                <div class="pt-4">
+                                    <a href="<?= base_url('ekskul/' . rawurlencode($ekskul_slug)) ?>" class="inline-flex items-center gap-2 text-sm font-semibold text-hijau-700 hover:text-hijau-900 transition-colors">
+                                        Lihat Detail
+                                        <i data-feather="arrow-right" class="w-4 h-4"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -578,20 +589,29 @@ $vm_bg_video = isset($profil) && $profil && !empty($profil->isimisi_bg_video) ? 
         <?php endif; ?>
     </div>
 
-    <!-- Wave ke section berikutnya (PPDB hijau-900 atau footer hijau-950) -->
-    <?php $wave_fill = !empty($ppdb) ? '#1a4731' : '#052e16'; ?>
-    <div class="wave-divider wave-bottom" style="z-index:10; margin-top:80px;">
-        <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;">
-            <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z" fill="<?= $wave_fill ?>" />
-        </svg>
-    </div>
+    <!-- Wave ke footer bila PPDB tidak tampil -->
+    <?php if (empty($ppdb)): ?>
+        <div class="wave-divider wave-bottom" style="z-index:10;">
+            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;">
+                <path d="M0,62 C240,76 480,48 720,62 C960,76 1200,48 1440,62 L1440,80 L0,80 Z" fill="#052e16" />
+            </svg>
+        </div>
+    <?php endif; ?>
 </section>
 
 <!-- ============================================================ -->
 <!-- PPDB SECTION (CTA Banner) -->
 <!-- ============================================================ -->
 <?php if (!empty($ppdb)): ?>
-    <section id="ppdb" class="pt-24 md:pt-32 pb-0 relative overflow-hidden grain">
+    <!-- Dedicated transition wave to avoid top clipping -->
+    <div class="relative h-16 md:h-20 -mb-px bg-hijau-900 overflow-hidden" style="z-index:12;">
+        <svg class="absolute left-1/2 top-0 -translate-x-1/2 block w-[calc(100%+24px)] min-w-full h-full"
+            viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M0,0 L1440,0 L1440,70 C1200,108 960,24 720,70 C480,108 240,24 0,70 Z" fill="#f9fafb" />
+        </svg>
+    </div>
+    <section id="ppdb" class="pt-16 md:pt-20 pb-24 md:pb-32 relative overflow-hidden grain">
+
         <!-- Solid background -->
         <div class="absolute inset-0 bg-hijau-900"></div>
         <div class="absolute inset-0 pattern-bg opacity-15"></div>
@@ -612,7 +632,7 @@ $vm_bg_video = isset($profil) && $profil && !empty($profil->isimisi_bg_video) ? 
             </svg>
         </div>
 
-        <div class="container mx-auto px-4 lg:px-8 relative z-10">
+        <div class="container mx-auto px-4 lg:px-8 relative z-20">
             <div class="max-w-4xl mx-auto text-center reveal">
                 <div
                     class="inline-flex items-center gap-2 bg-kuning-400/10 border border-kuning-400/20 text-kuning-300 px-5 py-2 rounded-full text-sm font-medium mb-10">
@@ -678,9 +698,9 @@ $vm_bg_video = isset($profil) && $profil && !empty($profil->isimisi_bg_video) ? 
         </div>
 
         <!-- Wave bottom to footer -->
-        <div class="wave-divider wave-bottom" style="z-index:10; margin-top:80px;">
+        <div class="wave-divider wave-bottom" style="z-index:5;">
             <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;">
-                <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z" fill="#052e16" />
+                <path d="M0,62 C240,76 480,48 720,62 C960,76 1200,48 1440,62 L1440,80 L0,80 Z" fill="#052e16" />
             </svg>
         </div>
     </section>

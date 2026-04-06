@@ -1,4 +1,8 @@
-<?php $p = $profil; ?>
+<?php
+$p = $profil;
+$permission_codes = isset($permission_codes) && is_array($permission_codes) ? $permission_codes : [];
+$can_edit = in_array('profil.edit', $permission_codes, true);
+?>
 <div class="max-w-4xl space-y-6">
     <!-- ============================================================ -->
     <!-- PROFIL YAYASAN -->
@@ -123,12 +127,14 @@
             </div>
         </div>
 
-        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end">
-            <button onclick="simpan()" class="inline-flex items-center gap-2 bg-hijau-800 text-white px-8 py-2.5 rounded-xl text-sm font-bold hover:bg-hijau-700 transition-colors shadow-sm">
-                <i data-feather="save" class="w-4 h-4"></i>
-                Simpan Perubahan
-            </button>
-        </div>
+        <?php if ($can_edit): ?>
+            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end">
+                <button onclick="simpan()" class="inline-flex items-center gap-2 bg-hijau-800 text-white px-8 py-2.5 rounded-xl text-sm font-bold hover:bg-hijau-700 transition-colors shadow-sm">
+                    <i data-feather="save" class="w-4 h-4"></i>
+                    Simpan Perubahan
+                </button>
+            </div>
+        <?php endif; ?>
     </div>
 
     <!-- ============================================================ -->
@@ -205,17 +211,21 @@
             </div>
         </div>
 
-        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end">
-            <button onclick="simpan()" class="inline-flex items-center gap-2 bg-hijau-800 text-white px-8 py-2.5 rounded-xl text-sm font-bold hover:bg-hijau-700 transition-colors shadow-sm">
-                <i data-feather="save" class="w-4 h-4"></i>
-                Simpan Semua
-            </button>
-        </div>
+        <?php if ($can_edit): ?>
+            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end">
+                <button onclick="simpan()" class="inline-flex items-center gap-2 bg-hijau-800 text-white px-8 py-2.5 rounded-xl text-sm font-bold hover:bg-hijau-700 transition-colors shadow-sm">
+                    <i data-feather="save" class="w-4 h-4"></i>
+                    Simpan Semua
+                </button>
+            </div>
+        <?php endif; ?>
     </div>
 
 </div>
 
 <script>
+    const canEditProfil = <?= $can_edit ? 'true' : 'false' ?>;
+
     function updateHeroPreview() {
         const color = document.getElementById('f-hero-color').value;
         const opacity = document.getElementById('f-hero-opacity').value / 100;
@@ -230,6 +240,10 @@
     }
 
     async function simpan() {
+        if (!canEditProfil) {
+            showToast('Anda tidak punya izin edit profil yayasan.', 'error');
+            return;
+        }
         const nama = document.getElementById('f-nama').value.trim();
         if (!nama) {
             showToast('Nama yayasan wajib diisi', 'error');

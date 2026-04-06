@@ -124,45 +124,159 @@
         }
 
         /* ============================================================
-           NAVBAR — Transparent by default, solid on scroll
+           NAVBAR STATES (Top vs Scrolled/Floating)
            ============================================================ */
         #navbar {
-            transition: background-color 0.4s ease,
-                box-shadow 0.4s ease,
-                backdrop-filter 0.4s ease;
+            padding-top: 0;
+            transition: padding 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #navbar-wrap {
+            transition: padding 0.45s ease, max-width 0.45s ease;
+        }
+
+        /* State awal: navbar mentok kiri-kanan viewport */
+        #navbar:not(.scrolled) #navbar-wrap {
+            max-width: 100%;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        #navbar-shell {
+            position: relative;
+            border-radius: 0;
+            border: 1px solid transparent;
+            background: linear-gradient(180deg, rgba(5, 46, 22, 0.72) 0%, rgba(5, 46, 22, 0.52) 100%);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                border-radius 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.45s ease,
+                border-color 0.45s ease,
+                box-shadow 0.45s ease,
+                margin 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+
+        #navbar-shell::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -45%;
+            width: 35%;
+            height: 100%;
+            background: linear-gradient(110deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.36) 50%,
+                    transparent 100%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
         }
 
         #navbar.scrolled {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            box-shadow: 0 1px 40px rgba(5, 46, 22, 0.08);
+            padding-top: 12px;
         }
 
-        /* Nav link: white by default, dark when scrolled */
+        /* State scroll: navbar dibuat lebih compact */
+        #navbar.scrolled #navbar-wrap {
+            max-width: min(1380px, calc(100vw - 104px));
+            padding-left: 6px;
+            padding-right: 6px;
+        }
+
+        #navbar.scrolled #navbar-shell {
+            margin: 0;
+            border-radius: 20px;
+            border-color: rgba(255, 255, 255, 0.24);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(245, 255, 250, 0.93) 100%);
+            box-shadow: 0 16px 36px rgba(5, 46, 22, 0.18);
+            transform: translateY(0) scale(0.998);
+        }
+
+        #navbar.scrolled #navbar-shell::after {
+            opacity: 1;
+            animation: navSweep 1.1s ease;
+        }
+
+        @keyframes navSweep {
+            0% {
+                left: -45%;
+            }
+
+            100% {
+                left: 120%;
+            }
+        }
+
+        /* Nav link: light on top, dark when scrolled */
         .nav-link-front {
-            color: rgba(255, 255, 255, 0.85);
+            color: rgba(255, 255, 255, 0.9);
             transition: color 0.4s ease, background-color 0.3s ease;
         }
+
         .nav-link-front:hover {
             color: #ffffff;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.12);
         }
+
         #navbar.scrolled .nav-link-front {
-            color: rgba(20, 83, 45, 0.8);
+            color: rgba(20, 83, 45, 0.82);
         }
+
         #navbar.scrolled .nav-link-front:hover {
             color: #14532d;
             background: #f0fdf4;
         }
+
         /* Logo text color transition */
-        .logo-name { color: #ffffff; transition: color 0.4s ease; }
-        .logo-subtitle { color: rgba(255,255,255,0.6); transition: color 0.4s ease; }
-        #navbar.scrolled .logo-name { color: #14532d; }
-        #navbar.scrolled .logo-subtitle { color: rgba(21,128,61,0.7); }
+        .logo-name {
+            color: #ffffff;
+            transition: color 0.4s ease;
+        }
+
+        .logo-subtitle {
+            color: rgba(255, 255, 255, 0.66);
+            transition: color 0.4s ease;
+        }
+
+        #navbar.scrolled .logo-name {
+            color: #14532d;
+        }
+
+        #navbar.scrolled .logo-subtitle {
+            color: rgba(21, 128, 61, 0.72);
+        }
+
+        /* CTA button transitions between states */
+        #nav-cta-btn {
+            background: rgba(250, 204, 21, 0.95);
+            color: #052e16;
+            box-shadow: 0 10px 24px rgba(250, 204, 21, 0.26);
+            transition: background-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        #nav-cta-btn:hover {
+            background: #fde047;
+        }
+
+        #navbar.scrolled #nav-cta-btn {
+            background: #14532d;
+            color: #ffffff;
+            box-shadow: 0 10px 24px rgba(20, 83, 45, 0.28);
+        }
+
+        #navbar.scrolled #nav-cta-btn:hover {
+            background: #166534;
+        }
+
         /* Nav indicator */
-        .nav-link-front .nav-indicator { background: linear-gradient(to right, #facc15, #eab308); }
-        #navbar.scrolled .nav-link-front .nav-indicator { background: linear-gradient(to right, #166534, #eab308); }
+        .nav-link-front .nav-indicator {
+            background: linear-gradient(to right, #facc15, #eab308);
+        }
+
+        #navbar.scrolled .nav-link-front .nav-indicator {
+            background: linear-gradient(to right, #166534, #eab308);
+        }
 
         /* ============================================================
            SECTION REVEAL BASE STATES
@@ -372,26 +486,33 @@
            ============================================================ */
         .wave-divider {
             position: absolute;
-            left: 0;
-            right: 0;
-            width: 100%;
-            overflow: hidden;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100vw;
+            min-width: 100%;
+            overflow: visible;
             line-height: 0;
+            pointer-events: none;
+            z-index: 6;
         }
 
         .wave-divider svg {
             display: block;
-            width: 100%;
+            /* Bigger overscan to prevent edge clipping on any zoom/device */
+            width: calc(100% + 24px);
+            margin-left: -12px;
             height: auto;
             min-height: 60px;
+            transform: translateZ(0);
+            shape-rendering: geometricPrecision;
         }
 
         .wave-bottom {
-            bottom: -1px;
+            bottom: -4px;
         }
 
         .wave-top {
-            top: -1px;
+            top: -4px;
         }
 
         /* ============================================================
@@ -504,76 +625,78 @@
     <!-- NAVBAR -->
     <!-- ============================================================ -->
     <nav id="navbar" class="fixed top-0 left-0 right-0 z-50">
-        <div class="container mx-auto px-4 lg:px-8">
-            <div class="flex items-center justify-between h-16 lg:h-20">
-                <!-- Logo -->
-                <a href="<?= base_url() ?>" class="flex items-center gap-3 group">
-                    <?php if (isset($profil) && $profil && $profil->logo): ?>
-                        <img src="<?= base_url('assets/images/uploads/profil/' . $profil->logo) ?>" alt="Logo"
-                            class="h-10 w-10 object-contain">
-                    <?php else: ?>
-                        <div
-                            class="w-10 h-10 bg-hijau-800 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-hijau-800/30 transition-shadow">
-                            <span class="text-white font-arabic text-lg font-bold">ر</span>
+        <div id="navbar-wrap" class="container mx-auto px-4 lg:px-8">
+            <div id="navbar-shell">
+                <div class="flex items-center justify-between h-16 lg:h-20 px-3 lg:px-5">
+                    <!-- Logo -->
+                    <a href="<?= base_url() ?>" class="flex items-center gap-3 group">
+                        <?php if (isset($profil) && $profil && $profil->logo): ?>
+                            <img src="<?= base_url('assets/images/uploads/profil/' . $profil->logo) ?>" alt="Logo"
+                                class="h-10 w-10 object-contain">
+                        <?php else: ?>
+                            <div
+                                class="w-10 h-10 bg-hijau-800 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-hijau-800/30 transition-shadow">
+                                <span class="text-white font-arabic text-lg font-bold">ر</span>
+                            </div>
+                        <?php endif; ?>
+                        <div>
+                            <div class="logo-name font-display font-bold text-sm leading-tight">
+                                <?= isset($profil) && $profil ? $profil->nama_yayasan : 'Yayasan Ar-Razaq' ?>
+                            </div>
+                            <div class="logo-subtitle text-xs font-medium">Pesantren Modern</div>
                         </div>
-                    <?php endif; ?>
-                    <div>
-                        <div class="logo-name font-display font-bold text-sm leading-tight">
-                            <?= isset($profil) && $profil ? $profil->nama_yayasan : 'Yayasan Ar-Razaq' ?>
-                        </div>
-                        <div class="logo-subtitle text-xs font-medium">Pesantren Modern</div>
-                    </div>
-                </a>
-
-                <!-- Desktop Nav -->
-                <div class="hidden lg:flex items-center gap-1">
-                    <?php
-                    $current_url = current_url();
-                    $nav_items = [
-                        ['url' => base_url(), 'label' => 'Beranda'],
-                        ['url' => base_url() . '#sejarah', 'label' => 'Profil'],
-                        ['url' => base_url('galeri'), 'label' => 'Galeri'],
-                        ['url' => base_url('ekskul'), 'label' => 'Ekskul'],
-                        ['url' => base_url('berita'), 'label' => 'Berita'],
-                        ['url' => base_url('ppdb'), 'label' => 'PPDB'],
-                    ];
-                    foreach ($nav_items as $item):
-                        ?>
-                        <a href="<?= $item['url'] ?>"
-                            class="nav-link-front px-4 py-2 rounded-xl text-sm font-semibold relative group">
-                            <?= $item['label'] ?>
-                            <span
-                                class="nav-indicator absolute bottom-1 left-4 right-4 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left rounded-full"></span>
-                        </a>
-                    <?php endforeach; ?>
-                    <a href="<?= base_url('ppdb') ?>" id="nav-cta-btn"
-                        class="magnetic-btn ml-3 bg-hijau-800 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg hover:shadow-hijau-800/25 transition-all duration-500 hover:-translate-y-0.5">
-                        Daftar Santri
                     </a>
+
+                    <!-- Desktop Nav -->
+                    <div class="hidden lg:flex items-center gap-1">
+                        <?php
+                        $current_url = current_url();
+                        $nav_items = [
+                            ['url' => base_url(), 'label' => 'Beranda'],
+                            ['url' => base_url() . '#sejarah', 'label' => 'Profil'],
+                            ['url' => base_url('galeri'), 'label' => 'Galeri'],
+                            ['url' => base_url('ekskul'), 'label' => 'Ekskul'],
+                            ['url' => base_url('berita'), 'label' => 'Berita'],
+                            ['url' => base_url('ppdb'), 'label' => 'PPDB'],
+                        ];
+                        foreach ($nav_items as $item):
+                            ?>
+                            <a href="<?= $item['url'] ?>"
+                                class="nav-link-front px-4 py-2 rounded-xl text-sm font-semibold relative group">
+                                <?= $item['label'] ?>
+                                <span
+                                    class="nav-indicator absolute bottom-1 left-4 right-4 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left rounded-full"></span>
+                            </a>
+                        <?php endforeach; ?>
+                        <a href="<?= base_url('ppdb') ?>" id="nav-cta-btn"
+                            class="magnetic-btn ml-3 px-6 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg transition-all duration-500 hover:-translate-y-0.5">
+                            Daftar Santri
+                        </a>
+                    </div>
+
+                    <!-- Mobile Toggle -->
+                    <button id="menu-toggle"
+                        class="lg:hidden p-2 rounded-xl text-white hover:bg-white/10 transition-colors" aria-label="Menu">
+                        <i data-feather="menu" class="w-6 h-6"></i>
+                    </button>
                 </div>
 
-                <!-- Mobile Toggle -->
-                <button id="menu-toggle"
-                    class="lg:hidden p-2 rounded-xl text-white hover:bg-white/10 transition-colors" aria-label="Menu">
-                    <i data-feather="menu" class="w-6 h-6"></i>
-                </button>
-            </div>
-
-            <!-- Mobile Menu -->
-            <div id="mobile-menu"
-                class="lg:hidden bg-white/95 backdrop-blur-xl border-t border-hijau-100/50 rounded-b-2xl">
-                <div class="py-4 space-y-1">
-                    <?php foreach ($nav_items as $item): ?>
-                        <a href="<?= $item['url'] ?>"
-                            class="block px-4 py-3 text-sm font-semibold text-hijau-900 hover:bg-hijau-50 rounded-xl mx-2 transition-colors">
-                            <?= $item['label'] ?>
-                        </a>
-                    <?php endforeach; ?>
-                    <div class="px-2 pt-2">
-                        <a href="<?= base_url('ppdb') ?>"
-                            class="block text-center bg-hijau-800 text-white px-4 py-3 rounded-xl text-sm font-bold">
-                            Daftar Santri Baru
-                        </a>
+                <!-- Mobile Menu -->
+                <div id="mobile-menu"
+                    class="lg:hidden bg-white/95 backdrop-blur-xl border-t border-hijau-100/50 rounded-b-2xl">
+                    <div class="py-4 space-y-1">
+                        <?php foreach ($nav_items as $item): ?>
+                            <a href="<?= $item['url'] ?>"
+                                class="block px-4 py-3 text-sm font-semibold text-hijau-900 hover:bg-hijau-50 rounded-xl mx-2 transition-colors">
+                                <?= $item['label'] ?>
+                            </a>
+                        <?php endforeach; ?>
+                        <div class="px-2 pt-2">
+                            <a href="<?= base_url('ppdb') ?>"
+                                class="block text-center bg-hijau-800 text-white px-4 py-3 rounded-xl text-sm font-bold">
+                                Daftar Santri Baru
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

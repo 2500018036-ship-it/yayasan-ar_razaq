@@ -1,4 +1,17 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
+<?php
+$filter_items = [];
+if (!empty($labels)) {
+    foreach ($labels as $lb) {
+        if (!empty($lb->label)) $filter_items[] = trim((string) $lb->label);
+    }
+} elseif (!empty($kategori)) {
+    foreach ($kategori as $kat) {
+        if (!empty($kat->kategori)) $filter_items[] = trim((string) $kat->kategori);
+    }
+}
+$filter_items = array_values(array_unique(array_filter($filter_items)));
+?>
 
 <!-- ============================================================ -->
 <!-- PAGE HERO BANNER -->
@@ -28,17 +41,18 @@
 <!-- ============================================================ -->
 <section class="py-20 md:py-28 bg-white relative overflow-hidden">
     <div class="container mx-auto px-4 lg:px-8 relative z-10">
-        <!-- Category Filter -->
-        <?php if (!empty($kategori)): ?>
+        <!-- Filter -->
+        <?php if (!empty($filter_items)): ?>
         <div class="flex flex-wrap justify-center gap-3 mb-14 reveal">
             <button class="galeri-filter active px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 bg-hijau-800 text-white shadow-lg shadow-hijau-800/20" data-filter="all">
                 Semua
             </button>
-            <?php foreach ($kategori as $kat): if (!empty($kat->kategori)): ?>
-                <button class="galeri-filter px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 bg-gray-100 text-gray-600 hover:bg-hijau-50 hover:text-hijau-800" data-filter="<?= $kat->kategori ?>">
-                    <?= ucfirst($kat->kategori) ?>
+            <?php foreach ($filter_items as $f): ?>
+                <?php $f_key = strtolower(trim($f)); ?>
+                <button class="galeri-filter px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 bg-gray-100 text-gray-600 hover:bg-hijau-50 hover:text-hijau-800" data-filter="<?= htmlspecialchars($f_key, ENT_QUOTES) ?>">
+                    <?= htmlspecialchars(ucfirst($f), ENT_QUOTES) ?>
                 </button>
-            <?php endif; endforeach; ?>
+            <?php endforeach; ?>
         </div>
         <?php endif; ?>
 
@@ -46,8 +60,9 @@
         <?php if (!empty($galeri)): ?>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 stagger-parent" id="galeri-grid">
             <?php foreach ($galeri as $idx => $foto): ?>
+                <?php $filter_value = strtolower(trim(!empty($foto->label) ? $foto->label : (string) $foto->kategori)); ?>
                 <div class="stagger-child galeri-item group relative rounded-2xl overflow-hidden bg-hijau-100 cursor-pointer aspect-square shadow-sm hover:shadow-xl hover:shadow-hijau-900/10 transition-shadow duration-500"
-                    data-kategori="<?= $foto->kategori ?>"
+                    data-filter-value="<?= htmlspecialchars($filter_value, ENT_QUOTES) ?>"
                     onclick="openLightbox('<?= base_url('assets/images/uploads/galeri/' . $foto->gambar) ?>', '<?= htmlspecialchars($foto->judul, ENT_QUOTES) ?>')">
                     <?php if ($foto->gambar && strpos($foto->gambar, 'placeholder') === false): ?>
                         <img src="<?= base_url('assets/images/uploads/galeri/' . $foto->gambar) ?>" alt="<?= $foto->judul ?>"
@@ -61,7 +76,9 @@
                     <div class="absolute inset-0 img-overlay opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end p-5">
                         <div>
                             <p class="text-white font-semibold text-sm mb-1.5"><?= $foto->judul ?></p>
-                            <?php if ($foto->kategori): ?>
+                            <?php if (!empty($foto->label)): ?>
+                                <span class="bg-kuning-500/90 text-hijau-950 text-xs font-semibold px-3 py-1 rounded-full"><?= htmlspecialchars($foto->label, ENT_QUOTES) ?></span>
+                            <?php elseif ($foto->kategori): ?>
                                 <span class="bg-kuning-500/90 text-hijau-950 text-xs font-semibold px-3 py-1 rounded-full"><?= ucfirst($foto->kategori) ?></span>
                             <?php endif; ?>
                         </div>
@@ -113,7 +130,7 @@
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-    // Category filter
+    // Filter by label (fallback kategori)
     document.querySelectorAll('.galeri-filter').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.galeri-filter').forEach(b => {
@@ -123,9 +140,10 @@
             this.classList.remove('bg-gray-100', 'text-gray-600');
             this.classList.add('bg-hijau-800', 'text-white', 'shadow-lg', 'shadow-hijau-800/20', 'active');
 
-            const filter = this.dataset.filter;
+            const filter = (this.dataset.filter || '').toLowerCase();
             document.querySelectorAll('.galeri-item').forEach(item => {
-                if (filter === 'all' || item.dataset.kategori === filter) {
+                const itemKey = (item.dataset.filterValue || '').toLowerCase();
+                if (filter === 'all' || itemKey === filter) {
                     item.style.display = '';
                     gsap.fromTo(item, { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'power2.out' });
                 } else {

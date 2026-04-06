@@ -15,6 +15,7 @@ $route['sejarah']          = 'Frontend/sejarah';
 $route['visi-misi']        = 'Frontend/visi_misi';
 $route['galeri']           = 'Frontend/galeri';
 $route['ekskul']           = 'Frontend/ekskul';
+$route['ekskul/(:any)']    = 'Frontend/detail_ekskul/$1';
 $route['berita']           = 'Frontend/berita';
 $route['berita/(:any)']    = 'Frontend/detail_berita/$1';
 $route['ppdb']             = 'Frontend/ppdb';
@@ -54,9 +55,13 @@ $route['panel-admin/visi-misi/get/(:num)']       = 'Admin/visi_misi_get/$1';
 // Admin - Galeri
 $route['panel-admin/galeri']                = 'Admin/galeri';
 $route['panel-admin/galeri/store']          = 'Admin/galeri_store';
+$route['panel-admin/galeri-store']          = 'Admin/galeri_store'; // alias used by view
 $route['panel-admin/galeri/update/(:num)']  = 'Admin/galeri_update/$1';
+$route['panel-admin/galeri-update/(:num)']  = 'Admin/galeri_update/$1'; // alias used by view
 $route['panel-admin/galeri/delete/(:num)']  = 'Admin/galeri_delete/$1';
+$route['panel-admin/galeri-delete/(:num)']  = 'Admin/galeri_delete/$1'; // alias used by view
 $route['panel-admin/galeri/get/(:num)']     = 'Admin/galeri_get/$1';
+$route['panel-admin/galeri-get/(:num)']     = 'Admin/galeri_get/$1'; // alias used by view
 
 // Admin - Ekskul
 $route['panel-admin/ekskul']                = 'Admin/ekskul';
@@ -95,3 +100,13 @@ $route['panel-admin/statistik/get/(:num)']     = 'Admin/statistik_get/$1';
 $route['panel-admin/akun']              = 'Admin/akun';
 $route['panel-admin/akun/update']       = 'Admin/akun_update';
 
+// Admin - Setting (Role, Permission, Admin User)
+$route['panel-admin/setting']                      = 'Admin/setting';
+$route['panel-admin/setting/role/get/(:num)']     = 'Admin/setting_role_get/$1';
+$route['panel-admin/setting/role/store']           = 'Admin/setting_role_store';
+$route['panel-admin/setting/role/update/(:num)']  = 'Admin/setting_role_update/$1';
+$route['panel-admin/setting/role/delete/(:num)']  = 'Admin/setting_role_delete/$1';
+$route['panel-admin/setting/user/get/(:num)']     = 'Admin/setting_user_get/$1';
+$route['panel-admin/setting/user/store']           = 'Admin/setting_user_store';
+$route['panel-admin/setting/user/update/(:num)']  = 'Admin/setting_user_update/$1';
+$route['panel-admin/setting/user/delete/(:num)']  = 'Admin/setting_user_delete/$1';

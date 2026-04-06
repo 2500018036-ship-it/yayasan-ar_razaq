@@ -8,6 +8,7 @@ class Frontend extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Main_model', 'model');
+        $this->model->ensure_content_schema();
     }
 
     private function _get_base_data()
@@ -73,6 +74,7 @@ class Frontend extends CI_Controller
         $data['title']      = 'Galeri';
         $data['galeri']     = $this->model->get_galeri_aktif();
         $data['kategori']   = $this->model->get_kategori_galeri();
+        $data['labels']     = $this->model->get_label_galeri(true);
         $this->load->view('templates/header', $data);
         $this->load->view('frontend/galeri', $data);
         $this->load->view('templates/footer', $data);
@@ -85,6 +87,20 @@ class Frontend extends CI_Controller
         $data['ekskul'] = $this->model->get_ekskul_aktif();
         $this->load->view('templates/header', $data);
         $this->load->view('frontend/ekskul', $data);
+        $this->load->view('templates/footer', $data);
+    }
+
+    public function detail_ekskul($slug)
+    {
+        $item = $this->model->get_ekskul_by_slug(urldecode($slug));
+        if (!$item) show_404();
+
+        $data = $this->_get_base_data();
+        $data['title'] = $item->nama;
+        $data['ekskul_item'] = $item;
+        $data['ekskul_lainnya'] = $this->model->get_ekskul_lainnya((int) $item->id, 3);
+        $this->load->view('templates/header', $data);
+        $this->load->view('frontend/detail_ekskul', $data);
         $this->load->view('templates/footer', $data);
     }
 

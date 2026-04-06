@@ -1,4 +1,10 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
+<?php
+$permission_codes = isset($permission_codes) && is_array($permission_codes) ? $permission_codes : [];
+$can_create = in_array('visi_misi.create', $permission_codes, true);
+$can_edit = in_array('visi_misi.edit', $permission_codes, true);
+$can_delete = in_array('visi_misi.delete', $permission_codes, true);
+?>
 
 <div class="space-y-6">
 
@@ -63,12 +69,14 @@
             </div>
         </div>
 
-        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end">
-            <button onclick="simpanBackground()" class="inline-flex items-center gap-2 bg-hijau-800 text-white px-8 py-2.5 rounded-xl text-sm font-bold hover:bg-hijau-700 transition-colors shadow-sm">
-                <i data-feather="save" class="w-4 h-4"></i>
-                Simpan Background
-            </button>
-        </div>
+        <?php if ($can_edit): ?>
+            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end">
+                <button onclick="simpanBackground()" class="inline-flex items-center gap-2 bg-hijau-800 text-white px-8 py-2.5 rounded-xl text-sm font-bold hover:bg-hijau-700 transition-colors shadow-sm">
+                    <i data-feather="save" class="w-4 h-4"></i>
+                    Simpan Background
+                </button>
+            </div>
+        <?php endif; ?>
     </div>
 
     <!-- ============================================================ -->
@@ -79,10 +87,12 @@
             <h2 class="text-lg font-bold text-gray-900">Data Visi & Misi</h2>
             <p class="text-sm text-gray-500">Kelola konten visi, misi, dan nilai-nilai yayasan</p>
         </div>
-        <button onclick="openAddModal()" class="btn btn-primary">
-            <i data-feather="plus" class="w-4 h-4"></i>
-            Tambah Data
-        </button>
+        <?php if ($can_create): ?>
+            <button onclick="openAddModal()" class="btn btn-primary">
+                <i data-feather="plus" class="w-4 h-4"></i>
+                Tambah Data
+            </button>
+        <?php endif; ?>
     </div>
 
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -124,14 +134,20 @@
                                     </span>
                                 </td>
                                 <td class="text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <button onclick="editItem(<?= $item->id ?>)" class="btn btn-ghost" style="padding:6px 10px;">
-                                            <i data-feather="edit-2" class="w-3.5 h-3.5"></i>
-                                        </button>
-                                        <button onclick="confirmDelete('<?= base_url('panel-admin/visi-misi/delete/' . $item->id) ?>', '<?= htmlspecialchars($item->judul) ?>')" class="btn btn-danger" style="padding:6px 10px;">
-                                            <i data-feather="trash-2" class="w-3.5 h-3.5"></i>
-                                        </button>
-                                    </div>
+                                    <?php if ($can_edit || $can_delete): ?>
+                                        <div class="flex items-center justify-end gap-2">
+                                            <?php if ($can_edit): ?>
+                                                <button onclick="editItem(<?= $item->id ?>)" class="btn btn-ghost" style="padding:6px 10px;">
+                                                    <i data-feather="edit-2" class="w-3.5 h-3.5"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                            <?php if ($can_delete): ?>
+                                                <button onclick="confirmDelete('<?= base_url('panel-admin/visi-misi/delete/' . $item->id) ?>', '<?= htmlspecialchars($item->judul) ?>')" class="btn btn-danger" style="padding:6px 10px;">
+                                                    <i data-feather="trash-2" class="w-3.5 h-3.5"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -202,10 +218,12 @@
 
             <div class="flex justify-end gap-3 pt-2">
                 <button type="button" onclick="closeModal('modal-vm')" class="btn btn-ghost">Batal</button>
-                <button type="submit" class="btn btn-primary">
-                    <i data-feather="save" class="w-4 h-4"></i>
-                    Simpan
-                </button>
+                <?php if ($can_create || $can_edit): ?>
+                    <button type="submit" class="btn btn-primary">
+                        <i data-feather="save" class="w-4 h-4"></i>
+                        Simpan
+                    </button>
+                <?php endif; ?>
             </div>
         </form>
     </div>

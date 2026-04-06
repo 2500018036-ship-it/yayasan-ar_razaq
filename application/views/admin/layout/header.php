@@ -438,19 +438,28 @@
     <?php
     $current_uri = uri_string();
     $admin_nama  = $this->session->userdata('admin_nama') ?: 'Admin';
+    $admin_role  = $this->session->userdata('admin_role_name') ?: 'Tanpa Role';
+    $admin_foto  = $this->session->userdata('admin_foto');
     $admin_inisial = strtoupper(substr($admin_nama, 0, 1));
+    $permission_codes = isset($permission_codes) && is_array($permission_codes)
+        ? $permission_codes
+        : ((array) $this->session->userdata('admin_permissions'));
+    $can = function ($perm) use ($permission_codes) {
+        return in_array($perm, $permission_codes, true);
+    };
 
     $nav_items = [
-        ['uri' => 'panel-admin/dashboard',  'label' => 'Dashboard',       'icon' => 'grid'],
-        ['uri' => 'panel-admin/profil',     'label' => 'Profil Yayasan',  'icon' => 'settings'],
-        ['uri' => 'panel-admin/statistik',  'label' => 'Statistik',       'icon' => 'bar-chart-2'],
-        ['uri' => 'panel-admin/sejarah',    'label' => 'Sejarah',         'icon' => 'clock'],
-        ['uri' => 'panel-admin/visi-misi',  'label' => 'Visi & Misi',     'icon' => 'eye'],
-        ['uri' => 'panel-admin/galeri',     'label' => 'Galeri',          'icon' => 'image'],
-        ['uri' => 'panel-admin/ekskul',     'label' => 'Ekstrakurikuler', 'icon' => 'star'],
-        ['uri' => 'panel-admin/berita',     'label' => 'Berita',          'icon' => 'file-text'],
-        ['uri' => 'panel-admin/ppdb',       'label' => 'PPDB',            'icon' => 'user-plus'],
-        ['uri' => 'panel-admin/akun',       'label' => 'Akun Saya',      'icon' => 'user'],
+        ['uri' => 'panel-admin/dashboard',  'label' => 'Dashboard',       'icon' => 'grid', 'perm' => 'dashboard.view'],
+        ['uri' => 'panel-admin/profil',     'label' => 'Profil Yayasan',  'icon' => 'settings', 'perm' => 'profil.view'],
+        ['uri' => 'panel-admin/statistik',  'label' => 'Statistik',       'icon' => 'bar-chart-2', 'perm' => 'statistik.view'],
+        ['uri' => 'panel-admin/sejarah',    'label' => 'Sejarah',         'icon' => 'clock', 'perm' => 'sejarah.view'],
+        ['uri' => 'panel-admin/visi-misi',  'label' => 'Visi & Misi',     'icon' => 'eye', 'perm' => 'visi_misi.view'],
+        ['uri' => 'panel-admin/galeri',     'label' => 'Galeri',          'icon' => 'image', 'perm' => 'galeri.view'],
+        ['uri' => 'panel-admin/ekskul',     'label' => 'Ekstrakurikuler', 'icon' => 'star', 'perm' => 'ekskul.view'],
+        ['uri' => 'panel-admin/berita',     'label' => 'Berita',          'icon' => 'file-text', 'perm' => 'berita.view'],
+        ['uri' => 'panel-admin/ppdb',       'label' => 'PPDB',            'icon' => 'user-plus', 'perm' => 'ppdb.view'],
+        ['uri' => 'panel-admin/setting',    'label' => 'Setting',         'icon' => 'shield', 'perm' => 'setting.view'],
+        ['uri' => 'panel-admin/akun',       'label' => 'Akun Saya',       'icon' => 'user', 'perm' => 'akun.view'],
     ];
     ?>
 
@@ -475,6 +484,7 @@
             <!-- Nav -->
             <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
                 <?php foreach ($nav_items as $item):
+                    if (isset($item['perm']) && !$can($item['perm'])) continue;
                     $is_active = strpos($current_uri, $item['uri']) !== false;
                 ?>
                     <a href="<?= base_url($item['uri']) ?>" class="nav-link <?= $is_active ? 'active' : '' ?>" title="<?= $item['label'] ?>">
@@ -487,12 +497,16 @@
             <!-- User + Logout -->
             <div class="px-3 pb-4 pt-2 border-t border-white/[0.06]">
                 <div class="flex items-center gap-2.5 px-2 py-3 mb-1">
-                    <div class="w-8 h-8 bg-kuning-500 rounded-lg flex items-center justify-center text-hijau-950 font-bold text-xs flex-shrink-0">
-                        <?= $admin_inisial ?>
-                    </div>
+                    <?php if (!empty($admin_foto)): ?>
+                        <img src="<?= base_url('assets/images/uploads/admin/' . $admin_foto) ?>?v=<?= time() ?>" alt="<?= htmlspecialchars($admin_nama, ENT_QUOTES, 'UTF-8') ?>" class="w-8 h-8 rounded-lg object-cover border border-kuning-500/40 flex-shrink-0">
+                    <?php else: ?>
+                        <div class="w-8 h-8 bg-kuning-500 rounded-lg flex items-center justify-center text-hijau-950 font-bold text-xs flex-shrink-0">
+                            <?= $admin_inisial ?>
+                        </div>
+                    <?php endif; ?>
                     <div class="min-w-0 sidebar-user-info">
                         <div class="text-white text-xs font-semibold truncate"><?= $admin_nama ?></div>
-                        <div class="text-hijau-400/40 text-[10px]">Administrator</div>
+                        <div class="text-hijau-400/40 text-[10px]"><?= $admin_role ?></div>
                     </div>
                 </div>
                 <a href="<?= base_url('panel-admin/logout') ?>" class="nav-link w-full" style="color:rgba(248,113,113,0.7);" title="Keluar">

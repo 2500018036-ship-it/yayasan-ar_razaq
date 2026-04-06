@@ -1,4 +1,10 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
+<?php
+$permission_codes = isset($permission_codes) && is_array($permission_codes) ? $permission_codes : [];
+$can = function ($perm) use ($permission_codes) {
+    return in_array($perm, $permission_codes, true);
+};
+?>
 
 <!-- Stat Cards -->
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -27,12 +33,14 @@
 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
     <?php
     $quick = [
-        ['url' => 'panel-admin/berita',   'label' => 'Tambah Berita',   'icon' => 'plus-circle', 'color' => 'text-blue-600',   'bg' => 'bg-blue-50 hover:bg-blue-100'],
-        ['url' => 'panel-admin/galeri',   'label' => 'Upload Foto',     'icon' => 'upload',      'color' => 'text-violet-600', 'bg' => 'bg-violet-50 hover:bg-violet-100'],
-        ['url' => 'panel-admin/ppdb',     'label' => 'Kelola PPDB',     'icon' => 'user-plus',   'color' => 'text-amber-600',  'bg' => 'bg-amber-50 hover:bg-amber-100'],
-        ['url' => 'panel-admin/profil',   'label' => 'Edit Profil',     'icon' => 'settings',    'color' => 'text-hijau-700',  'bg' => 'bg-hijau-50 hover:bg-hijau-100'],
+        ['url' => 'panel-admin/berita',   'label' => 'Tambah Berita',   'icon' => 'plus-circle', 'color' => 'text-blue-600',   'bg' => 'bg-blue-50 hover:bg-blue-100', 'perm' => 'berita.create'],
+        ['url' => 'panel-admin/galeri',   'label' => 'Upload Foto',     'icon' => 'upload',      'color' => 'text-violet-600', 'bg' => 'bg-violet-50 hover:bg-violet-100', 'perm' => 'galeri.create'],
+        ['url' => 'panel-admin/ppdb',     'label' => 'Kelola PPDB',     'icon' => 'user-plus',   'color' => 'text-amber-600',  'bg' => 'bg-amber-50 hover:bg-amber-100', 'perm' => 'ppdb.view'],
+        ['url' => 'panel-admin/profil',   'label' => 'Edit Profil',     'icon' => 'settings',    'color' => 'text-hijau-700',  'bg' => 'bg-hijau-50 hover:bg-hijau-100', 'perm' => 'profil.edit'],
+        ['url' => 'panel-admin/setting',  'label' => 'Setting Admin',   'icon' => 'shield',      'color' => 'text-slate-700',  'bg' => 'bg-slate-100 hover:bg-slate-200', 'perm' => 'setting.view'],
     ];
     foreach ($quick as $q):
+        if (!$can($q['perm'])) continue;
     ?>
         <a href="<?= base_url($q['url']) ?>" class="flex items-center gap-3 p-4 rounded-2xl <?= $q['bg'] ?> transition-colors group">
             <i data-feather="<?= $q['icon'] ?>" class="w-4 h-4 <?= $q['color'] ?> flex-shrink-0"></i>

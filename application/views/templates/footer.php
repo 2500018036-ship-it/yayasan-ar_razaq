@@ -7,7 +7,7 @@
     <!-- Wave top (connects with previous section) -->
     <div class="wave-divider wave-top">
         <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,40 C240,0 480,80 720,40 C960,0 1200,80 1440,40 L1440,0 L0,0 Z" fill="#f9fafb" />
+            <path d="M0,24 C240,4 480,44 720,24 C960,4 1200,44 1440,24 L1440,0 L0,0 Z" fill="#052e16" />
         </svg>
     </div>
 
@@ -179,10 +179,12 @@
 
     const menuToggleBtn = document.getElementById('menu-toggle');
 
-    window.addEventListener('scroll', () => {
+    const NAV_SCROLL_THRESHOLD = 42;
+
+    const updateNavbarState = () => {
         const currentScroll = window.scrollY;
 
-        if (currentScroll > 80) {
+        if (currentScroll > NAV_SCROLL_THRESHOLD) {
             navbar.classList.add('scrolled');
             if (menuToggleBtn) {
                 menuToggleBtn.classList.remove('text-white', 'hover:bg-white/10');
@@ -207,9 +209,16 @@
                 backTop.classList.remove('opacity-100', 'visible');
             }
         }
+    };
+
+    window.addEventListener('scroll', () => {
+        updateNavbarState();
     }, {
         passive: true
     });
+
+    // Keep state correct on hard refresh / history navigation
+    updateNavbarState();
 
     // Mobile menu toggle
     if (menuToggle && mobileMenu) {
@@ -701,20 +710,45 @@
     // ============================================================
     // SMOOTH ANCHOR SCROLLING (via Lenis)
     // ============================================================
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    const normalizePath = (path) => (path || '').replace(/\/+$/, '') || '/';
+
+    document.querySelectorAll('a[href*="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            if (href === '#') return;
-            const target = document.querySelector(href);
+            const rawHref = this.getAttribute('href');
+            if (!rawHref || rawHref === '#') return;
+
+            const targetUrl = new URL(rawHref, window.location.href);
+            const targetHash = targetUrl.hash || '';
+            if (!targetHash || targetHash === '#') return;
+
+            const sameOrigin = targetUrl.origin === window.location.origin;
+            const samePath = normalizePath(targetUrl.pathname) === normalizePath(window.location.pathname);
+            if (!sameOrigin || !samePath) return;
+
+            const target = document.querySelector(targetHash);
             if (target) {
                 e.preventDefault();
                 lenis.scrollTo(target, {
                     offset: -80,
                     duration: 1.8
                 });
+                history.replaceState(null, '', targetHash);
                 if (mobileMenu) mobileMenu.classList.remove('open');
             }
         });
+    });
+
+    window.addEventListener('load', () => {
+        if (!window.location.hash || window.location.hash === '#') return;
+        const target = document.querySelector(window.location.hash);
+        if (target) {
+            setTimeout(() => {
+                lenis.scrollTo(target, {
+                    offset: -80,
+                    duration: 1.8
+                });
+            }, 120);
+        }
     });
 
     // ============================================================

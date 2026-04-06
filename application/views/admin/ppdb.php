@@ -1,4 +1,10 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
+<?php
+$permission_codes = isset($permission_codes) && is_array($permission_codes) ? $permission_codes : [];
+$can_create = in_array('ppdb.create', $permission_codes, true);
+$can_edit = in_array('ppdb.edit', $permission_codes, true);
+$can_delete = in_array('ppdb.delete', $permission_codes, true);
+?>
 
 <div class="space-y-6">
     <!-- Header -->
@@ -7,10 +13,12 @@
             <h2 class="text-lg font-bold text-gray-900">Data PPDB</h2>
             <p class="text-sm text-gray-500">Kelola data penerimaan santri baru</p>
         </div>
-        <button onclick="openAddModal()" class="btn btn-primary">
-            <i data-feather="plus" class="w-4 h-4"></i>
-            Tambah PPDB
-        </button>
+        <?php if ($can_create): ?>
+            <button onclick="openAddModal()" class="btn btn-primary">
+                <i data-feather="plus" class="w-4 h-4"></i>
+                Tambah PPDB
+            </button>
+        <?php endif; ?>
     </div>
 
     <!-- Table -->
@@ -44,14 +52,22 @@
                                     </span>
                                 </td>
                                 <td class="text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <button onclick="editItem(<?= $item->id ?>)" class="btn btn-ghost" style="padding:6px 10px;">
-                                            <i data-feather="edit-2" class="w-3.5 h-3.5"></i>
-                                        </button>
-                                        <button onclick="confirmDelete('<?= base_url('panel-admin/ppdb/delete/' . $item->id) ?>', '<?= htmlspecialchars($item->judul) ?>')" class="btn btn-danger" style="padding:6px 10px;">
-                                            <i data-feather="trash-2" class="w-3.5 h-3.5"></i>
-                                        </button>
-                                    </div>
+                                    <?php if ($can_edit || $can_delete): ?>
+                                        <div class="flex items-center justify-end gap-2">
+                                            <?php if ($can_edit): ?>
+                                                <button onclick="editItem(<?= $item->id ?>)" class="btn btn-ghost" style="padding:6px 10px;">
+                                                    <i data-feather="edit-2" class="w-3.5 h-3.5"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                            <?php if ($can_delete): ?>
+                                                <button onclick="confirmDelete('<?= base_url('panel-admin/ppdb/delete/' . $item->id) ?>', '<?= htmlspecialchars($item->judul) ?>')" class="btn btn-danger" style="padding:6px 10px;">
+                                                    <i data-feather="trash-2" class="w-3.5 h-3.5"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php else: ?>
+                                        <span class="text-xs text-gray-300">-</span>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -70,15 +86,16 @@
 </div>
 
 <!-- Modal -->
-<div id="modal-ppdb" class="modal-overlay">
-    <div class="modal-box">
-        <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-            <h3 id="modal-title" class="font-bold text-gray-900">Tambah PPDB</h3>
-            <button onclick="closeModal('modal-ppdb')" class="text-gray-400 hover:text-gray-600">
-                <i data-feather="x" class="w-5 h-5"></i>
-            </button>
-        </div>
-        <form id="form-ppdb" class="p-6 space-y-5">
+<?php if ($can_create || $can_edit): ?>
+    <div id="modal-ppdb" class="modal-overlay">
+        <div class="modal-box">
+            <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                <h3 id="modal-title" class="font-bold text-gray-900">Tambah PPDB</h3>
+                <button onclick="closeModal('modal-ppdb')" class="text-gray-400 hover:text-gray-600">
+                    <i data-feather="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="form-ppdb" class="p-6 space-y-5">
             <input type="hidden" id="edit-id" value="">
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -153,19 +170,27 @@
                 </select>
             </div>
 
-            <div class="flex justify-end gap-3 pt-2">
-                <button type="button" onclick="closeModal('modal-ppdb')" class="btn btn-ghost">Batal</button>
-                <button type="submit" class="btn btn-primary">
-                    <i data-feather="save" class="w-4 h-4"></i>
-                    Simpan
-                </button>
-            </div>
-        </form>
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" onclick="closeModal('modal-ppdb')" class="btn btn-ghost">Batal</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i data-feather="save" class="w-4 h-4"></i>
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+<?php endif; ?>
 
 <script>
+    const canCreatePpdb = <?= $can_create ? 'true' : 'false' ?>;
+    const canEditPpdb = <?= $can_edit ? 'true' : 'false' ?>;
+
     function openAddModal() {
+        if (!canCreatePpdb) {
+            showToast('Anda tidak punya izin tambah PPDB.', 'error');
+            return;
+        }
         document.getElementById('modal-title').textContent = 'Tambah PPDB';
         document.getElementById('edit-id').value = '';
         document.getElementById('form-ppdb').reset();
@@ -173,6 +198,10 @@
     }
 
     async function editItem(id) {
+        if (!canEditPpdb) {
+            showToast('Anda tidak punya izin edit PPDB.', 'error');
+            return;
+        }
         const res = await fetch('<?= base_url('panel-admin/ppdb/get/') ?>' + id);
         const json = await res.json();
         const d = json.data;
@@ -194,31 +223,42 @@
         openModal('modal-ppdb');
     }
 
-    document.getElementById('form-ppdb').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const id = document.getElementById('edit-id').value;
-        const url = id
-            ? '<?= base_url('panel-admin/ppdb/update/') ?>' + id
-            : '<?= base_url('panel-admin/ppdb/store') ?>';
+    const formPpdb = document.getElementById('form-ppdb');
+    if (formPpdb) {
+        formPpdb.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-id').value;
+            if (id && !canEditPpdb) {
+                showToast('Anda tidak punya izin edit PPDB.', 'error');
+                return;
+            }
+            if (!id && !canCreatePpdb) {
+                showToast('Anda tidak punya izin tambah PPDB.', 'error');
+                return;
+            }
+            const url = id
+                ? '<?= base_url('panel-admin/ppdb/update/') ?>' + id
+                : '<?= base_url('panel-admin/ppdb/store') ?>';
 
-        const fd = new FormData();
-        fd.append('tahun_ajaran', document.getElementById('f-tahun-ajaran').value);
-        fd.append('judul', document.getElementById('f-judul').value);
-        fd.append('deskripsi', document.getElementById('f-deskripsi').value);
-        fd.append('tanggal_buka', document.getElementById('f-tanggal-buka').value);
-        fd.append('tanggal_tutup', document.getElementById('f-tanggal-tutup').value);
-        fd.append('kuota', document.getElementById('f-kuota').value);
-        fd.append('biaya_pendaftaran', document.getElementById('f-biaya').value);
-        fd.append('syarat', document.getElementById('f-syarat').value);
-        fd.append('alur_pendaftaran', document.getElementById('f-alur').value);
-        fd.append('kontak_info', document.getElementById('f-kontak').value);
-        fd.append('link_pendaftaran', document.getElementById('f-link').value);
-        fd.append('maps_url', document.getElementById('f-maps-url').value);
-        fd.append('status', document.getElementById('f-status').value);
+            const fd = new FormData();
+            fd.append('tahun_ajaran', document.getElementById('f-tahun-ajaran').value);
+            fd.append('judul', document.getElementById('f-judul').value);
+            fd.append('deskripsi', document.getElementById('f-deskripsi').value);
+            fd.append('tanggal_buka', document.getElementById('f-tanggal-buka').value);
+            fd.append('tanggal_tutup', document.getElementById('f-tanggal-tutup').value);
+            fd.append('kuota', document.getElementById('f-kuota').value);
+            fd.append('biaya_pendaftaran', document.getElementById('f-biaya').value);
+            fd.append('syarat', document.getElementById('f-syarat').value);
+            fd.append('alur_pendaftaran', document.getElementById('f-alur').value);
+            fd.append('kontak_info', document.getElementById('f-kontak').value);
+            fd.append('link_pendaftaran', document.getElementById('f-link').value);
+            fd.append('maps_url', document.getElementById('f-maps-url').value);
+            fd.append('status', document.getElementById('f-status').value);
 
-        await ajaxSubmit(url, fd, () => {
-            closeModal('modal-ppdb');
-            setTimeout(() => location.reload(), 800);
+            await ajaxSubmit(url, fd, () => {
+                closeModal('modal-ppdb');
+                setTimeout(() => location.reload(), 800);
+            });
         });
-    });
+    }
 </script>

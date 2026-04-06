@@ -1,14 +1,22 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
+<?php
+$permission_codes = isset($permission_codes) && is_array($permission_codes) ? $permission_codes : [];
+$can_create = in_array('galeri.create', $permission_codes, true);
+$can_edit = in_array('galeri.edit', $permission_codes, true);
+$can_delete = in_array('galeri.delete', $permission_codes, true);
+?>
 
 <!-- Page Header -->
 <div class="flex items-center justify-between mb-6">
     <div>
         <p class="text-xs text-gray-400">Kelola foto dan dokumentasi kegiatan</p>
     </div>
-    <button onclick="openModal('modal-tambah')" class="btn btn-primary">
-        <i data-feather="upload-cloud" class="w-4 h-4"></i>
-        Upload Foto
-    </button>
+    <?php if ($can_create): ?>
+        <button onclick="openModal('modal-tambah')" class="btn btn-primary">
+            <i data-feather="upload-cloud" class="w-4 h-4"></i>
+            Upload Foto
+        </button>
+    <?php endif; ?>
 </div>
 
 <!-- Filter -->
@@ -41,20 +49,31 @@
                         </div>
                     <?php endif; ?>
                     <!-- Overlay actions -->
-                    <div class="absolute inset-0 bg-hijau-950/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
-                        <button onclick='editGaleri(<?= json_encode($g) ?>)' class="w-9 h-9 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center text-white transition-colors backdrop-blur-sm">
-                            <i data-feather="edit-2" class="w-4 h-4"></i>
-                        </button>
-                        <button onclick="confirmDelete('<?= base_url('panel-admin/galeri-delete/' . $g->id) ?>','<?= addslashes($g->judul) ?>')" class="w-9 h-9 bg-red-500/70 hover:bg-red-500 rounded-xl flex items-center justify-center text-white transition-colors">
-                            <i data-feather="trash-2" class="w-4 h-4"></i>
-                        </button>
-                    </div>
+                    <?php if ($can_edit || $can_delete): ?>
+                        <div class="absolute inset-0 bg-hijau-950/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
+                            <?php if ($can_edit): ?>
+                                <button onclick='editGaleri(<?= json_encode($g) ?>)' class="w-9 h-9 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center text-white transition-colors backdrop-blur-sm">
+                                    <i data-feather="edit-2" class="w-4 h-4"></i>
+                                </button>
+                            <?php endif; ?>
+                            <?php if ($can_delete): ?>
+                                <button onclick="confirmDelete('<?= base_url('panel-admin/galeri-delete/' . $g->id) ?>','<?= addslashes($g->judul) ?>')" class="w-9 h-9 bg-red-500/70 hover:bg-red-500 rounded-xl flex items-center justify-center text-white transition-colors">
+                                    <i data-feather="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <!-- Info -->
                 <div class="p-3">
                     <div class="font-medium text-gray-800 text-xs truncate"><?= $g->judul ?></div>
-                    <div class="flex items-center justify-between mt-1">
-                        <span class="badge badge-yellow text-[10px] capitalize"><?= $g->kategori ?></span>
+                    <div class="flex flex-wrap items-center justify-between gap-1 mt-1">
+                        <div class="flex flex-wrap gap-1">
+                            <span class="badge badge-yellow text-[10px] capitalize"><?= $g->kategori ?></span>
+                            <?php if (!empty($g->label)): ?>
+                                <span class="badge badge-gray text-[10px]"><?= htmlspecialchars($g->label) ?></span>
+                            <?php endif; ?>
+                        </div>
                         <?php if ($g->status): ?>
                             <span class="badge badge-green text-[10px]">Aktif</span>
                         <?php else: ?>
@@ -76,6 +95,7 @@
 <!-- ============================================================ -->
 <!-- MODAL TAMBAH -->
 <!-- ============================================================ -->
+<?php if ($can_create): ?>
 <div id="modal-tambah" class="modal-overlay">
     <div class="modal-box">
         <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
@@ -112,9 +132,16 @@
                         </select>
                     </div>
                     <div>
+                        <label class="form-label">Label Sortir</label>
+                        <input type="text" name="label" class="form-input" placeholder="Contoh: Kegiatan Santri">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
                         <label class="form-label">Urutan</label>
                         <input type="number" name="urutan" class="form-input" value="1" min="1">
                     </div>
+                    <div></div>
                 </div>
                 <div>
                     <label class="form-label">Deskripsi</label>
@@ -138,10 +165,12 @@
         </form>
     </div>
 </div>
+<?php endif; ?>
 
 <!-- ============================================================ -->
 <!-- MODAL EDIT -->
 <!-- ============================================================ -->
+<?php if ($can_edit): ?>
 <div id="modal-edit" class="modal-overlay">
     <div class="modal-box">
         <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
@@ -179,9 +208,16 @@
                         </select>
                     </div>
                     <div>
+                        <label class="form-label">Label Sortir</label>
+                        <input type="text" name="label" id="edit-label" class="form-input" placeholder="Contoh: Prestasi">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
                         <label class="form-label">Urutan</label>
                         <input type="number" name="urutan" id="edit-urutan" class="form-input" min="1">
                     </div>
+                    <div></div>
                 </div>
                 <div>
                     <label class="form-label">Deskripsi</label>
@@ -205,6 +241,7 @@
         </form>
     </div>
 </div>
+<?php endif; ?>
 
 <script>
     function filterGaleri() {
@@ -227,7 +264,7 @@
                 setTimeout(() => location.reload(), 900);
             }
         } catch (e) {
-            showToast('Terjadi kesalahan.', 'error');
+            showToast(e.message || 'Terjadi kesalahan.', 'error');
         }
         btn.disabled = false;
         btn.innerHTML = '<i data-feather="upload-cloud" class="w-4 h-4"></i> Upload';
@@ -239,6 +276,7 @@
         document.getElementById('edit-judul').value = g.judul;
         document.getElementById('edit-deskripsi').value = g.deskripsi || '';
         document.getElementById('edit-kategori').value = g.kategori;
+        document.getElementById('edit-label').value = g.label || '';
         document.getElementById('edit-urutan').value = g.urutan;
         document.getElementById('edit-status').value = g.status;
 
@@ -264,7 +302,7 @@
                 setTimeout(() => location.reload(), 900);
             }
         } catch (e) {
-            showToast('Terjadi kesalahan.', 'error');
+            showToast(e.message || 'Terjadi kesalahan.', 'error');
         }
     }
 </script>

@@ -9,6 +9,10 @@
 
 <script>
     feather.replace();
+    window.ADMIN_PERMS = <?= json_encode(isset($permission_codes) && is_array($permission_codes) ? $permission_codes : []) ?>;
+    window.adminCan = function(code) {
+        return Array.isArray(window.ADMIN_PERMS) && window.ADMIN_PERMS.includes(code);
+    };
 
     // Sidebar toggle — desktop: collapse, mobile: slide
     function toggleSidebar() {
@@ -79,6 +83,9 @@
     async function ajaxPost(url, formData) {
         const res = await fetch(url, {
             method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
             body: formData
         });
         const text = await res.text();
@@ -94,6 +101,13 @@
     async function ajaxSubmit(url, formData, onSuccess) {
         try {
             const d = await ajaxPost(url, formData);
+            if (d && d.data && d.data.redirect && d.status === 'error') {
+                showToast(d.message || 'Sesi berakhir, mengarahkan ke login.', 'error');
+                setTimeout(() => {
+                    window.location.href = d.data.redirect;
+                }, 900);
+                return;
+            }
             showToast(d.message, d.status === 'success' ? 'success' : 'error');
             if (d.status === 'success' && typeof onSuccess === 'function') {
                 onSuccess(d);

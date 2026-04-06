@@ -1,11 +1,19 @@
+<?php
+$permission_codes = isset($permission_codes) && is_array($permission_codes) ? $permission_codes : [];
+$can_create = in_array('sejarah.create', $permission_codes, true);
+$can_edit = in_array('sejarah.edit', $permission_codes, true);
+$can_delete = in_array('sejarah.delete', $permission_codes, true);
+?>
 <!-- SEJARAH ADMIN VIEW -->
 <!-- Header action -->
 <div class="flex items-center justify-between mb-6">
     <p class="text-gray-500 text-sm"><?= count($sejarah) ?> data sejarah</p>
-    <button onclick="openAdd()" class="inline-flex items-center gap-2 bg-hijau-800 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-hijau-700 transition-colors shadow-sm">
-        <i data-feather="plus" class="w-4 h-4"></i>
-        Tambah Sejarah
-    </button>
+    <?php if ($can_create): ?>
+        <button onclick="openAdd()" class="inline-flex items-center gap-2 bg-hijau-800 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-hijau-700 transition-colors shadow-sm">
+            <i data-feather="plus" class="w-4 h-4"></i>
+            Tambah Sejarah
+        </button>
+    <?php endif; ?>
 </div>
 
 <div class="space-y-4" id="sejarah-list">
@@ -21,14 +29,20 @@
                             <p class="text-sm text-gray-500 line-clamp-2"><?= $s->konten ?></p>
                         </div>
                     </div>
-                    <div class="flex gap-2 flex-shrink-0">
-                        <button onclick="openEdit(<?= htmlspecialchars(json_encode($s)) ?>)" class="w-8 h-8 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">
-                            <i data-feather="edit-2" class="w-3.5 h-3.5"></i>
-                        </button>
-                        <button onclick="hapus(<?= $s->id ?>, '<?= addslashes($s->judul) ?>')" class="w-8 h-8 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg flex items-center justify-center">
-                            <i data-feather="trash-2" class="w-3.5 h-3.5"></i>
-                        </button>
-                    </div>
+                    <?php if ($can_edit || $can_delete): ?>
+                        <div class="flex gap-2 flex-shrink-0">
+                            <?php if ($can_edit): ?>
+                                <button onclick="openEdit(<?= htmlspecialchars(json_encode($s)) ?>)" class="w-8 h-8 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">
+                                    <i data-feather="edit-2" class="w-3.5 h-3.5"></i>
+                                </button>
+                            <?php endif; ?>
+                            <?php if ($can_delete): ?>
+                                <button onclick="hapus(<?= $s->id ?>, '<?= addslashes($s->judul) ?>')" class="w-8 h-8 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg flex items-center justify-center">
+                                    <i data-feather="trash-2" class="w-3.5 h-3.5"></i>
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach;
@@ -78,9 +92,11 @@
         </div>
         <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 sticky bottom-0 bg-white rounded-b-2xl">
             <button onclick="closeModal('modal-form')" class="px-5 py-2.5 border border-gray-200 text-gray-600 rounded-xl text-sm font-semibold hover:bg-gray-50">Batal</button>
-            <button onclick="simpan()" class="px-6 py-2.5 bg-hijau-800 text-white rounded-xl text-sm font-bold hover:bg-hijau-700 transition-colors shadow-sm flex items-center gap-2">
-                <i data-feather="save" class="w-4 h-4"></i> Simpan
-            </button>
+            <?php if ($can_create || $can_edit): ?>
+                <button onclick="simpan()" class="px-6 py-2.5 bg-hijau-800 text-white rounded-xl text-sm font-bold hover:bg-hijau-700 transition-colors shadow-sm flex items-center gap-2">
+                    <i data-feather="save" class="w-4 h-4"></i> Simpan
+                </button>
+            <?php endif; ?>
         </div>
     </div>
 </div>

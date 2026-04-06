@@ -34,6 +34,7 @@
         <?php if (!empty($ekskul)): ?>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 stagger-parent">
                 <?php foreach ($ekskul as $idx => $item): ?>
+                    <?php $ekskul_slug = !empty($item->slug) ? $item->slug : ('ekskul-' . (int) $item->id); ?>
                     <div class="stagger-child group">
                         <div class="bg-white rounded-3xl overflow-hidden border border-gray-100/80 shadow-sm card-hover h-full">
                             <?php if ($item->gambar): ?>
@@ -78,6 +79,13 @@
                                         <?php endif; ?>
                                     </div>
                                 <?php endif; ?>
+
+                                <div class="pt-5">
+                                    <a href="<?= base_url('ekskul/' . rawurlencode($ekskul_slug)) ?>" class="inline-flex items-center gap-2 text-sm font-semibold text-hijau-700 hover:text-hijau-900 transition-colors">
+                                        Lihat Detail
+                                        <i data-feather="arrow-right" class="w-4 h-4"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

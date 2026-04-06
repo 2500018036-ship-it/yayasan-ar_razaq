@@ -160,8 +160,9 @@
                         $maps_embed_url = $ppdb->maps_url;
                         // Convert Google Maps URL to embed URL
                         if (strpos($maps_embed_url, '/embed') === false) {
-                            if (preg_match('/place\/([^/]+)/', $maps_embed_url, $matches)) {
-                                $maps_embed_url = 'https://www.google.com/maps/embed/v1/place?key=&q=' . urlencode($matches[1]);
+                            // Use ~ delimiter so URL slashes do not break regex parsing
+                            if (preg_match('~(?:^|/)place/([^/?#]+)~', $maps_embed_url, $matches)) {
+                                $maps_embed_url = 'https://maps.google.com/maps?q=' . urlencode(urldecode($matches[1])) . '&output=embed';
                             } elseif (preg_match('/@([\d.-]+),([\d.-]+)/', $maps_embed_url, $matches)) {
                                 $maps_embed_url = 'https://maps.google.com/maps?q=' . $matches[1] . ',' . $matches[2] . '&output=embed';
                             } else {
