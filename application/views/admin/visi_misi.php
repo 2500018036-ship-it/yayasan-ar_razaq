@@ -11,6 +11,103 @@ $_adm_ov_opacity = isset($profil) && $profil && isset($profil->visimisi_overlay_
 $_perms = (isset($permission_codes) && is_array($permission_codes)) ? $permission_codes : [];
 ?>
 
+<style>
+    #modal-tambah .visi-misi-modal-box,
+    #modal-edit .visi-misi-modal-box {
+        width: min(640px, calc(100vw - 32px));
+        max-height: min(90vh, 760px);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+
+    #modal-tambah .modal-header,
+    #modal-edit .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 20px;
+        border-bottom: 1px solid #eef2f7;
+        background: #ffffff;
+        flex-shrink: 0;
+    }
+
+    #modal-tambah .modal-body,
+    #modal-edit .modal-body {
+        padding: 18px 20px;
+        overflow-y: auto;
+        flex: 1 1 auto;
+    }
+
+    #modal-tambah .modal-footer,
+    #modal-edit .modal-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 14px 20px 18px;
+        border-top: 1px solid #eef2f7;
+        background: #ffffff;
+        flex-shrink: 0;
+    }
+
+    #modal-tambah .modal-close-btn,
+    #modal-edit .modal-close-btn {
+        width: 32px;
+        height: 32px;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #6b7280;
+        background: #ffffff;
+        transition: all 0.2s ease;
+    }
+
+    #modal-tambah .modal-close-btn:hover,
+    #modal-edit .modal-close-btn:hover {
+        background: #f9fafb;
+        color: #111827;
+        border-color: #d1d5db;
+    }
+
+    #modal-tambah .btn-secondary,
+    #modal-edit .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 9px 16px;
+        border-radius: 10px;
+        border: 1px solid #d1d5db;
+        background: #ffffff;
+        color: #4b5563;
+        font-size: 0.82rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    #modal-tambah .btn-secondary:hover,
+    #modal-edit .btn-secondary:hover {
+        background: #f9fafb;
+        border-color: #9ca3af;
+    }
+
+    @media (max-width: 640px) {
+
+        #modal-tambah .modal-header,
+        #modal-edit .modal-header,
+        #modal-tambah .modal-body,
+        #modal-edit .modal-body,
+        #modal-tambah .modal-footer,
+        #modal-edit .modal-footer {
+            padding-left: 14px;
+            padding-right: 14px;
+        }
+    }
+</style>
+
 <!-- ============================================================ -->
 <!-- PAGE HEADER                                                   -->
 <!-- ============================================================ -->
@@ -295,7 +392,7 @@ $_perms = (isset($permission_codes) && is_array($permission_codes)) ? $permissio
 <!-- MODAL TAMBAH                                                  -->
 <!-- ============================================================ -->
 <div id="modal-tambah" class="modal-overlay">
-    <div class="modal-box">
+    <div class="modal-box visi-misi-modal-box">
         <div class="modal-header">
             <h3 class="font-semibold text-gray-800">Tambah Data Visi/Misi</h3>
             <button onclick="closeModal('modal-tambah')" class="modal-close-btn">
@@ -349,7 +446,7 @@ $_perms = (isset($permission_codes) && is_array($permission_codes)) ? $permissio
 <!-- MODAL EDIT                                                    -->
 <!-- ============================================================ -->
 <div id="modal-edit" class="modal-overlay">
-    <div class="modal-box">
+    <div class="modal-box visi-misi-modal-box">
         <div class="modal-header">
             <h3 class="font-semibold text-gray-800">Edit Data Visi/Misi</h3>
             <button onclick="closeModal('modal-edit')" class="modal-close-btn">
