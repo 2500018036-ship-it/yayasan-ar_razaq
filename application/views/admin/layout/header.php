@@ -57,25 +57,31 @@
         /* Sidebar */
         #sidebar {
             transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         #sidebar.collapsed {
             width: 64px;
         }
+
         #sidebar.collapsed .sidebar-text,
         #sidebar.collapsed .sidebar-subtitle {
             display: none;
         }
+
         #sidebar.collapsed .nav-link {
             justify-content: center;
             padding: 10px;
         }
+
         #sidebar.collapsed .nav-link span {
             display: none;
         }
+
         #sidebar.collapsed .sidebar-user-info {
             display: none;
         }
+
         #sidebar.collapsed .sidebar-logo-text {
             display: none;
         }
@@ -124,6 +130,7 @@
             #main-content {
                 margin-left: 0;
             }
+
             body.sidebar-collapsed #main-content {
                 margin-left: 0;
             }
@@ -472,7 +479,7 @@
             <div class="px-4 py-5 border-b border-white/[0.06]">
                 <div class="flex items-center gap-2.5">
                     <div class="w-9 h-9 bg-kuning-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-kuning-500/20">
-                        <span class="font-arabic text-hijau-950 text-base font-bold">ر</span>
+                        <img src="<?= base_url('assets/images/logo.png') ?>" alt="Logo Ar-Razaq" class="w-5 h-5 object-contain">
                     </div>
                     <div class="sidebar-logo-text">
                         <div class="font-display text-white font-bold text-sm leading-tight">Ar-Razaq</div>
