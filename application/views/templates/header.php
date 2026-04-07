@@ -352,6 +352,11 @@
             box-shadow: 0 30px 60px rgba(5, 46, 22, 0.12);
         }
 
+        .card-hover-soft:hover {
+            transform: translateY(-6px) scale(1.005);
+            box-shadow: 0 16px 32px rgba(5, 46, 22, 0.1);
+        }
+
         .card-3d {
             transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             transform-style: preserve-3d;
@@ -652,7 +657,7 @@
                         <?php
                         $current_url = current_url();
                         $nav_items = [
-                            ['url' => base_url(), 'label' => 'Beranda'],
+                            ['url' => base_url(), 'label' => 'Beranda', 'scroll_top' => true],
                             ['url' => base_url() . '#sejarah', 'label' => 'Profil'],
                             ['url' => base_url('galeri'), 'label' => 'Galeri'],
                             ['url' => base_url('ekskul'), 'label' => 'Ekskul'],
@@ -660,8 +665,10 @@
                             ['url' => base_url('ppdb'), 'label' => 'PPDB'],
                         ];
                         foreach ($nav_items as $item):
+                            $scroll_top_attr = !empty($item['scroll_top']) ? 'data-scroll-top="1"' : '';
                             ?>
                             <a href="<?= $item['url'] ?>"
+                                <?= $scroll_top_attr ?>
                                 class="nav-link-front px-4 py-2 rounded-xl text-sm font-semibold relative group">
                                 <?= $item['label'] ?>
                                 <span
@@ -687,6 +694,7 @@
                     <div class="py-4 space-y-1">
                         <?php foreach ($nav_items as $item): ?>
                             <a href="<?= $item['url'] ?>"
+                                <?= !empty($item['scroll_top']) ? 'data-scroll-top="1"' : '' ?>
                                 class="block px-4 py-3 text-sm font-semibold text-hijau-900 hover:bg-hijau-50 rounded-xl mx-2 transition-colors">
                                 <?= $item['label'] ?>
                             </a>

@@ -32,6 +32,15 @@ class Main_model extends CI_Model
             if (!$this->db->field_exists('visimisi_overlay_opacity', 'profil')) {
                 $this->db->query("ALTER TABLE `profil` ADD COLUMN `visimisi_overlay_opacity` TINYINT(3) UNSIGNED NULL DEFAULT 80");
             }
+            if (!$this->db->field_exists('struktur_organisasi_judul', 'profil')) {
+                $this->db->query("ALTER TABLE `profil` ADD COLUMN `struktur_organisasi_judul` VARCHAR(255) NULL DEFAULT NULL");
+            }
+            if (!$this->db->field_exists('struktur_organisasi_deskripsi', 'profil')) {
+                $this->db->query("ALTER TABLE `profil` ADD COLUMN `struktur_organisasi_deskripsi` TEXT NULL DEFAULT NULL");
+            }
+            if (!$this->db->field_exists('struktur_organisasi_gambar', 'profil')) {
+                $this->db->query("ALTER TABLE `profil` ADD COLUMN `struktur_organisasi_gambar` VARCHAR(255) NULL DEFAULT NULL");
+            }
         }
 
         if ($this->db->table_exists('galeri') && !$this->db->field_exists('label', 'galeri')) {

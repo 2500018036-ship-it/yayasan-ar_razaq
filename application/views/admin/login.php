@@ -246,6 +246,12 @@
 </head>
 
 <body class="bg-gray-50 min-h-screen flex overflow-hidden">
+    <?php
+    $nama_yayasan = (isset($profil) && $profil && !empty($profil->nama_yayasan)) ? $profil->nama_yayasan : 'Yayasan Ar-Razaq';
+    $sub_yayasan = 'Pesantren Modern Terpadu';
+    $logo_upload = (isset($profil) && $profil && !empty($profil->logo)) ? $profil->logo : '';
+    $logo_upload_url = $logo_upload ? base_url('assets/images/uploads/profil/' . $logo_upload) : '';
+    ?>
 
     <!-- ============================================================ -->
     <!-- LEFT PANEL — Dark Branding -->
@@ -286,12 +292,18 @@
 
             <!-- Logo top-left -->
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-kuning-400 to-kuning-600 rounded-xl flex items-center justify-center shadow-lg shadow-kuning-500/20">
-                    <span class="font-arabic text-hijau-950 text-lg font-bold">ر</span>
-                </div>
+                <?php if (!empty($logo_upload_url)): ?>
+                    <div class="w-10 h-10 bg-white/90 rounded-xl flex items-center justify-center shadow-lg shadow-black/10 overflow-hidden">
+                        <img src="<?= $logo_upload_url ?>" alt="<?= htmlspecialchars($nama_yayasan, ENT_QUOTES) ?>" class="w-8 h-8 object-contain">
+                    </div>
+                <?php else: ?>
+                    <div class="w-10 h-10 bg-gradient-to-br from-kuning-400 to-kuning-600 rounded-xl flex items-center justify-center shadow-lg shadow-kuning-500/20">
+                        <span class="font-arabic text-hijau-950 text-lg font-bold">ر</span>
+                    </div>
+                <?php endif; ?>
                 <div>
-                    <div class="font-display text-white font-bold text-sm leading-tight">Yayasan Ar-Razaq</div>
-                    <div class="text-hijau-400/60 text-xs">Pesantren Modern Terpadu</div>
+                    <div class="font-display text-white font-bold text-sm leading-tight"><?= htmlspecialchars($nama_yayasan, ENT_QUOTES) ?></div>
+                    <div class="text-hijau-400/60 text-xs"><?= htmlspecialchars($sub_yayasan, ENT_QUOTES) ?></div>
                 </div>
             </div>
 
@@ -306,7 +318,7 @@
                 </h1>
 
                 <p class="text-hijau-300/60 text-base leading-relaxed mb-10 max-w-sm">
-                    Panel administrasi Yayasan Ar-Razaq. Kelola konten, berita, galeri, dan informasi PPDB dalam satu dasbor terpadu.
+                    Panel administrasi <?= htmlspecialchars($nama_yayasan, ENT_QUOTES) ?>. Kelola konten, berita, galeri, dan informasi PPDB dalam satu dasbor terpadu.
                 </p>
 
                 <!-- Feature list -->
@@ -351,10 +363,16 @@
 
             <!-- Mobile logo (shown only on mobile) -->
             <div class="lg:hidden flex items-center gap-3 mb-10 slide-up">
-                <div class="w-10 h-10 bg-gradient-to-br from-hijau-800 to-hijau-600 rounded-xl flex items-center justify-center">
-                    <span class="font-arabic text-white text-lg font-bold">ر</span>
-                </div>
-                <div class="font-display font-bold text-hijau-900 text-sm">Yayasan Ar-Razaq</div>
+                <?php if (!empty($logo_upload_url)): ?>
+                    <div class="w-10 h-10 bg-white rounded-xl border border-hijau-100 flex items-center justify-center overflow-hidden">
+                        <img src="<?= $logo_upload_url ?>" alt="<?= htmlspecialchars($nama_yayasan, ENT_QUOTES) ?>" class="w-8 h-8 object-contain">
+                    </div>
+                <?php else: ?>
+                    <div class="w-10 h-10 bg-gradient-to-br from-hijau-800 to-hijau-600 rounded-xl flex items-center justify-center">
+                        <span class="font-arabic text-white text-lg font-bold">ر</span>
+                    </div>
+                <?php endif; ?>
+                <div class="font-display font-bold text-hijau-900 text-sm"><?= htmlspecialchars($nama_yayasan, ENT_QUOTES) ?></div>
             </div>
 
             <!-- Heading -->
@@ -474,9 +492,7 @@
         }
 
         // ============================================================
-        // LOGIN — posts to the standard CI login method
-        // (Admin::login() handles POST data directly via $this->input->post())
-        // The view also supports the do-login JSON endpoint if it exists.
+        // LOGIN via JSON endpoint (clear success/failed response)
         // ============================================================
         async function doLogin() {
             const btn = document.getElementById('btnLogin');
@@ -503,41 +519,39 @@
             fd.append('password', password);
 
             try {
-                // *** FIX: Posting to the correct 'login' endpoint (not 'do-login')
-                // Admin::login() checks $this->input->post() and responds via redirect.
-                // We use fetch so we can detect success by checking the final URL.
-                const res = await fetch('<?= base_url('panel-admin/login') ?>', {
+                const res = await fetch('<?= base_url('panel-admin/do-login') ?>', {
                     method: 'POST',
                     body: fd,
-                    redirect: 'manual' // Catch redirect without following
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
                 });
 
-                // CI redirects to dashboard on success (302 to panel-admin/dashboard)
-                // and redirects back to login on failure (302 to panel-admin/login)
-                if (res.type === 'opaqueredirect' || res.status === 302 || res.status === 200) {
-                    // Check Location header when redirect is manual
-                    const location = res.headers.get('Location') || '';
-                    if (location.includes('dashboard')) {
-                        showAlert('Login berhasil! Mengalihkan ke dashboard…', true);
-                        setTimeout(() => window.location.href = '<?= base_url('panel-admin/dashboard') ?>', 800);
-                    } else if (res.type === 'opaqueredirect') {
-                        // Can't read headers due to CORS — just navigate directly
-                        // and let the server handle session check
-                        showAlert('Memproses login…', true);
-                        setTimeout(() => window.location.href = '<?= base_url('panel-admin/dashboard') ?>', 600);
-                    } else {
-                        // Redirect back to login = wrong credentials
-                        showAlert('Username atau password salah!', false);
-                        resetBtn();
-                    }
-                } else {
-                    showAlert('Terjadi kesalahan. Silakan coba lagi.', false);
-                    resetBtn();
+                let data = null;
+                try {
+                    data = await res.json();
+                } catch (e) {
+                    data = null;
                 }
+
+                const loginSuccess = !!(
+                    data &&
+                    (data.success === true || data.status === 'success')
+                );
+
+                if (res.ok && loginSuccess) {
+                    showAlert('Login berhasil! Mengalihkan ke dashboard…', true);
+                    setTimeout(() => {
+                        window.location.href = '<?= base_url('panel-admin/dashboard') ?>';
+                    }, 700);
+                    return;
+                }
+
+                showAlert((data && data.message) ? data.message : 'Username atau password salah!', false);
+                resetBtn();
             } catch (e) {
-                // Fallback: submit form normally (no-JS approach)
-                // This handles the case where fetch is blocked by CORS in same-origin CI
-                submitFormNormally(username, password);
+                showAlert('Terjadi gangguan saat login. Silakan coba lagi.', false);
+                resetBtn();
             }
         }
 
@@ -550,29 +564,6 @@
                 </svg>
                 Masuk Sekarang
             `;
-        }
-
-        // Graceful fallback: create a hidden real form and submit it
-        // This guarantees compatibility with all CI session/redirect flows
-        function submitFormNormally(username, password) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '<?= base_url('panel-admin/login') ?>';
-
-            const u = document.createElement('input');
-            u.type = 'hidden';
-            u.name = 'username';
-            u.value = username;
-            form.appendChild(u);
-
-            const p = document.createElement('input');
-            p.type = 'hidden';
-            p.name = 'password';
-            p.value = password;
-            form.appendChild(p);
-
-            document.body.appendChild(form);
-            form.submit();
         }
 
         // Check flashdata error on page load (CI sets it on failed login)

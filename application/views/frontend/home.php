@@ -161,6 +161,48 @@
                 bangsa</p>
         </div>
 
+        <?php
+        $profil_desc_full = isset($profil) && $profil ? trim(preg_replace('/\s+/', ' ', strip_tags((string) $profil->deskripsi_lengkap))) : '';
+        $profil_desc_short = $profil_desc_full;
+        $profil_desc_can_toggle = false;
+        if ($profil_desc_full !== '') {
+            if (function_exists('mb_strlen') && function_exists('mb_substr')) {
+                $profil_desc_can_toggle = mb_strlen($profil_desc_full, 'UTF-8') > 220;
+                if ($profil_desc_can_toggle) $profil_desc_short = rtrim(mb_substr($profil_desc_full, 0, 220, 'UTF-8')) . '...';
+            } else {
+                $profil_desc_can_toggle = strlen($profil_desc_full) > 220;
+                if ($profil_desc_can_toggle) $profil_desc_short = rtrim(substr($profil_desc_full, 0, 220)) . '...';
+            }
+        }
+        ?>
+        <?php if ($profil_desc_full !== ''): ?>
+            <div class="max-w-3xl mx-auto mb-14 reveal">
+                <div class="rounded-3xl border border-hijau-100/70 bg-gradient-to-br from-hijau-50 to-white p-7 md:p-8 shadow-sm">
+                    <div class="flex items-start justify-between gap-4">
+                        <h3 class="font-display text-2xl font-bold text-hijau-900">Profil Singkat Yayasan</h3>
+                        <div class="w-10 h-10 rounded-xl bg-hijau-100 flex items-center justify-center text-hijau-700 flex-shrink-0">
+                            <i data-feather="book-open" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+
+                    <p class="text-gray-600 leading-relaxed mt-4 sejarah-overview-short"><?= htmlspecialchars($profil_desc_short, ENT_QUOTES) ?></p>
+
+                    <div class="sejarah-overview-full-wrap mt-4 hidden" style="height:0; opacity:0; overflow:hidden;">
+                        <p class="text-gray-600 leading-relaxed"><?= nl2br(htmlspecialchars($profil_desc_full, ENT_QUOTES)) ?></p>
+                    </div>
+
+                    <?php if ($profil_desc_can_toggle): ?>
+                        <button type="button"
+                            class="sejarah-overview-toggle mt-5 inline-flex items-center gap-2 text-hijau-700 hover:text-hijau-900 text-sm font-semibold transition-colors"
+                            data-open="0">
+                            <span class="sejarah-overview-label">Lihat deskripsi lengkap</span>
+                            <i data-feather="chevron-down" class="w-4 h-4 sejarah-overview-arrow transition-transform duration-300"></i>
+                        </button>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <!-- Timeline -->
         <?php if (!empty($sejarah)): ?>
             <div class="relative max-w-4xl mx-auto">
@@ -201,6 +243,33 @@
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
+
+        <?php
+        $struktur_title = isset($profil) && $profil && !empty($profil->struktur_organisasi_judul) ? $profil->struktur_organisasi_judul : 'Struktur Organisasi Yayasan';
+        $struktur_desc = isset($profil) && $profil ? trim((string) $profil->struktur_organisasi_deskripsi) : '';
+        $struktur_img = isset($profil) && $profil ? trim((string) $profil->struktur_organisasi_gambar) : '';
+        $has_struktur = ($struktur_desc !== '' || $struktur_img !== '');
+        ?>
+        <?php if ($has_struktur): ?>
+            <div id="struktur-organisasi" class="max-w-5xl mx-auto mt-20 reveal">
+                <div class="rounded-3xl border border-hijau-100/70 bg-white shadow-sm overflow-hidden">
+                    <div class="px-7 py-6 md:px-8 md:py-7 border-b border-hijau-100/70 bg-gradient-to-r from-hijau-50 to-kuning-50/40">
+                        <h3 class="font-display text-2xl md:text-3xl font-bold text-hijau-900"><?= htmlspecialchars($struktur_title, ENT_QUOTES) ?></h3>
+                        <?php if ($struktur_desc !== ''): ?>
+                            <p class="text-gray-600 mt-2"><?= nl2br(htmlspecialchars($struktur_desc, ENT_QUOTES)) ?></p>
+                        <?php endif; ?>
+                    </div>
+                    <?php if ($struktur_img !== ''): ?>
+                        <div class="p-6 md:p-8 bg-white">
+                            <img src="<?= base_url('assets/images/uploads/profil/' . $struktur_img) ?>"
+                                alt="<?= htmlspecialchars($struktur_title, ENT_QUOTES) ?>"
+                                class="w-full h-auto rounded-2xl border border-gray-100 shadow-sm object-contain"
+                                loading="lazy">
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
 
 </section>
@@ -232,7 +301,7 @@ $vm_has_custom = $vm_has_video || $vm_has_image;
 
     <?php if ($vm_has_video): ?>
         <!-- VIDEO BACKGROUND — optimized: decoding on separate thread, no preload of full video -->
-        <video autoplay muted loop playsinline preload="none"
+        <video autoplay muted loop playsinline preload="metadata" disablepictureinpicture
             class="absolute inset-0 w-full h-full object-cover"
             style="z-index:0; will-change:auto;">
             <source src="<?= base_url('assets/images/uploads/profil/' . $vm_bg_video) ?>" type="video/mp4">
@@ -524,7 +593,7 @@ $vm_has_custom = $vm_has_video || $vm_has_image;
 <!-- ============================================================ -->
 <!-- BERITA SECTION -->
 <!-- ============================================================ -->
-<section id="berita" class="pt-24 md:pt-32 pb-0 bg-gray-50 relative overflow-hidden">
+<section id="berita" class="pt-24 md:pt-32 pb-10 md:pb-12 bg-gray-50 relative overflow-visible">
     <div class="container mx-auto px-4 lg:px-8 relative z-10">
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
             <div class="reveal">
@@ -544,11 +613,11 @@ $vm_has_custom = $vm_has_video || $vm_has_image;
         </div>
 
         <?php if (!empty($berita)): ?>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-7 stagger-parent">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-7 stagger-parent overflow-visible">
                 <?php foreach ($berita as $idx => $post): ?>
-                    <article class="stagger-child group">
+                    <article class="stagger-child group overflow-visible">
                         <a href="<?= base_url('berita/' . $post->slug) ?>"
-                            class="block bg-white rounded-3xl overflow-hidden border border-gray-100/80 shadow-sm card-hover h-full">
+                            class="block bg-white rounded-3xl overflow-hidden border border-gray-100/80 shadow-sm card-hover card-hover-soft h-full">
                             <!-- Thumbnail -->
                             <div class="aspect-video overflow-hidden bg-hijau-50 relative">
                                 <?php if ($post->gambar): ?>
@@ -745,5 +814,82 @@ $vm_has_custom = $vm_has_video || $vm_has_image;
 
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') closeLightbox();
+    });
+
+    // Sejarah profile description expand/collapse (GSAP)
+    document.querySelectorAll('.sejarah-overview-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const card = btn.closest('.rounded-3xl');
+            if (!card) return;
+            const shortEl = card.querySelector('.sejarah-overview-short');
+            const fullWrap = card.querySelector('.sejarah-overview-full-wrap');
+            const labelEl = btn.querySelector('.sejarah-overview-label');
+            const arrow = btn.querySelector('.sejarah-overview-arrow');
+            if (!fullWrap || !shortEl || !labelEl || !arrow) return;
+
+            const isOpen = btn.dataset.open === '1';
+
+            if (!isOpen) {
+                fullWrap.classList.remove('hidden');
+                gsap.set(fullWrap, {
+                    height: 0,
+                    opacity: 0
+                });
+
+                const targetHeight = fullWrap.scrollHeight;
+                const tl = gsap.timeline();
+                tl.to(shortEl, {
+                        opacity: 0,
+                        y: -8,
+                        duration: 0.2,
+                        ease: 'power1.out'
+                    })
+                    .set(shortEl, {
+                        display: 'none'
+                    })
+                    .to(fullWrap, {
+                        height: targetHeight,
+                        opacity: 1,
+                        duration: 0.4,
+                        ease: 'power2.out'
+                    }, '-=0.05')
+                    .to(arrow, {
+                        rotate: 180,
+                        duration: 0.25,
+                        ease: 'power2.out'
+                    }, '<');
+
+                btn.dataset.open = '1';
+                labelEl.textContent = 'Sembunyikan deskripsi lengkap';
+            } else {
+                const tl = gsap.timeline();
+                tl.to(fullWrap, {
+                        height: 0,
+                        opacity: 0,
+                        duration: 0.32,
+                        ease: 'power2.inOut'
+                    })
+                    .set(fullWrap, {
+                        display: 'none'
+                    })
+                    .set(shortEl, {
+                        display: 'block'
+                    })
+                    .to(shortEl, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.2,
+                        ease: 'power1.out'
+                    })
+                    .to(arrow, {
+                        rotate: 0,
+                        duration: 0.25,
+                        ease: 'power2.out'
+                    }, '<');
+
+                btn.dataset.open = '0';
+                labelEl.textContent = 'Lihat deskripsi lengkap';
+            }
+        });
     });
 </script>

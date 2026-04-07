@@ -1,7 +1,7 @@
 <!-- ============================================================ -->
 <!-- FOOTER -->
 <!-- ============================================================ -->
-<footer class="bg-hijau-950 text-white relative overflow-hidden">
+<footer class="bg-hijau-950 text-white relative overflow-visible">
     <div class="absolute inset-0 pattern-bg opacity-[0.03]"></div>
 
     <!-- Wave top — rendered as a BLOCK element with negative top margin so it
@@ -232,7 +232,7 @@
     // Disable GSAP's default lag smoothing to keep Lenis in full control
     gsap.ticker.lagSmoothing(0);
 
-    // Sync ScrollTrigger with Lenis scroll events
+    // Sync ScrollTrigger with Lenis
     lenis.on('scroll', ScrollTrigger.update);
 
     // ============================================================
@@ -246,8 +246,8 @@
 
     const NAV_SCROLL_THRESHOLD = 42;
 
-    const updateNavbarState = () => {
-        const currentScroll = window.scrollY;
+    const updateNavbarState = (forcedScroll) => {
+        const currentScroll = typeof forcedScroll === 'number' ? forcedScroll : window.scrollY;
 
         if (currentScroll > NAV_SCROLL_THRESHOLD) {
             navbar.classList.add('scrolled');
@@ -276,14 +276,14 @@
         }
     };
 
-    window.addEventListener('scroll', () => {
-        updateNavbarState();
-    }, {
-        passive: true
+    // Keep navbar state in sync with Lenis virtual scroll position
+    lenis.on('scroll', (evt) => {
+        const nextScroll = evt && typeof evt.scroll === 'number' ? evt.scroll : window.scrollY;
+        updateNavbarState(nextScroll);
     });
 
     // Keep state correct on hard refresh / history navigation
-    updateNavbarState();
+    updateNavbarState(window.scrollY);
 
     // Mobile menu toggle
     if (menuToggle && mobileMenu) {
@@ -685,16 +685,36 @@
     // ============================================================
     const particleContainer = document.getElementById('visi-particles');
     if (particleContainer) {
+        if (!document.getElementById('vm-particle-style')) {
+            const style = document.createElement('style');
+            style.id = 'vm-particle-style';
+            style.textContent = `
+                @keyframes vmParticleFloat {
+                    0% { transform: translate3d(0, 0, 0); opacity: .18; }
+                    50% { transform: translate3d(var(--vm-x), var(--vm-y), 0); opacity: .48; }
+                    100% { transform: translate3d(0, 0, 0); opacity: .18; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const lowPowerDevice = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+        if (prefersReduce || lowPowerDevice) {
+            particleContainer.innerHTML = '';
+        } else {
         const isMobile = window.innerWidth < 768;
-        const particleCount = isMobile ? 8 : 15; // Reduced from 20
+        const particleCount = isMobile ? 5 : 9;
 
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
-            const size = Math.random() * 3.5 + 1;
+            const size = Math.random() * 3 + 1;
             const isGold = Math.random() > 0.5;
-            const delay = Math.random() * 4;
-            const dur = (Math.random() * 5 + 5).toFixed(1);
+            const delay = (Math.random() * 2.4).toFixed(2);
+            const dur = (Math.random() * 3.2 + 4.8).toFixed(2);
+            const driftX = (Math.random() * 24 - 12).toFixed(1) + 'px';
+            const driftY = (Math.random() * 42 - 21).toFixed(1) + 'px';
 
             particle.style.cssText = `
                 width: ${size}px;
@@ -706,22 +726,13 @@
                 position: absolute;
                 border-radius: 50%;
                 pointer-events: none;
+                --vm-x: ${driftX};
+                --vm-y: ${driftY};
+                animation: vmParticleFloat ${dur}s ease-in-out ${delay}s infinite;
             `;
             particleContainer.appendChild(particle);
-
-            // Use GSAP only for particles in the viewport initially
-            // Others get CSS animation to offload from JS thread
-            gsap.to(particle, {
-                y: `random(-60, 60)`,
-                x: `random(-30, 30)`,
-                opacity: `random(0.05, 0.5)`,
-                duration: parseFloat(dur),
-                repeat: -1,
-                yoyo: true,
-                ease: 'sine.inOut',
-                delay,
-            });
         }
+      }
     }
 
     // ============================================================
@@ -776,6 +787,27 @@
     // SMOOTH ANCHOR SCROLLING (via Lenis)
     // ============================================================
     const normalizePath = (path) => (path || '').replace(/\/+$/, '') || '/';
+
+    // Beranda click: if still on current page, smooth scroll to top (no reload)
+    document.querySelectorAll('a[data-scroll-top="1"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const rawHref = this.getAttribute('href');
+            if (!rawHref) return;
+
+            const targetUrl = new URL(rawHref, window.location.href);
+            const sameOrigin = targetUrl.origin === window.location.origin;
+            const samePath = normalizePath(targetUrl.pathname) === normalizePath(window.location.pathname);
+            const hasHash = !!targetUrl.hash;
+
+            if (sameOrigin && samePath && !hasHash) {
+                e.preventDefault();
+                lenis.scrollTo(0, {
+                    duration: 1.2
+                });
+                if (mobileMenu) mobileMenu.classList.remove('open');
+            }
+        });
+    });
 
     document.querySelectorAll('a[href*="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {

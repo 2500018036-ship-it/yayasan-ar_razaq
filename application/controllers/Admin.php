@@ -194,7 +194,8 @@ class Admin extends CI_Controller
             }
         }
 
-        $this->load->view('admin/login');
+        $data['profil'] = $this->model->get_profil();
+        $this->load->view('admin/login', $data);
     }
 
     public function do_login()
@@ -272,32 +273,54 @@ class Admin extends CI_Controller
     public function profil_update()
     {
         $this->_check_auth();
+        $existing = $this->model->get_profil();
+
+        $deskripsi_lengkap = trim((string) $this->_post_or_existing('deskripsi_lengkap', $existing ? $existing->deskripsi_lengkap : '', FALSE));
+        $deskripsi_singkat_post = $this->input->post('deskripsi_singkat', TRUE);
+        $deskripsi_singkat = trim((string) $deskripsi_singkat_post);
+        if ($deskripsi_singkat_post === null || $deskripsi_singkat === '') {
+            $deskripsi_singkat = $this->_make_excerpt($deskripsi_lengkap, 180);
+        }
+
+        $hero_overlay_color = trim((string) $this->_post_or_existing('hero_overlay_color', $existing ? $existing->hero_overlay_color : '#052e16', TRUE));
+        if ($hero_overlay_color === '') $hero_overlay_color = '#052e16';
+        $hero_overlay_opacity_raw = $this->_post_or_existing('hero_overlay_opacity', $existing ? $existing->hero_overlay_opacity : 80, TRUE);
+        $hero_overlay_opacity = ($hero_overlay_opacity_raw === null || $hero_overlay_opacity_raw === '')
+            ? 80
+            : (int) $hero_overlay_opacity_raw;
+        if ($hero_overlay_opacity < 0 || $hero_overlay_opacity > 100) $hero_overlay_opacity = 80;
+
         $update_data = [
-            'nama_yayasan'         => $this->input->post('nama_yayasan', TRUE),
-            'tagline'              => $this->input->post('tagline', TRUE),
-            'deskripsi_singkat'    => $this->input->post('deskripsi_singkat', TRUE),
-            'deskripsi_lengkap'    => $this->input->post('deskripsi_lengkap', TRUE),
-            'alamat'               => $this->input->post('alamat', TRUE),
-            'telepon'              => $this->input->post('telepon', TRUE),
-            'email'                => $this->input->post('email', TRUE),
-            'website'              => $this->input->post('website', TRUE),
-            'facebook'             => $this->input->post('facebook', TRUE),
-            'instagram'            => $this->input->post('instagram', TRUE),
-            'youtube'              => $this->input->post('youtube', TRUE),
-            'whatsapp'             => $this->input->post('whatsapp', TRUE),
-            'maps_embed'           => $this->input->post('maps_embed', TRUE),
-            'tahun_berdiri'        => $this->input->post('tahun_berdiri', TRUE),
-            'status_akreditasi'    => $this->input->post('status_akreditasi', TRUE),
-            'hero_overlay_color'   => $this->input->post('hero_overlay_color', TRUE) ?: '#052e16',
-            'hero_overlay_opacity' => $this->input->post('hero_overlay_opacity', TRUE) ?: 80,
-            'hero_title'           => $this->input->post('hero_title', TRUE),
-            'hero_subtitle'        => $this->input->post('hero_subtitle', TRUE),
+            'nama_yayasan'                  => $this->_post_or_existing('nama_yayasan', $existing ? $existing->nama_yayasan : null, TRUE),
+            'tagline'                       => $this->_post_or_existing('tagline', $existing ? $existing->tagline : null, TRUE),
+            'deskripsi_singkat'             => $deskripsi_singkat,
+            'deskripsi_lengkap'             => $deskripsi_lengkap,
+            'alamat'                        => $this->_post_or_existing('alamat', $existing ? $existing->alamat : null, TRUE),
+            'telepon'                       => $this->_post_or_existing('telepon', $existing ? $existing->telepon : null, TRUE),
+            'email'                         => $this->_post_or_existing('email', $existing ? $existing->email : null, TRUE),
+            'website'                       => $this->_post_or_existing('website', $existing ? $existing->website : null, TRUE),
+            'facebook'                      => $this->_post_or_existing('facebook', $existing ? $existing->facebook : null, TRUE),
+            'instagram'                     => $this->_post_or_existing('instagram', $existing ? $existing->instagram : null, TRUE),
+            'youtube'                       => $this->_post_or_existing('youtube', $existing ? $existing->youtube : null, TRUE),
+            'whatsapp'                      => $this->_post_or_existing('whatsapp', $existing ? $existing->whatsapp : null, TRUE),
+            'maps_embed'                    => $this->_post_or_existing('maps_embed', $existing ? $existing->maps_embed : null, TRUE),
+            'tahun_berdiri'                 => $this->_post_or_existing('tahun_berdiri', $existing ? $existing->tahun_berdiri : null, TRUE),
+            'status_akreditasi'             => $this->_post_or_existing('status_akreditasi', $existing ? $existing->status_akreditasi : null, TRUE),
+            'hero_overlay_color'            => $hero_overlay_color,
+            'hero_overlay_opacity'          => $hero_overlay_opacity,
+            'hero_title'                    => $this->_post_or_existing('hero_title', $existing ? $existing->hero_title : null, TRUE),
+            'hero_subtitle'                 => $this->_post_or_existing('hero_subtitle', $existing ? $existing->hero_subtitle : null, TRUE),
+            'struktur_organisasi_judul'     => $this->_post_or_existing('struktur_organisasi_judul', $existing ? $existing->struktur_organisasi_judul : null, TRUE),
+            'struktur_organisasi_deskripsi' => $this->_post_or_existing('struktur_organisasi_deskripsi', $existing ? $existing->struktur_organisasi_deskripsi : null, FALSE),
         ];
 
         if (!empty($_FILES['logo']['name'])) {
             $upload_result = $this->_upload_file('logo', 'profil');
             if ($upload_result['status']) {
                 $update_data['logo'] = $upload_result['file_name'];
+                if ($existing && !empty($existing->logo) && $existing->logo !== $upload_result['file_name']) {
+                    $this->_delete_file('profil/' . $existing->logo);
+                }
             } else {
                 $this->_json('error', $upload_result['message']);
             }
@@ -307,6 +330,21 @@ class Admin extends CI_Controller
             $upload_result = $this->_upload_file('hero_image', 'profil');
             if ($upload_result['status']) {
                 $update_data['hero_image'] = $upload_result['file_name'];
+                if ($existing && !empty($existing->hero_image) && $existing->hero_image !== $upload_result['file_name']) {
+                    $this->_delete_file('profil/' . $existing->hero_image);
+                }
+            }
+        }
+
+        if (!empty($_FILES['struktur_organisasi_gambar']['name'])) {
+            $upload_result = $this->_upload_file('struktur_organisasi_gambar', 'profil');
+            if ($upload_result['status']) {
+                $update_data['struktur_organisasi_gambar'] = $upload_result['file_name'];
+                if ($existing && !empty($existing->struktur_organisasi_gambar) && $existing->struktur_organisasi_gambar !== $upload_result['file_name']) {
+                    $this->_delete_file('profil/' . $existing->struktur_organisasi_gambar);
+                }
+            } else {
+                $this->_json('error', $upload_result['message']);
             }
         }
 
@@ -356,6 +394,7 @@ class Admin extends CI_Controller
     public function sejarah_update($id)
     {
         $this->_check_auth();
+        $item = $this->model->get_by_id('sejarah', $id);
         $data = [
             'judul'  => $this->input->post('judul', TRUE),
             'konten' => $this->input->post('konten', TRUE),
@@ -365,7 +404,12 @@ class Admin extends CI_Controller
 
         if (!empty($_FILES['gambar']['name'])) {
             $up = $this->_upload_file('gambar', 'sejarah');
-            if ($up['status']) $data['gambar'] = $up['file_name'];
+            if ($up['status']) {
+                $data['gambar'] = $up['file_name'];
+                if ($item && !empty($item->gambar) && $item->gambar !== $up['file_name']) {
+                    $this->_delete_file('sejarah/' . $item->gambar);
+                }
+            }
         }
 
         $this->model->update('sejarah', $data, $id);
@@ -550,6 +594,7 @@ class Admin extends CI_Controller
     public function galeri_update($id)
     {
         $this->_check_auth();
+        $item = $this->model->get_by_id('galeri', $id);
         $status_input = $this->input->post('status', TRUE);
         $data = [
             'judul'     => $this->input->post('judul', TRUE),
@@ -562,7 +607,12 @@ class Admin extends CI_Controller
 
         if (!empty($_FILES['gambar']['name'])) {
             $up = $this->_upload_file('gambar', 'galeri');
-            if ($up['status']) $data['gambar'] = $up['file_name'];
+            if ($up['status']) {
+                $data['gambar'] = $up['file_name'];
+                if ($item && !empty($item->gambar) && $item->gambar !== $up['file_name']) {
+                    $this->_delete_file('galeri/' . $item->gambar);
+                }
+            }
         }
 
         $this->model->update('galeri', $data, $id);
@@ -627,6 +677,7 @@ class Admin extends CI_Controller
     public function ekskul_update($id)
     {
         $this->_check_auth();
+        $item = $this->model->get_by_id('ekskul', $id);
         $nama = trim((string) $this->input->post('nama', TRUE));
         $slug = $this->_make_unique_ekskul_slug($nama, (int) $id);
         $data = [
@@ -643,7 +694,12 @@ class Admin extends CI_Controller
 
         if (!empty($_FILES['gambar']['name'])) {
             $up = $this->_upload_file('gambar', 'ekskul');
-            if ($up['status']) $data['gambar'] = $up['file_name'];
+            if ($up['status']) {
+                $data['gambar'] = $up['file_name'];
+                if ($item && !empty($item->gambar) && $item->gambar !== $up['file_name']) {
+                    $this->_delete_file('ekskul/' . $item->gambar);
+                }
+            }
         }
 
         $this->model->update('ekskul', $data, $id);
@@ -714,6 +770,7 @@ class Admin extends CI_Controller
     public function berita_update($id)
     {
         $this->_check_auth();
+        $item = $this->model->get_by_id('berita', $id);
         $judul = $this->input->post('judul', TRUE);
         $slug  = $this->_make_slug($judul);
 
@@ -736,7 +793,12 @@ class Admin extends CI_Controller
 
         if (!empty($_FILES['gambar']['name'])) {
             $up = $this->_upload_file('gambar', 'berita');
-            if ($up['status']) $data['gambar'] = $up['file_name'];
+            if ($up['status']) {
+                $data['gambar'] = $up['file_name'];
+                if ($item && !empty($item->gambar) && $item->gambar !== $up['file_name']) {
+                    $this->_delete_file('berita/' . $item->gambar);
+                }
+            }
         }
 
         $this->model->update('berita', $data, $id);
@@ -897,6 +959,7 @@ class Admin extends CI_Controller
     {
         $this->_check_auth();
         $admin_id = $this->session->userdata('admin_id');
+        $current_admin = $this->model->get_admin_by_id($admin_id);
         $username = $this->input->post('username', TRUE);
         if ($this->model->username_exists($username, $admin_id)) {
             $this->_json('error', 'Username sudah digunakan akun lain.');
@@ -917,6 +980,9 @@ class Admin extends CI_Controller
             $up = $this->_upload_file('foto', 'admin');
             if ($up['status']) {
                 $data['foto'] = $up['file_name'];
+                if ($current_admin && !empty($current_admin->foto) && $current_admin->foto !== $up['file_name']) {
+                    $this->_delete_file('admin/' . $current_admin->foto);
+                }
             } else {
                 $this->_json('error', $up['message']);
             }
@@ -1119,6 +1185,9 @@ class Admin extends CI_Controller
             $up = $this->_upload_file('foto', 'admin');
             if ($up['status']) {
                 $data['foto'] = $up['file_name'];
+                if ($target && !empty($target->foto) && $target->foto !== $up['file_name']) {
+                    $this->_delete_file('admin/' . $target->foto);
+                }
             } else {
                 $this->_json('error', $up['message']);
             }
@@ -1144,6 +1213,9 @@ class Admin extends CI_Controller
 
         $target = $this->model->get_admin_by_id($id);
         if (!$target) $this->_json('error', 'Akun admin tidak ditemukan.');
+        if (!empty($target->foto)) {
+            $this->_delete_file('admin/' . $target->foto);
+        }
 
         $ok = $this->model->delete_admin_user($id);
         if (!$ok) $this->_json('error', 'Gagal menghapus akun admin.');
@@ -1174,6 +1246,26 @@ class Admin extends CI_Controller
             $slug = $base . '-' . $counter++;
         }
         return $slug;
+    }
+
+    private function _post_or_existing($key, $existing = null, $xss_clean = true)
+    {
+        $value = $this->input->post($key, $xss_clean);
+        return ($value === null) ? $existing : $value;
+    }
+
+    private function _make_excerpt($text, $limit = 180)
+    {
+        $plain = trim(preg_replace('/\s+/', ' ', strip_tags((string) $text)));
+        if ($plain === '') return '';
+
+        if (function_exists('mb_strlen') && function_exists('mb_substr')) {
+            if (mb_strlen($plain, 'UTF-8') <= $limit) return $plain;
+            return rtrim(mb_substr($plain, 0, $limit, 'UTF-8')) . '...';
+        }
+
+        if (strlen($plain) <= $limit) return $plain;
+        return rtrim(substr($plain, 0, $limit)) . '...';
     }
 
     // ============================================================

@@ -26,24 +26,9 @@ $can_edit = in_array('profil.edit', $permission_codes, true);
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
                 </div>
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Deskripsi Singkat</label>
-                    <textarea id="f-deskripsi" rows="3" placeholder="Deskripsi singkat untuk meta description..."
-                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500 resize-none"><?= $p ? $p->deskripsi_singkat : '' ?></textarea>
-                </div>
-                <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Deskripsi Lengkap</label>
-                    <textarea id="f-deskripsi-lengkap" rows="5" placeholder="Deskripsi lengkap yayasan untuk halaman profil..."
+                    <textarea id="f-deskripsi-lengkap" rows="6" placeholder="Deskripsi utama yayasan. Konten ini akan tampil sebagai ringkasan + deskripsi lengkap di section Sejarah/Profil website..."
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500 resize-y"><?= $p ? $p->deskripsi_lengkap : '' ?></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tahun Berdiri</label>
-                    <input type="number" id="f-tahun" value="<?= $p ? $p->tahun_berdiri : '' ?>" placeholder="1995"
-                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Akreditasi</label>
-                    <input type="text" id="f-akreditasi" value="<?= $p ? $p->status_akreditasi : '' ?>" placeholder="A / B / C"
-                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
                 </div>
             </div>
 
@@ -123,6 +108,32 @@ $can_edit = in_array('profil.edit', $permission_codes, true);
                     <input type="file" id="f-hero" accept="image/*" onchange="previewImage(this,'img-hero')"
                         class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-hijau-50 file:text-hijau-700 hover:file:bg-hijau-100">
                     <img id="img-hero" src="" class="hidden w-full h-20 object-cover mt-2 rounded-lg border border-gray-100">
+                </div>
+            </div>
+
+            <hr class="border-gray-100">
+
+            <!-- Struktur organisasi -->
+            <h3 class="font-semibold text-gray-800 text-sm">Struktur Organisasi (Section Sejarah & Profil)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Judul Struktur</label>
+                    <input type="text" id="f-struktur-judul" value="<?= $p ? $p->struktur_organisasi_judul : '' ?>" placeholder="Contoh: Struktur Organisasi Yayasan"
+                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Deskripsi Struktur</label>
+                    <textarea id="f-struktur-deskripsi" rows="4" placeholder="Deskripsi singkat struktur organisasi..."
+                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500 resize-y"><?= $p ? $p->struktur_organisasi_deskripsi : '' ?></textarea>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Gambar Struktur Organisasi</label>
+                    <?php if ($p && $p->struktur_organisasi_gambar): ?>
+                        <img src="<?= base_url('assets/images/uploads/profil/' . $p->struktur_organisasi_gambar) ?>" class="w-full max-w-xl h-auto mb-2 rounded-lg border border-gray-100 object-cover">
+                    <?php endif; ?>
+                    <input type="file" id="f-struktur-gambar" accept="image/*" onchange="previewImage(this,'img-struktur')"
+                        class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-hijau-50 file:text-hijau-700 hover:file:bg-hijau-100">
+                    <img id="img-struktur" src="" class="hidden w-full max-w-xl h-auto mt-2 rounded-lg border border-gray-100 object-cover">
                 </div>
             </div>
         </div>
@@ -252,10 +263,9 @@ $can_edit = in_array('profil.edit', $permission_codes, true);
         const fd = new FormData();
         fd.append('nama_yayasan', nama);
         fd.append('tagline', document.getElementById('f-tagline').value);
-        fd.append('deskripsi_singkat', document.getElementById('f-deskripsi').value);
         fd.append('deskripsi_lengkap', document.getElementById('f-deskripsi-lengkap').value);
-        fd.append('tahun_berdiri', document.getElementById('f-tahun').value);
-        fd.append('status_akreditasi', document.getElementById('f-akreditasi').value);
+        fd.append('struktur_organisasi_judul', document.getElementById('f-struktur-judul').value);
+        fd.append('struktur_organisasi_deskripsi', document.getElementById('f-struktur-deskripsi').value);
         fd.append('alamat', document.getElementById('f-alamat').value);
         fd.append('telepon', document.getElementById('f-telepon').value);
         fd.append('email', document.getElementById('f-email').value);
@@ -272,8 +282,10 @@ $can_edit = in_array('profil.edit', $permission_codes, true);
         // Files
         const logo = document.getElementById('f-logo').files[0];
         const hero = document.getElementById('f-hero').files[0];
+        const struktur = document.getElementById('f-struktur-gambar').files[0];
         if (logo) fd.append('logo', logo);
         if (hero) fd.append('hero_image', hero);
+        if (struktur) fd.append('struktur_organisasi_gambar', struktur);
         await ajaxSubmit('<?= base_url('panel-admin/profil/save') ?>', fd, () => {
             setTimeout(() => location.reload(), 800);
         });
