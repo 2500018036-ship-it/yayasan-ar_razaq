@@ -45,12 +45,15 @@ $route['panel-admin/sejarah/delete']    = 'Admin/sejarah_delete'; // alias used 
 $route['panel-admin/sejarah/get/(:num)']    = 'Admin/sejarah_get/$1';
 
 // Admin - Visi Misi
-$route['panel-admin/visi-misi']                  = 'Admin/visi_misi';
-$route['panel-admin/visi-misi/bg-save']          = 'Admin/visi_misi_bg_save';
-$route['panel-admin/visi-misi/store']            = 'Admin/visi_misi_store';
-$route['panel-admin/visi-misi/update/(:num)']    = 'Admin/visi_misi_update/$1';
-$route['panel-admin/visi-misi/delete/(:num)']    = 'Admin/visi_misi_delete/$1';
-$route['panel-admin/visi-misi/get/(:num)']       = 'Admin/visi_misi_get/$1';
+$route['panel-admin/visi-misi']                         = 'Admin/visi_misi';
+$route['panel-admin/visi-misi/bg-save']                 = 'Admin/visi_misi_bg_save';
+$route['panel-admin/visi-misi/bg-delete-image']         = 'Admin/visi_misi_bg_delete_image';
+$route['panel-admin/visi-misi/bg-delete-video']         = 'Admin/visi_misi_bg_delete_video';
+$route['panel-admin/visi-misi/toggle/(:num)']           = 'Admin/visi_misi_toggle/$1';
+$route['panel-admin/visi-misi/store']                   = 'Admin/visi_misi_store';
+$route['panel-admin/visi-misi/update/(:num)']           = 'Admin/visi_misi_update/$1';
+$route['panel-admin/visi-misi/delete/(:num)']           = 'Admin/visi_misi_delete/$1';
+$route['panel-admin/visi-misi/get/(:num)']              = 'Admin/visi_misi_get/$1';
 
 // Admin - Galeri
 $route['panel-admin/galeri']                = 'Admin/galeri';

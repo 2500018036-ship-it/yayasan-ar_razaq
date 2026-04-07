@@ -56,56 +56,58 @@ class Admin extends CI_Controller
     private function _permission_map()
     {
         return [
-            'dashboard' => 'dashboard.view',
-            'profil' => 'profil.view',
-            'profil_update' => 'profil.edit',
-            'sejarah' => 'sejarah.view',
-            'sejarah_get' => 'sejarah.view',
-            'sejarah_store' => 'sejarah.create',
-            'sejarah_update' => 'sejarah.edit',
-            'sejarah_delete' => 'sejarah.delete',
-            'visi_misi' => 'visi_misi.view',
-            'visi_misi_get' => 'visi_misi.view',
-            'visi_misi_bg_save' => 'visi_misi.edit',
-            'visi_misi_store' => 'visi_misi.create',
-            'visi_misi_update' => 'visi_misi.edit',
-            'visi_misi_delete' => 'visi_misi.delete',
-            'galeri' => 'galeri.view',
-            'galeri_get' => 'galeri.view',
-            'galeri_store' => 'galeri.create',
-            'galeri_update' => 'galeri.edit',
-            'galeri_delete' => 'galeri.delete',
-            'ekskul' => 'ekskul.view',
-            'ekskul_get' => 'ekskul.view',
-            'ekskul_store' => 'ekskul.create',
-            'ekskul_update' => 'ekskul.edit',
-            'ekskul_delete' => 'ekskul.delete',
-            'berita' => 'berita.view',
-            'berita_get' => 'berita.view',
-            'berita_store' => 'berita.create',
-            'berita_update' => 'berita.edit',
-            'berita_delete' => 'berita.delete',
-            'ppdb' => 'ppdb.view',
-            'ppdb_get' => 'ppdb.view',
-            'ppdb_store' => 'ppdb.create',
-            'ppdb_update' => 'ppdb.edit',
-            'ppdb_delete' => 'ppdb.delete',
-            'statistik' => 'statistik.view',
-            'statistik_get' => 'statistik.view',
-            'statistik_store' => 'statistik.create',
-            'statistik_update' => 'statistik.edit',
-            'statistik_delete' => 'statistik.delete',
-            'akun' => 'akun.view',
-            'akun_update' => 'akun.edit',
-            'setting' => 'setting.view',
-            'setting_role_get' => 'setting.view',
-            'setting_role_store' => 'setting.role.create',
-            'setting_role_update' => 'setting.role.edit',
-            'setting_role_delete' => 'setting.role.delete',
-            'setting_user_get' => 'setting.view',
-            'setting_user_store' => 'setting.user.create',
-            'setting_user_update' => 'setting.user.edit',
-            'setting_user_delete' => 'setting.user.delete',
+            'dashboard'                  => 'dashboard.view',
+            'profil'                     => 'profil.view',
+            'profil_update'              => 'profil.edit',
+            'sejarah'                    => 'sejarah.view',
+            'sejarah_get'                => 'sejarah.view',
+            'sejarah_store'              => 'sejarah.create',
+            'sejarah_update'             => 'sejarah.edit',
+            'sejarah_delete'             => 'sejarah.delete',
+            'visi_misi'                  => 'visi_misi.view',
+            'visi_misi_get'              => 'visi_misi.view',
+            'visi_misi_bg_save'          => 'visi_misi.edit',
+            'visi_misi_bg_delete_image'  => 'visi_misi.edit',
+            'visi_misi_bg_delete_video'  => 'visi_misi.edit',
+            'visi_misi_store'            => 'visi_misi.create',
+            'visi_misi_update'           => 'visi_misi.edit',
+            'visi_misi_delete'           => 'visi_misi.delete',
+            'galeri'                     => 'galeri.view',
+            'galeri_get'                 => 'galeri.view',
+            'galeri_store'               => 'galeri.create',
+            'galeri_update'              => 'galeri.edit',
+            'galeri_delete'              => 'galeri.delete',
+            'ekskul'                     => 'ekskul.view',
+            'ekskul_get'                 => 'ekskul.view',
+            'ekskul_store'               => 'ekskul.create',
+            'ekskul_update'              => 'ekskul.edit',
+            'ekskul_delete'              => 'ekskul.delete',
+            'berita'                     => 'berita.view',
+            'berita_get'                 => 'berita.view',
+            'berita_store'               => 'berita.create',
+            'berita_update'              => 'berita.edit',
+            'berita_delete'              => 'berita.delete',
+            'ppdb'                       => 'ppdb.view',
+            'ppdb_get'                   => 'ppdb.view',
+            'ppdb_store'                 => 'ppdb.create',
+            'ppdb_update'                => 'ppdb.edit',
+            'ppdb_delete'                => 'ppdb.delete',
+            'statistik'                  => 'statistik.view',
+            'statistik_get'              => 'statistik.view',
+            'statistik_store'            => 'statistik.create',
+            'statistik_update'           => 'statistik.edit',
+            'statistik_delete'           => 'statistik.delete',
+            'akun'                       => 'akun.view',
+            'akun_update'                => 'akun.edit',
+            'setting'                    => 'setting.view',
+            'setting_role_get'           => 'setting.view',
+            'setting_role_store'         => 'setting.role.create',
+            'setting_role_update'        => 'setting.role.edit',
+            'setting_role_delete'        => 'setting.role.delete',
+            'setting_user_get'           => 'setting.view',
+            'setting_user_store'         => 'setting.user.create',
+            'setting_user_update'        => 'setting.user.edit',
+            'setting_user_delete'        => 'setting.user.delete',
         ];
     }
 
@@ -124,11 +126,11 @@ class Admin extends CI_Controller
 
         $permission_codes = $this->model->get_admin_permissions($admin_id);
         $this->session->set_userdata([
-            'admin_nama' => $admin->nama,
-            'admin_username' => $admin->username,
-            'admin_foto' => $admin->foto,
-            'admin_role_id' => (int) $admin->role_id,
-            'admin_role_name' => $admin->role_nama ?: 'Tanpa Role',
+            'admin_nama'        => $admin->nama,
+            'admin_username'    => $admin->username,
+            'admin_foto'        => $admin->foto,
+            'admin_role_id'     => (int) $admin->role_id,
+            'admin_role_name'   => $admin->role_nama ?: 'Tanpa Role',
             'admin_permissions' => $permission_codes,
         ]);
     }
@@ -151,17 +153,7 @@ class Admin extends CI_Controller
     }
 
     // ============================================================
-    // LOGIN — Handles both form POST (redirect) and AJAX (JSON)
-    //
-    // FIX 1: The login view's JS calls 'panel-admin/login' via fetch
-    //         with redirect:'manual'. This method now handles both
-    //         the browser form submission (redirect) and AJAX gracefully.
-    //
-    // FIX 2: The original password in the DB was hashed with $2a$
-    //         (bcrypt cost 12). PHP's password_verify() is compatible
-    //         with $2a$ hashes — no issue there.
-    //         Root cause was the login VIEW calling 'panel-admin/do-login'
-    //         which DID NOT EXIST. Fixed by aligning to 'panel-admin/login'.
+    // LOGIN
     // ============================================================
     public function login()
     {
@@ -171,7 +163,7 @@ class Admin extends CI_Controller
 
         if ($this->input->post()) {
             $username = $this->input->post('username', TRUE);
-            $password = $this->input->post('password'); // Do NOT sanitize — XSS filter mangles passwords
+            $password = $this->input->post('password');
 
             $admin = $this->model->get_admin_by_username($username);
 
@@ -184,7 +176,6 @@ class Admin extends CI_Controller
                 ]);
                 $this->_refresh_admin_acl_session(true);
 
-                // If AJAX request, return JSON
                 if ($this->input->is_ajax_request()) {
                     $this->_json('success', 'Login berhasil!', ['redirect' => base_url('panel-admin/dashboard')]);
                 }
@@ -193,7 +184,6 @@ class Admin extends CI_Controller
             } else {
                 $this->session->set_flashdata('error', 'Username atau password salah!');
 
-                // If AJAX request, return JSON
                 if ($this->input->is_ajax_request()) {
                     header('Content-Type: application/json');
                     echo json_encode(['success' => false, 'message' => 'Username atau password salah!']);
@@ -207,16 +197,6 @@ class Admin extends CI_Controller
         $this->load->view('admin/login');
     }
 
-    /**
-     * do_login() — Dedicated JSON endpoint for AJAX login
-     *
-     * FIX: Added this missing method. The original login.php view was
-     * posting to 'panel-admin/do-login' which returned a 404, so the
-     * catch block in doLogin() always triggered "Terjadi kesalahan."
-     * Now this endpoint exists and returns the JSON the view expects.
-     *
-     * Response format: { success: bool, message: string }
-     */
     public function do_login()
     {
         if ($this->session->userdata('admin_logged_in')) {
@@ -228,9 +208,8 @@ class Admin extends CI_Controller
         }
 
         $username = $this->input->post('username', TRUE);
-        $password = $this->input->post('password'); // Raw — do NOT run through XSS filter
+        $password = (string) $this->input->post('password');
 
-        // Validate input
         if (empty($username) || empty($password)) {
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => 'Username dan password wajib diisi.']);
@@ -269,8 +248,8 @@ class Admin extends CI_Controller
     public function dashboard()
     {
         $this->_check_auth();
-        $data['title'] = 'Dashboard';
-        $data['stats'] = $this->model->get_dashboard_stats();
+        $data['title']          = 'Dashboard';
+        $data['stats']          = $this->model->get_dashboard_stats();
         $data['berita_terbaru'] = $this->model->get_berita_aktif(5);
         $this->load->view('admin/layout/header', $data);
         $this->load->view('admin/dashboard', $data);
@@ -294,22 +273,21 @@ class Admin extends CI_Controller
     {
         $this->_check_auth();
         $update_data = [
-            'nama_yayasan'       => $this->input->post('nama_yayasan', TRUE),
-            'tagline'            => $this->input->post('tagline', TRUE),
-            'deskripsi_singkat'  => $this->input->post('deskripsi_singkat', TRUE),
-            'deskripsi_lengkap'  => $this->input->post('deskripsi_lengkap', TRUE),
-            'alamat'             => $this->input->post('alamat', TRUE),
-            'telepon'            => $this->input->post('telepon', TRUE),
-            'email'              => $this->input->post('email', TRUE),
-            'website'            => $this->input->post('website', TRUE),
-            'facebook'           => $this->input->post('facebook', TRUE),
-            'instagram'          => $this->input->post('instagram', TRUE),
-            'youtube'            => $this->input->post('youtube', TRUE),
-            'whatsapp'           => $this->input->post('whatsapp', TRUE),
-            'maps_embed'         => $this->input->post('maps_embed', TRUE),
-            'tahun_berdiri'      => $this->input->post('tahun_berdiri', TRUE),
-            'status_akreditasi'  => $this->input->post('status_akreditasi', TRUE),
-            // Hero section settings
+            'nama_yayasan'         => $this->input->post('nama_yayasan', TRUE),
+            'tagline'              => $this->input->post('tagline', TRUE),
+            'deskripsi_singkat'    => $this->input->post('deskripsi_singkat', TRUE),
+            'deskripsi_lengkap'    => $this->input->post('deskripsi_lengkap', TRUE),
+            'alamat'               => $this->input->post('alamat', TRUE),
+            'telepon'              => $this->input->post('telepon', TRUE),
+            'email'                => $this->input->post('email', TRUE),
+            'website'              => $this->input->post('website', TRUE),
+            'facebook'             => $this->input->post('facebook', TRUE),
+            'instagram'            => $this->input->post('instagram', TRUE),
+            'youtube'              => $this->input->post('youtube', TRUE),
+            'whatsapp'             => $this->input->post('whatsapp', TRUE),
+            'maps_embed'           => $this->input->post('maps_embed', TRUE),
+            'tahun_berdiri'        => $this->input->post('tahun_berdiri', TRUE),
+            'status_akreditasi'    => $this->input->post('status_akreditasi', TRUE),
             'hero_overlay_color'   => $this->input->post('hero_overlay_color', TRUE) ?: '#052e16',
             'hero_overlay_opacity' => $this->input->post('hero_overlay_opacity', TRUE) ?: 80,
             'hero_title'           => $this->input->post('hero_title', TRUE),
@@ -330,20 +308,6 @@ class Admin extends CI_Controller
             if ($upload_result['status']) {
                 $update_data['hero_image'] = $upload_result['file_name'];
             }
-        }
-
-        // Visi Misi background settings
-        $update_data['visimisi_overlay_color'] = $this->input->post('visimisi_overlay_color', TRUE) ?: '#052e16';
-        $update_data['visimisi_overlay_opacity'] = $this->input->post('visimisi_overlay_opacity', TRUE) ?: 80;
-
-        if (!empty($_FILES['visimisi_bg_image']['name'])) {
-            $up = $this->_upload_file('visimisi_bg_image', 'profil');
-            if ($up['status']) $update_data['visimisi_bg_image'] = $up['file_name'];
-        }
-
-        if (!empty($_FILES['visimisi_bg_video']['name'])) {
-            $up = $this->_upload_video('visimisi_bg_video', 'profil');
-            if ($up['status']) $update_data['visimisi_bg_video'] = $up['file_name'];
         }
 
         $this->model->update_profil($update_data);
@@ -440,17 +404,57 @@ class Admin extends CI_Controller
         ];
 
         if (!empty($_FILES['visimisi_bg_image']['name'])) {
+            // Hapus file lama sebelum upload baru
+            $profil = $this->model->get_profil();
+            if ($profil && !empty($profil->visimisi_bg_image)) {
+                $this->_delete_file('profil/' . $profil->visimisi_bg_image);
+            }
             $up = $this->_upload_file('visimisi_bg_image', 'profil');
-            if ($up['status']) $update_data['visimisi_bg_image'] = $up['file_name'];
+            if ($up['status']) {
+                $update_data['visimisi_bg_image'] = $up['file_name'];
+            } else {
+                $this->_json('error', $up['message']);
+            }
         }
 
         if (!empty($_FILES['visimisi_bg_video']['name'])) {
+            // Hapus file lama sebelum upload baru
+            $profil = isset($profil) ? $profil : $this->model->get_profil();
+            if ($profil && !empty($profil->visimisi_bg_video)) {
+                $this->_delete_file('profil/' . $profil->visimisi_bg_video);
+            }
             $up = $this->_upload_video('visimisi_bg_video', 'profil');
-            if ($up['status']) $update_data['visimisi_bg_video'] = $up['file_name'];
+            if ($up['status']) {
+                $update_data['visimisi_bg_video'] = $up['file_name'];
+            } else {
+                $this->_json('error', $up['message']);
+            }
         }
 
         $this->model->update_profil($update_data);
         $this->_json('success', 'Background Visi & Misi berhasil diperbarui!');
+    }
+
+    public function visi_misi_bg_delete_image()
+    {
+        $this->_check_auth();
+        $profil = $this->model->get_profil();
+        if ($profil && !empty($profil->visimisi_bg_image)) {
+            $this->_delete_file('profil/' . $profil->visimisi_bg_image);
+        }
+        $this->model->update_profil(['visimisi_bg_image' => null]);
+        $this->_json('success', 'Background gambar berhasil dihapus.');
+    }
+
+    public function visi_misi_bg_delete_video()
+    {
+        $this->_check_auth();
+        $profil = $this->model->get_profil();
+        if ($profil && !empty($profil->visimisi_bg_video)) {
+            $this->_delete_file('profil/' . $profil->visimisi_bg_video);
+        }
+        $this->model->update_profil(['visimisi_bg_video' => null]);
+        $this->_json('success', 'Background video berhasil dihapus.');
     }
 
     public function visi_misi_get($id)
@@ -600,15 +604,15 @@ class Admin extends CI_Controller
         $nama = trim((string) $this->input->post('nama', TRUE));
         $slug = $this->_make_unique_ekskul_slug($nama);
         $data = [
-            'nama'      => $nama,
-            'slug'      => $slug,
-            'deskripsi' => $this->input->post('deskripsi', TRUE),
+            'nama'           => $nama,
+            'slug'           => $slug,
+            'deskripsi'      => $this->input->post('deskripsi', TRUE),
             'detail_lengkap' => $this->input->post('detail_lengkap'),
-            'ikon'      => $this->input->post('ikon', TRUE),
-            'jadwal'    => $this->input->post('jadwal', TRUE),
-            'pembina'   => $this->input->post('pembina', TRUE),
-            'urutan'    => $this->input->post('urutan', TRUE) ?: 1,
-            'status'    => $this->input->post('status', TRUE) ?: 1,
+            'ikon'           => $this->input->post('ikon', TRUE),
+            'jadwal'         => $this->input->post('jadwal', TRUE),
+            'pembina'        => $this->input->post('pembina', TRUE),
+            'urutan'         => $this->input->post('urutan', TRUE) ?: 1,
+            'status'         => $this->input->post('status', TRUE) ?: 1,
         ];
 
         if (!empty($_FILES['gambar']['name'])) {
@@ -626,15 +630,15 @@ class Admin extends CI_Controller
         $nama = trim((string) $this->input->post('nama', TRUE));
         $slug = $this->_make_unique_ekskul_slug($nama, (int) $id);
         $data = [
-            'nama'      => $nama,
-            'slug'      => $slug,
-            'deskripsi' => $this->input->post('deskripsi', TRUE),
+            'nama'           => $nama,
+            'slug'           => $slug,
+            'deskripsi'      => $this->input->post('deskripsi', TRUE),
             'detail_lengkap' => $this->input->post('detail_lengkap'),
-            'ikon'      => $this->input->post('ikon', TRUE),
-            'jadwal'    => $this->input->post('jadwal', TRUE),
-            'pembina'   => $this->input->post('pembina', TRUE),
-            'urutan'    => $this->input->post('urutan', TRUE) ?: 1,
-            'status'    => $this->input->post('status', TRUE) ?: 1,
+            'ikon'           => $this->input->post('ikon', TRUE),
+            'jadwal'         => $this->input->post('jadwal', TRUE),
+            'pembina'        => $this->input->post('pembina', TRUE),
+            'urutan'         => $this->input->post('urutan', TRUE) ?: 1,
+            'status'         => $this->input->post('status', TRUE) ?: 1,
         ];
 
         if (!empty($_FILES['gambar']['name'])) {
@@ -681,22 +685,21 @@ class Admin extends CI_Controller
         $judul = $this->input->post('judul', TRUE);
         $slug  = $this->_make_slug($judul);
 
-        // Ensure slug is unique
-        $counter = 1;
+        $counter   = 1;
         $base_slug = $slug;
         while ($this->model->slug_exists($slug)) {
             $slug = $base_slug . '-' . $counter++;
         }
 
         $data = [
-            'judul'          => $judul,
-            'slug'           => $slug,
-            'isi'            => $this->input->post('isi'),
-            'ringkasan'      => $this->input->post('ringkasan', TRUE),
-            'kategori'       => $this->input->post('kategori', TRUE) ?: 'berita',
-            'penulis'        => $this->input->post('penulis', TRUE),
+            'judul'           => $judul,
+            'slug'            => $slug,
+            'isi'             => $this->input->post('isi'),
+            'ringkasan'       => $this->input->post('ringkasan', TRUE),
+            'kategori'        => $this->input->post('kategori', TRUE) ?: 'berita',
+            'penulis'         => $this->input->post('penulis', TRUE),
             'tanggal_publish' => $this->input->post('tanggal_publish', TRUE) ?: date('Y-m-d'),
-            'status'         => $this->input->post('status', TRUE) ?: 1,
+            'status'          => $this->input->post('status', TRUE) ?: 1,
         ];
 
         if (!empty($_FILES['gambar']['name'])) {
@@ -714,21 +717,21 @@ class Admin extends CI_Controller
         $judul = $this->input->post('judul', TRUE);
         $slug  = $this->_make_slug($judul);
 
-        $counter = 1;
+        $counter   = 1;
         $base_slug = $slug;
         while ($this->model->slug_exists($slug, $id)) {
             $slug = $base_slug . '-' . $counter++;
         }
 
         $data = [
-            'judul'          => $judul,
-            'slug'           => $slug,
-            'isi'            => $this->input->post('isi'),
-            'ringkasan'      => $this->input->post('ringkasan', TRUE),
-            'kategori'       => $this->input->post('kategori', TRUE) ?: 'berita',
-            'penulis'        => $this->input->post('penulis', TRUE),
+            'judul'           => $judul,
+            'slug'            => $slug,
+            'isi'             => $this->input->post('isi'),
+            'ringkasan'       => $this->input->post('ringkasan', TRUE),
+            'kategori'        => $this->input->post('kategori', TRUE) ?: 'berita',
+            'penulis'         => $this->input->post('penulis', TRUE),
             'tanggal_publish' => $this->input->post('tanggal_publish', TRUE) ?: date('Y-m-d'),
-            'status'         => $this->input->post('status', TRUE) ?: 1,
+            'status'          => $this->input->post('status', TRUE) ?: 1,
         ];
 
         if (!empty($_FILES['gambar']['name'])) {
@@ -931,10 +934,10 @@ class Admin extends CI_Controller
     public function setting()
     {
         $this->_check_auth();
-        $data['title'] = 'Pengaturan Admin';
-        $data['roles'] = $this->model->get_all_roles();
+        $data['title']       = 'Pengaturan Admin';
+        $data['roles']       = $this->model->get_all_roles();
         $data['permissions'] = $this->model->get_all_permissions();
-        $data['admins'] = $this->model->get_all_admin_with_roles();
+        $data['admins']      = $this->model->get_all_admin_with_roles();
         $this->load->view('admin/layout/header', $data);
         $this->load->view('admin/setting', $data);
         $this->load->view('admin/layout/footer');
@@ -946,7 +949,7 @@ class Admin extends CI_Controller
         $role = $this->model->get_role_by_id($id);
         if (!$role) $this->_json('error', 'Role tidak ditemukan.');
         $payload = [
-            'role' => $role,
+            'role'             => $role,
             'permission_codes' => $this->model->get_role_permission_codes($id),
         ];
         $this->_json('success', 'OK', $payload);
@@ -955,8 +958,8 @@ class Admin extends CI_Controller
     public function setting_role_store()
     {
         $this->_check_auth();
-        $nama = trim((string) $this->input->post('nama', TRUE));
-        $deskripsi = trim((string) $this->input->post('deskripsi', TRUE));
+        $nama             = trim((string) $this->input->post('nama', TRUE));
+        $deskripsi        = trim((string) $this->input->post('deskripsi', TRUE));
         $permission_codes = json_decode((string) $this->input->post('permissions_json'), true);
         if (!is_array($permission_codes)) $permission_codes = [];
 
@@ -966,7 +969,7 @@ class Admin extends CI_Controller
         }
 
         $role_id = $this->model->create_role([
-            'nama' => $nama,
+            'nama'      => $nama,
             'deskripsi' => $deskripsi,
             'is_system' => 0,
         ], $permission_codes);
@@ -982,8 +985,8 @@ class Admin extends CI_Controller
         $role = $this->model->get_role_by_id($id);
         if (!$role) $this->_json('error', 'Role tidak ditemukan.');
 
-        $nama = trim((string) $this->input->post('nama', TRUE));
-        $deskripsi = trim((string) $this->input->post('deskripsi', TRUE));
+        $nama             = trim((string) $this->input->post('nama', TRUE));
+        $deskripsi        = trim((string) $this->input->post('deskripsi', TRUE));
         $permission_codes = json_decode((string) $this->input->post('permissions_json'), true);
         if (!is_array($permission_codes)) $permission_codes = [];
 
@@ -992,13 +995,12 @@ class Admin extends CI_Controller
             $this->_json('error', 'Nama role sudah digunakan.');
         }
 
-        // System role: lock name, and keep super-admin with full permission
         $update_data = [
-            'nama' => ((int) $role->is_system) ? $role->nama : $nama,
+            'nama'      => ((int) $role->is_system) ? $role->nama : $nama,
             'deskripsi' => $deskripsi,
         ];
         if ($role->nama === 'Super Admin') {
-            $catalog = $this->model->get_permission_catalog();
+            $catalog          = $this->model->get_permission_catalog();
             $permission_codes = array_map(function ($p) {
                 return $p['kode'];
             }, $catalog);
@@ -1043,11 +1045,11 @@ class Admin extends CI_Controller
     public function setting_user_store()
     {
         $this->_check_auth();
-        $nama = trim((string) $this->input->post('nama', TRUE));
+        $nama     = trim((string) $this->input->post('nama', TRUE));
         $username = trim((string) $this->input->post('username', TRUE));
-        $email = trim((string) $this->input->post('email', TRUE));
+        $email    = trim((string) $this->input->post('email', TRUE));
         $password = (string) $this->input->post('password');
-        $role_id = (int) $this->input->post('role_id', TRUE);
+        $role_id  = (int) $this->input->post('role_id', TRUE);
 
         if ($nama === '' || $username === '' || $password === '') {
             $this->_json('error', 'Nama, username, dan password wajib diisi.');
@@ -1060,11 +1062,11 @@ class Admin extends CI_Controller
         }
 
         $data = [
-            'nama' => $nama,
-            'email' => $email ?: null,
+            'nama'     => $nama,
+            'email'    => $email ?: null,
             'username' => $username,
             'password' => password_hash($password, PASSWORD_BCRYPT),
-            'role_id' => $role_id,
+            'role_id'  => $role_id,
         ];
 
         if (!empty($_FILES['foto']['name'])) {
@@ -1084,14 +1086,14 @@ class Admin extends CI_Controller
     public function setting_user_update($id)
     {
         $this->_check_auth();
-        $target = $this->model->get_admin_by_id($id);
+        $target   = $this->model->get_admin_by_id($id);
         if (!$target) $this->_json('error', 'Akun admin tidak ditemukan.');
 
-        $nama = trim((string) $this->input->post('nama', TRUE));
+        $nama     = trim((string) $this->input->post('nama', TRUE));
         $username = trim((string) $this->input->post('username', TRUE));
-        $email = trim((string) $this->input->post('email', TRUE));
+        $email    = trim((string) $this->input->post('email', TRUE));
         $password = (string) $this->input->post('password');
-        $role_id = (int) $this->input->post('role_id', TRUE);
+        $role_id  = (int) $this->input->post('role_id', TRUE);
 
         if ($nama === '' || $username === '') {
             $this->_json('error', 'Nama dan username wajib diisi.');
@@ -1104,8 +1106,8 @@ class Admin extends CI_Controller
         }
 
         $data = [
-            'nama' => $nama,
-            'email' => $email ?: null,
+            'nama'    => $nama,
+            'email'   => $email ?: null,
             'username' => $username,
             'role_id' => $role_id,
         ];
@@ -1134,7 +1136,7 @@ class Admin extends CI_Controller
     public function setting_user_delete($id)
     {
         $this->_check_auth();
-        $id = (int) $id;
+        $id         = (int) $id;
         $current_id = (int) $this->session->userdata('admin_id');
         if ($id === $current_id) {
             $this->_json('error', 'Akun yang sedang login tidak bisa dihapus.');
@@ -1166,7 +1168,7 @@ class Admin extends CI_Controller
             $base = 'ekskul-' . date('YmdHis');
         }
 
-        $slug = $base;
+        $slug    = $base;
         $counter = 1;
         while ($this->model->ekskul_slug_exists($slug, (int) $exclude_id)) {
             $slug = $base . '-' . $counter++;
@@ -1175,7 +1177,7 @@ class Admin extends CI_Controller
     }
 
     // ============================================================
-    // HELPER: UPLOAD FILE
+    // HELPER: UPLOAD FILE (GAMBAR)
     // ============================================================
     private function _upload_file($field_name, $subfolder = '')
     {
@@ -1194,8 +1196,6 @@ class Admin extends CI_Controller
             return ['status' => FALSE, 'message' => 'Folder upload tidak writable: ' . $upload_path];
         }
 
-        // Catatan: file_name dan encrypt_name tidak boleh digunakan bersamaan.
-        // encrypt_name=TRUE akan otomatis menghasilkan nama unik yang aman.
         $config = [
             'upload_path'   => $upload_path,
             'allowed_types' => 'jpg|jpeg|png|gif|webp',
@@ -1213,6 +1213,9 @@ class Admin extends CI_Controller
         }
     }
 
+    // ============================================================
+    // HELPER: DELETE FILE
+    // ============================================================
     private function _delete_file($path)
     {
         $full_path = FCPATH . 'assets/images/uploads/' . $path;
@@ -1242,7 +1245,7 @@ class Admin extends CI_Controller
         $config = [
             'upload_path'   => $upload_path,
             'allowed_types' => 'mp4|webm|ogg',
-            'max_size'      => 51200, // 50MB
+            'max_size'      => 51200, // 50 MB
             'encrypt_name'  => TRUE,
         ];
 

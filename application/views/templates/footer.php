@@ -4,23 +4,88 @@
 <footer class="bg-hijau-950 text-white relative overflow-hidden">
     <div class="absolute inset-0 pattern-bg opacity-[0.03]"></div>
 
-    <!-- Wave top (connects with previous section) -->
-    <div class="wave-divider wave-top">
-        <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,24 C240,4 480,44 720,24 C960,4 1200,44 1440,24 L1440,0 L0,0 Z" fill="#052e16" />
+    <!-- Wave top — rendered as a BLOCK element with negative top margin so it
+         pulls up and overlaps the preceding section regardless of its height.
+         JS detects the preceding section's bg color and writes it into the fill
+         so the wave always matches, on every single page. -->
+    <div id="footer-wave-wrap" style="display:block; line-height:0; margin-top:-79px; position:relative; z-index:5; pointer-events:none;">
+        <svg id="footer-wave-svg" viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="none"
+            style="display:block; width:100%; height:80px;">
+            <path id="footer-wave-path"
+                d="M0,24 C240,4 480,44 720,24 C960,4 1200,44 1440,24 L1440,0 L0,0 Z"
+                fill="#ffffff" />
         </svg>
     </div>
+    <script>
+        // Detect preceding section's background color and apply to wave fill.
+        // Runs inline (before paint) to avoid any flash.
+        (function() {
+            var BG_MAP = {
+                'bg-white': '#ffffff',
+                'bg-gray-50': '#f9fafb',
+                'bg-gray-100': '#f3f4f6',
+                'bg-hijau-50': '#f0fdf4',
+                'bg-hijau-900': '#14532d',
+                'bg-hijau-950': '#052e16',
+            };
 
-    <div class="container mx-auto px-4 lg:px-8 py-20 relative z-10">
+            function resolveColor(el) {
+                if (!el || el === document.documentElement) return '#ffffff';
+                var cls = (el.className || '').toString();
+                for (var key in BG_MAP) {
+                    if (cls.indexOf(key) !== -1) return BG_MAP[key];
+                }
+                try {
+                    var bg = window.getComputedStyle(el).backgroundColor;
+                    if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+                        var m = bg.match(/\d+/g);
+                        if (m && m.length >= 3) {
+                            return '#' + [m[0], m[1], m[2]].map(function(v) {
+                                return ('0' + parseInt(v).toString(16)).slice(-2);
+                            }).join('');
+                        }
+                    }
+                } catch (e) {}
+                return resolveColor(el.parentElement);
+            }
+
+            function apply() {
+                var footer = document.querySelector('footer');
+                if (!footer) return;
+                // The wave wrap itself is now INSIDE footer — so look at footer's
+                // preceding sibling in the DOM.
+                var prev = footer.previousElementSibling;
+                while (prev && (prev.tagName === 'SCRIPT' || prev.tagName === 'NOSCRIPT' || prev.tagName === 'STYLE')) {
+                    prev = prev.previousElementSibling;
+                }
+                var color = (prev ? resolveColor(prev) : null) || '#ffffff';
+                var path = document.getElementById('footer-wave-path');
+                if (path) path.setAttribute('fill', color);
+            }
+
+            apply();
+            // Also re-apply after full load (Tailwind CDN finishes computing styles)
+            window.addEventListener('load', apply);
+        })();
+    </script>
+
+    <div class="container mx-auto px-4 lg:px-8 pt-8 pb-20 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 reveal">
             <!-- Brand -->
             <div class="lg:col-span-2">
                 <div class="flex items-center gap-3 mb-6">
-                    <div class="w-12 h-12 bg-kuning-500 rounded-xl flex items-center justify-center shadow-lg shadow-kuning-500/20">
-                        <span class="font-arabic text-hijau-950 text-xl font-bold">ر</span>
-                    </div>
-                    <div>
-                        <div class="font-display font-bold text-white text-lg"><?= isset($profil) && $profil ? $profil->nama_yayasan : 'Yayasan Ar-Razaq' ?></div>
+                    <?php if (isset($profil) && $profil && !empty($profil->logo)): ?>
+                        <img src="<?= base_url('assets/images/uploads/profil/' . $profil->logo) ?>"
+                            alt="Logo <?= isset($profil) && $profil ? $profil->nama_yayasan : 'Yayasan' ?>"
+                            class="w-12 h-12 flex-shrink-0 object-contain">
+                    <?php else: ?>
+                        <div class="w-12 h-12 flex-shrink-0 bg-kuning-500 rounded-xl flex items-center justify-center shadow-lg shadow-kuning-500/20">
+                            <span class="font-arabic text-hijau-950 text-xl font-bold">ر</span>
+                        </div>
+                    <?php endif; ?>
+                    <div class="min-w-0">
+                        <div class="font-display font-bold text-white text-lg leading-tight"><?= isset($profil) && $profil ? $profil->nama_yayasan : 'Yayasan Ar-Razaq' ?></div>
                         <div class="text-hijau-400/50 text-sm">Pesantren Modern Terpadu</div>
                     </div>
                 </div>

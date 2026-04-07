@@ -203,53 +203,75 @@
         <?php endif; ?>
     </div>
 
-    <!-- Wave divider to dark section -->
-    <div class="wave-divider wave-bottom">
-        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;">
-            <path d="M0,60 C360,110 720,10 1080,60 C1260,85 1380,75 1440,60 L1440,120 L0,120 Z" fill="#052e16" />
-        </svg>
-    </div>
 </section>
 
 <!-- ============================================================ -->
 <!-- VISI MISI SECTION -->
 <!-- ============================================================ -->
 <?php
-$vm_overlay_color = isset($profil) && $profil && !empty($profil->isimisi_overlay_color) ? $profil->isimisi_overlay_color : '#052e16';
-$vm_overlay_opacity = isset($profil) && $profil && isset($profil->isimisi_overlay_opacity) ? $profil->isimisi_overlay_opacity : 85;
-$vm_bg_image = isset($profil) && $profil && !empty($profil->isimisi_bg_image) ? $profil->isimisi_bg_image : null;
-$vm_bg_video = isset($profil) && $profil && !empty($profil->isimisi_bg_video) ? $profil->isimisi_bg_video : null;
+// RESOLUSI BACKGROUND: video > gambar > default hijau
+// PERBAIKAN TYPO: "isimisi_*" → "visimisi_*" (typo di file asli)
+$vm_bg_video        = isset($profil) && $profil && !empty($profil->visimisi_bg_video)        ? $profil->visimisi_bg_video        : null;
+$vm_bg_image        = isset($profil) && $profil && !empty($profil->visimisi_bg_image)        ? $profil->visimisi_bg_image        : null;
+$vm_overlay_color   = isset($profil) && $profil && !empty($profil->visimisi_overlay_color)   ? $profil->visimisi_overlay_color   : '#052e16';
+$vm_overlay_opacity = isset($profil) && $profil && isset($profil->visimisi_overlay_opacity)  ? (int) $profil->visimisi_overlay_opacity : 85;
+
+$vm_ov_alpha   = round($vm_overlay_opacity / 100, 2);
+$vm_has_video  = !empty($vm_bg_video);
+$vm_has_image  = !empty($vm_bg_image);
+$vm_has_custom = $vm_has_video || $vm_has_image;
 ?>
-<section id="visi-misi" class="py-24 md:py-32 bg-hijau-950 relative overflow-hidden">
-    <!-- Video or image background (full cover) -->
-    <?php if ($vm_bg_video): ?>
-        <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover" style="z-index:1;">
+<section id="visi-misi" class="min-h-screen relative overflow-hidden<?= !$vm_has_custom ? ' bg-hijau-950 grain' : '' ?>" style="isolation:isolate; display:flex; flex-direction:column; justify-content:center; contain: layout style;">
+
+    <!-- Wave TOP — seamlessly transitions from the white sejarah section into this dark section -->
+    <div class="absolute top-0 left-0 w-full pointer-events-none" style="z-index:15; line-height:0;">
+        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block; width:100%; height:clamp(60px,10vw,120px);">
+            <path d="M0,60 C360,110 720,10 1080,60 C1260,85 1380,75 1440,60 L1440,0 L0,0 Z" fill="#ffffff" />
+        </svg>
+    </div>
+
+    <?php if ($vm_has_video): ?>
+        <!-- VIDEO BACKGROUND — optimized: decoding on separate thread, no preload of full video -->
+        <video autoplay muted loop playsinline preload="none"
+            class="absolute inset-0 w-full h-full object-cover"
+            style="z-index:0; will-change:auto;">
             <source src="<?= base_url('assets/images/uploads/profil/' . $vm_bg_video) ?>" type="video/mp4">
         </video>
-    <?php elseif ($vm_bg_image): ?>
-        <img src="<?= base_url('assets/images/uploads/profil/' . $vm_bg_image) ?>" alt="Visi Misi Background"
-            class="absolute inset-0 w-full h-full object-cover" style="z-index:1;">
+
+    <?php elseif ($vm_has_image): ?>
+        <!-- IMAGE BACKGROUND -->
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style="background-image:url('<?= base_url('assets/images/uploads/profil/' . $vm_bg_image) ?>'); z-index:0;"></div>
     <?php endif; ?>
-    <!-- Color overlay -->
-    <div class="absolute inset-0" style="z-index:2; background: <?= $vm_overlay_color ?>; opacity: <?= $vm_overlay_opacity / 100 ?>;"></div>
-    <!-- Pattern overlay -->
-    <div class="absolute inset-0 pattern-bg opacity-15" style="z-index:3;"></div>
 
-    <!-- Decorative blobs -->
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[150px]" style="z-index:3; background: radial-gradient(circle, rgba(234,179,8,0.08) 0%, transparent 70%);"></div>
-    <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-hijau-400/5 rounded-full blur-[120px]" style="z-index:3;"></div>
+    <!-- COLOR OVERLAY — selalu tampil agar teks tetap terbaca -->
+    <div class="absolute inset-0"
+        style="background-color:<?= $vm_overlay_color ?>; opacity:<?= $vm_ov_alpha ?>; z-index:1;"></div>
 
-    <!-- Floating particles -->
+    <!-- Pattern & dekorasi -->
+    <div class="absolute inset-0 pattern-bg opacity-15" style="z-index:2;"></div>
+    <?php if ($vm_has_custom): ?>
+        <div class="absolute inset-0 grain" style="z-index:2; opacity:.25;"></div>
+    <?php endif; ?>
+
+    <!-- Decorative blobs — reduced blur radius for GPU savings, no will-change -->
+    <div class="absolute top-0 right-0 w-96 h-96 rounded-full"
+        style="z-index:3; background:radial-gradient(circle, rgba(234,179,8,0.07) 0%, transparent 70%); filter:blur(80px);"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 rounded-full"
+        style="z-index:3; background:rgba(74,222,128,0.04); filter:blur(70px);"></div>
+
+    <!-- Floating particles (CSS-only, no GSAP, runs on compositor thread) -->
     <div id="visi-particles" class="absolute inset-0 overflow-hidden pointer-events-none" style="z-index:3;"></div>
 
-    <div class="container mx-auto px-4 lg:px-8 relative z-10">
+    <!-- CONTENT -->
+    <div class="container mx-auto px-4 lg:px-8 relative pt-28 pb-32 md:pt-36 md:pb-40" style="z-index:10;">
         <!-- Section header -->
         <div class="text-center mb-20 reveal">
             <div class="ornament-divider mb-5 max-w-xs mx-auto">
                 <span class="font-arabic text-kuning-400/70 text-xl">الرؤية</span>
             </div>
             <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 split-text"
-                data-split-reveal>Visi & Misi</h2>
+                data-split-reveal>Visi &amp; Misi</h2>
             <p class="text-hijau-300/70 max-w-lg mx-auto text-base">Fondasi dan arah perjalanan Yayasan Ar-Razaq</p>
         </div>
 
@@ -257,16 +279,9 @@ $vm_bg_video = isset($profil) && $profil && !empty($profil->isimisi_bg_video) ? 
         <?php if (!empty($visi)):
             $v = $visi[0]; ?>
             <div class="max-w-3xl mx-auto mb-20 reveal">
-                <div
-                    class="relative bg-gradient-to-br from-kuning-500/8 to-transparent border border-kuning-500/15 rounded-[2rem] p-8 md:p-14 text-center backdrop-blur-sm overflow-hidden">
-                    <!-- Corner accents -->
-                    <div
-                        class="absolute top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-kuning-500/20 rounded-tl-[2rem]">
-                    </div>
-                    <div
-                        class="absolute bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-kuning-500/20 rounded-br-[2rem]">
-                    </div>
-
+                <div class="relative bg-gradient-to-br from-kuning-500/10 to-kuning-500/3 border border-kuning-500/15 rounded-[2rem] p-8 md:p-14 text-center overflow-hidden">
+                    <div class="absolute top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-kuning-500/20 rounded-tl-[2rem]"></div>
+                    <div class="absolute bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-kuning-500/20 rounded-br-[2rem]"></div>
                     <div class="w-14 h-14 bg-kuning-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <i data-feather="eye" class="w-7 h-7 text-kuning-400"></i>
                     </div>
@@ -285,10 +300,8 @@ $vm_bg_video = isset($profil) && $profil && !empty($profil->isimisi_bg_video) ? 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto stagger-parent">
                     <?php foreach ($misi as $idx => $item): ?>
                         <div class="stagger-child group">
-                            <div
-                                class="flex gap-5 bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6 hover:border-kuning-500/20 hover:bg-white/[0.06] transition-all duration-500 card-3d h-full">
-                                <div
-                                    class="w-11 h-11 bg-hijau-800/60 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-kuning-500/20 transition-colors duration-500">
+                            <div class="flex gap-5 bg-white/[0.04] border border-white/[0.08] rounded-2xl p-6 hover:border-kuning-500/20 hover:bg-white/[0.07] transition-colors duration-300 h-full">
+                                <div class="w-11 h-11 bg-hijau-800/60 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-kuning-500/20 transition-colors duration-500">
                                     <i data-feather="<?= $item->ikon ?: 'check-circle' ?>" class="w-5 h-5 text-kuning-400"></i>
                                 </div>
                                 <div>
@@ -309,10 +322,8 @@ $vm_bg_video = isset($profil) && $profil && !empty($profil->isimisi_bg_video) ? 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-5 max-w-3xl mx-auto stagger-parent">
                     <?php foreach ($nilai as $item): ?>
                         <div class="stagger-child text-center group">
-                            <div
-                                class="w-16 h-16 bg-gradient-to-br from-hijau-800 to-hijau-900 group-hover:from-kuning-500 group-hover:to-kuning-600 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all duration-700 shadow-lg group-hover:shadow-kuning-500/20 group-hover:-translate-y-1">
-                                <i data-feather="<?= $item->ikon ?: 'star' ?>"
-                                    class="w-7 h-7 text-kuning-400 group-hover:text-hijau-950 transition-colors duration-500"></i>
+                            <div class="w-16 h-16 bg-gradient-to-br from-hijau-800 to-hijau-900 group-hover:from-kuning-500 group-hover:to-kuning-600 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all duration-700 shadow-lg group-hover:shadow-kuning-500/20 group-hover:-translate-y-1">
+                                <i data-feather="<?= $item->ikon ?: 'star' ?>" class="w-7 h-7 text-kuning-400 group-hover:text-hijau-950 transition-colors duration-500"></i>
                             </div>
                             <h4 class="text-white font-semibold text-sm mb-1"><?= $item->judul ?></h4>
                             <p class="text-hijau-400/50 text-xs leading-relaxed"><?= $item->konten ?></p>
@@ -323,13 +334,14 @@ $vm_bg_video = isset($profil) && $profil && !empty($profil->isimisi_bg_video) ? 
         <?php endif; ?>
     </div>
 
-    <!-- Wave divider to light section -->
-    <div class="wave-divider wave-bottom" style="z-index:10;">
-        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;">
+    <!-- Wave BOTTOM — blends seamlessly into the next section (galeri bg-gray-50) -->
+    <div class="absolute bottom-0 left-0 w-full pointer-events-none" style="z-index:15; line-height:0;">
+        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block; width:100%; height:clamp(60px,10vw,120px);">
             <path d="M0,60 C360,110 720,10 1080,60 C1260,85 1380,75 1440,60 L1440,120 L0,120 Z" fill="#f9fafb" />
         </svg>
     </div>
 </section>
+
 
 <!-- ============================================================ -->
 <!-- GALERI SECTION - HORIZONTAL SCROLL -->

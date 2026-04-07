@@ -18,6 +18,22 @@ class Main_model extends CI_Model
         static $booted = false;
         if ($booted) return;
 
+        // Kolom visimisi background di tabel profil
+        if ($this->db->table_exists('profil')) {
+            if (!$this->db->field_exists('visimisi_bg_image', 'profil')) {
+                $this->db->query("ALTER TABLE `profil` ADD COLUMN `visimisi_bg_image` VARCHAR(255) NULL DEFAULT NULL");
+            }
+            if (!$this->db->field_exists('visimisi_bg_video', 'profil')) {
+                $this->db->query("ALTER TABLE `profil` ADD COLUMN `visimisi_bg_video` VARCHAR(255) NULL DEFAULT NULL");
+            }
+            if (!$this->db->field_exists('visimisi_overlay_color', 'profil')) {
+                $this->db->query("ALTER TABLE `profil` ADD COLUMN `visimisi_overlay_color` VARCHAR(20) NULL DEFAULT '#052e16'");
+            }
+            if (!$this->db->field_exists('visimisi_overlay_opacity', 'profil')) {
+                $this->db->query("ALTER TABLE `profil` ADD COLUMN `visimisi_overlay_opacity` TINYINT(3) UNSIGNED NULL DEFAULT 80");
+            }
+        }
+
         if ($this->db->table_exists('galeri') && !$this->db->field_exists('label', 'galeri')) {
             $this->db->query("ALTER TABLE `galeri` ADD COLUMN `label` VARCHAR(120) NULL DEFAULT NULL AFTER `kategori`");
         }
@@ -137,15 +153,31 @@ class Main_model extends CI_Model
         if ($editor_role_id && count($this->get_role_permission_codes($editor_role_id)) === 0) {
             $editor_codes = [
                 'dashboard.view',
-                'profil.view', 'profil.edit',
-                'statistik.view', 'statistik.create', 'statistik.edit',
-                'sejarah.view', 'sejarah.create', 'sejarah.edit',
-                'visi_misi.view', 'visi_misi.create', 'visi_misi.edit',
-                'galeri.view', 'galeri.create', 'galeri.edit',
-                'ekskul.view', 'ekskul.create', 'ekskul.edit',
-                'berita.view', 'berita.create', 'berita.edit',
-                'ppdb.view', 'ppdb.create', 'ppdb.edit',
-                'akun.view', 'akun.edit',
+                'profil.view',
+                'profil.edit',
+                'statistik.view',
+                'statistik.create',
+                'statistik.edit',
+                'sejarah.view',
+                'sejarah.create',
+                'sejarah.edit',
+                'visi_misi.view',
+                'visi_misi.create',
+                'visi_misi.edit',
+                'galeri.view',
+                'galeri.create',
+                'galeri.edit',
+                'ekskul.view',
+                'ekskul.create',
+                'ekskul.edit',
+                'berita.view',
+                'berita.create',
+                'berita.edit',
+                'ppdb.view',
+                'ppdb.create',
+                'ppdb.edit',
+                'akun.view',
+                'akun.edit',
             ];
             $this->set_role_permissions($editor_role_id, $editor_codes);
         }
@@ -162,7 +194,8 @@ class Main_model extends CI_Model
                 'ekskul.view',
                 'berita.view',
                 'ppdb.view',
-                'akun.view', 'akun.edit',
+                'akun.view',
+                'akun.edit',
             ];
             $this->set_role_permissions($viewer_role_id, $viewer_codes);
         }
