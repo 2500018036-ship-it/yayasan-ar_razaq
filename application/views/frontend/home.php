@@ -177,7 +177,7 @@
         ?>
         <?php if ($profil_desc_full !== ''): ?>
             <div class="max-w-3xl mx-auto mb-14 reveal">
-                <div class="rounded-3xl border border-hijau-100/70 bg-gradient-to-br from-hijau-50 to-white p-7 md:p-8 shadow-sm">
+                <div class="rounded-3xl border border-hijau-100/70 bg-gradient-to-br from-hijau-50 to-white p-7 md:p-8 shadow-sm" data-toggle-card="1">
                     <div class="flex items-start justify-between gap-4">
                         <h3 class="font-display text-2xl font-bold text-hijau-900">Profil Singkat Yayasan</h3>
                         <div class="w-10 h-10 rounded-xl bg-hijau-100 flex items-center justify-center text-hijau-700 flex-shrink-0">
@@ -225,9 +225,35 @@
                                         class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
                                 </div>
                             <?php endif; ?>
-                            <div class="bg-white rounded-3xl p-7 border border-hijau-100/50 card-hover shadow-sm">
+                            <div class="bg-white rounded-3xl p-7 border border-hijau-100/50 card-hover shadow-sm" data-toggle-card="1">
                                 <h3 class="font-display text-xl font-bold text-hijau-900 mb-3"><?= $item->judul ?></h3>
-                                <p class="text-gray-500 leading-relaxed text-sm"><?= $item->konten ?></p>
+                                <?php
+                                $sejarah_full = trim(preg_replace('/\s+/', ' ', strip_tags((string) $item->konten)));
+                                $sejarah_short = $sejarah_full;
+                                $sejarah_can_toggle = false;
+                                if ($sejarah_full !== '') {
+                                    if (function_exists('mb_strlen') && function_exists('mb_substr')) {
+                                        $sejarah_can_toggle = mb_strlen($sejarah_full, 'UTF-8') > 170;
+                                        if ($sejarah_can_toggle) $sejarah_short = rtrim(mb_substr($sejarah_full, 0, 170, 'UTF-8')) . '...';
+                                    } else {
+                                        $sejarah_can_toggle = strlen($sejarah_full) > 170;
+                                        if ($sejarah_can_toggle) $sejarah_short = rtrim(substr($sejarah_full, 0, 170)) . '...';
+                                    }
+                                }
+                                ?>
+                                <p class="text-gray-500 leading-relaxed text-sm sejarah-item-short"><?= htmlspecialchars($sejarah_short, ENT_QUOTES) ?></p>
+
+                                <?php if ($sejarah_can_toggle): ?>
+                                    <div class="sejarah-item-full-wrap mt-3 hidden" style="height:0; opacity:0; overflow:hidden;">
+                                        <p class="text-gray-500 leading-relaxed text-sm"><?= nl2br(htmlspecialchars($sejarah_full, ENT_QUOTES)) ?></p>
+                                    </div>
+                                    <button type="button"
+                                        class="sejarah-item-toggle mt-3 inline-flex items-center gap-2 text-hijau-700 hover:text-hijau-900 text-xs font-semibold transition-colors"
+                                        data-open="0">
+                                        <span class="sejarah-item-label">Lihat deskripsi lengkap</span>
+                                        <i data-feather="chevron-down" class="w-4 h-4 sejarah-item-arrow transition-transform duration-300"></i>
+                                    </button>
+                                <?php endif; ?>
                             </div>
                         </div>
 
@@ -301,7 +327,7 @@ $vm_has_custom = $vm_has_video || $vm_has_image;
 
     <?php if ($vm_has_video): ?>
         <!-- VIDEO BACKGROUND — optimized: decoding on separate thread, no preload of full video -->
-        <video autoplay muted loop playsinline preload="metadata" disablepictureinpicture
+        <video id="visi-video-bg" autoplay muted loop playsinline preload="metadata" disablepictureinpicture
             class="absolute inset-0 w-full h-full object-cover"
             style="z-index:0; will-change:auto;">
             <source src="<?= base_url('assets/images/uploads/profil/' . $vm_bg_video) ?>" type="video/mp4">
@@ -318,16 +344,16 @@ $vm_has_custom = $vm_has_video || $vm_has_image;
         style="background-color:<?= $vm_overlay_color ?>; opacity:<?= $vm_ov_alpha ?>; z-index:1;"></div>
 
     <!-- Pattern & dekorasi -->
-    <div class="absolute inset-0 pattern-bg opacity-15" style="z-index:2;"></div>
+    <div class="absolute inset-0 pattern-bg opacity-10" style="z-index:2;"></div>
     <?php if ($vm_has_custom): ?>
-        <div class="absolute inset-0 grain" style="z-index:2; opacity:.25;"></div>
+        <div class="absolute inset-0 grain" style="z-index:2; opacity:.14;"></div>
     <?php endif; ?>
 
-    <!-- Decorative blobs — reduced blur radius for GPU savings, no will-change -->
+    <!-- Decorative blobs — reduced blur radius for GPU savings -->
     <div class="absolute top-0 right-0 w-96 h-96 rounded-full"
-        style="z-index:3; background:radial-gradient(circle, rgba(234,179,8,0.07) 0%, transparent 70%); filter:blur(80px);"></div>
+        style="z-index:3; background:radial-gradient(circle, rgba(234,179,8,0.05) 0%, transparent 70%); filter:blur(60px);"></div>
     <div class="absolute bottom-0 left-0 w-80 h-80 rounded-full"
-        style="z-index:3; background:rgba(74,222,128,0.04); filter:blur(70px);"></div>
+        style="z-index:3; background:rgba(74,222,128,0.03); filter:blur(52px);"></div>
 
     <!-- Floating particles (CSS-only, no GSAP, runs on compositor thread) -->
     <div id="visi-particles" class="absolute inset-0 overflow-hidden pointer-events-none" style="z-index:3;"></div>
@@ -816,80 +842,154 @@ $vm_has_custom = $vm_has_video || $vm_has_image;
         if (e.key === 'Escape') closeLightbox();
     });
 
-    // Sejarah profile description expand/collapse (GSAP)
-    document.querySelectorAll('.sejarah-overview-toggle').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const card = btn.closest('.rounded-3xl');
-            if (!card) return;
-            const shortEl = card.querySelector('.sejarah-overview-short');
-            const fullWrap = card.querySelector('.sejarah-overview-full-wrap');
-            const labelEl = btn.querySelector('.sejarah-overview-label');
-            const arrow = btn.querySelector('.sejarah-overview-arrow');
-            if (!fullWrap || !shortEl || !labelEl || !arrow) return;
+    function initBinaryToggle(buttonSelector, shortSelector, fullSelector, labelSelector, arrowSelector, openLabel, closeLabel) {
+        document.querySelectorAll(buttonSelector).forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.dataset.busy === '1') return;
+                const card = btn.closest('[data-toggle-card="1"]');
+                if (!card) return;
 
-            const isOpen = btn.dataset.open === '1';
+                const shortEl = card.querySelector(shortSelector);
+                const fullWrap = card.querySelector(fullSelector);
+                const labelEl = btn.querySelector(labelSelector);
+                const arrow = btn.querySelector(arrowSelector);
+                if (!fullWrap || !shortEl || !labelEl || !arrow) return;
 
-            if (!isOpen) {
-                fullWrap.classList.remove('hidden');
-                gsap.set(fullWrap, {
-                    height: 0,
-                    opacity: 0
-                });
+                const isOpen = btn.dataset.open === '1';
+                gsap.killTweensOf([shortEl, fullWrap, arrow]);
+                btn.dataset.busy = '1';
+                btn.style.pointerEvents = 'none';
 
-                const targetHeight = fullWrap.scrollHeight;
-                const tl = gsap.timeline();
-                tl.to(shortEl, {
-                        opacity: 0,
-                        y: -8,
-                        duration: 0.2,
-                        ease: 'power1.out'
-                    })
-                    .set(shortEl, {
-                        display: 'none'
-                    })
-                    .to(fullWrap, {
-                        height: targetHeight,
+                if (!isOpen) {
+                    fullWrap.classList.remove('hidden');
+                    gsap.set(shortEl, {
+                        display: 'block',
                         opacity: 1,
-                        duration: 0.4,
-                        ease: 'power2.out'
-                    }, '-=0.05')
-                    .to(arrow, {
-                        rotate: 180,
-                        duration: 0.25,
-                        ease: 'power2.out'
-                    }, '<');
-
-                btn.dataset.open = '1';
-                labelEl.textContent = 'Sembunyikan deskripsi lengkap';
-            } else {
-                const tl = gsap.timeline();
-                tl.to(fullWrap, {
+                        y: 0
+                    });
+                    gsap.set(fullWrap, {
+                        display: 'block',
+                        height: 'auto',
+                        opacity: 0,
+                        overflow: 'hidden'
+                    });
+                    const targetHeight = fullWrap.scrollHeight;
+                    gsap.set(fullWrap, {
                         height: 0,
-                        opacity: 0,
-                        duration: 0.32,
-                        ease: 'power2.inOut'
-                    })
-                    .set(fullWrap, {
-                        display: 'none'
-                    })
-                    .set(shortEl, {
-                        display: 'block'
-                    })
-                    .to(shortEl, {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.2,
-                        ease: 'power1.out'
-                    })
-                    .to(arrow, {
-                        rotate: 0,
-                        duration: 0.25,
-                        ease: 'power2.out'
-                    }, '<');
+                        opacity: 0
+                    });
 
-                btn.dataset.open = '0';
-                labelEl.textContent = 'Lihat deskripsi lengkap';
-            }
+                    gsap.timeline()
+                        .to(fullWrap, {
+                            height: targetHeight,
+                            opacity: 1,
+                            duration: 0.46,
+                            ease: 'power2.out',
+                            onComplete: () => {
+                                gsap.set(fullWrap, {
+                                    height: 'auto'
+                                });
+                                gsap.set(shortEl, {
+                                    display: 'none',
+                                    opacity: 1,
+                                    y: 0
+                                });
+                            }
+                        }, 0)
+                        .to(shortEl, {
+                            opacity: 0.35,
+                            duration: 0.26,
+                            ease: 'power1.out'
+                        }, 0.04)
+                        .to(arrow, {
+                            rotate: 180,
+                            duration: 0.28,
+                            ease: 'power2.out'
+                        }, '<')
+                        .add(() => {
+                            btn.dataset.busy = '0';
+                            btn.style.pointerEvents = '';
+                        });
+
+                    btn.dataset.open = '1';
+                    btn.setAttribute('aria-expanded', 'true');
+                    labelEl.textContent = closeLabel;
+                } else {
+                    fullWrap.classList.remove('hidden');
+                    gsap.set(fullWrap, {
+                        display: 'block',
+                        height: fullWrap.scrollHeight,
+                        opacity: 1,
+                        overflow: 'hidden'
+                    });
+                    gsap.set(shortEl, {
+                        display: 'block',
+                        opacity: 0.35,
+                        y: 0
+                    });
+
+                    gsap.timeline()
+                        .to(fullWrap, {
+                            height: 0,
+                            opacity: 0,
+                            duration: 0.42,
+                            ease: 'power2.inOut'
+                        }, 0)
+                        .to(shortEl, {
+                            opacity: 1,
+                            duration: 0.28,
+                            ease: 'power1.out'
+                        }, 0.08)
+                        .add(() => {
+                            fullWrap.classList.add('hidden');
+                            gsap.set(fullWrap, {
+                                display: 'none',
+                                height: 0,
+                                opacity: 0
+                            });
+                            gsap.set(shortEl, {
+                                display: 'block',
+                                opacity: 1,
+                                y: 0
+                            });
+                        })
+                        .to(arrow, {
+                            rotate: 0,
+                            duration: 0.28,
+                            ease: 'power2.out'
+                        }, '<')
+                        .add(() => {
+                            btn.dataset.busy = '0';
+                            btn.style.pointerEvents = '';
+                        });
+
+                    btn.dataset.open = '0';
+                    btn.setAttribute('aria-expanded', 'false');
+                    labelEl.textContent = openLabel;
+                }
+            });
         });
-    });
+    }
+
+    // Sejarah profile description expand/collapse (binary: ringkas <-> lengkap)
+    initBinaryToggle(
+        '.sejarah-overview-toggle',
+        '.sejarah-overview-short',
+        '.sejarah-overview-full-wrap',
+        '.sejarah-overview-label',
+        '.sejarah-overview-arrow',
+        'Lihat deskripsi lengkap',
+        'Sembunyikan deskripsi lengkap'
+    );
+
+    // Sejarah timeline item expand/collapse (binary: ringkas <-> lengkap)
+    initBinaryToggle(
+        '.sejarah-item-toggle',
+        '.sejarah-item-short',
+        '.sejarah-item-full-wrap',
+        '.sejarah-item-label',
+        '.sejarah-item-arrow',
+        'Lihat deskripsi lengkap',
+        'Sembunyikan deskripsi'
+    );
 </script>

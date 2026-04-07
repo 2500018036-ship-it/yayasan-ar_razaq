@@ -276,11 +276,7 @@ class Admin extends CI_Controller
         $existing = $this->model->get_profil();
 
         $deskripsi_lengkap = trim((string) $this->_post_or_existing('deskripsi_lengkap', $existing ? $existing->deskripsi_lengkap : '', FALSE));
-        $deskripsi_singkat_post = $this->input->post('deskripsi_singkat', TRUE);
-        $deskripsi_singkat = trim((string) $deskripsi_singkat_post);
-        if ($deskripsi_singkat_post === null || $deskripsi_singkat === '') {
-            $deskripsi_singkat = $this->_make_excerpt($deskripsi_lengkap, 180);
-        }
+        $deskripsi_singkat = $this->_make_excerpt($deskripsi_lengkap, 180);
 
         $hero_overlay_color = trim((string) $this->_post_or_existing('hero_overlay_color', $existing ? $existing->hero_overlay_color : '#052e16', TRUE));
         if ($hero_overlay_color === '') $hero_overlay_color = '#052e16';
@@ -304,8 +300,6 @@ class Admin extends CI_Controller
             'youtube'                       => $this->_post_or_existing('youtube', $existing ? $existing->youtube : null, TRUE),
             'whatsapp'                      => $this->_post_or_existing('whatsapp', $existing ? $existing->whatsapp : null, TRUE),
             'maps_embed'                    => $this->_post_or_existing('maps_embed', $existing ? $existing->maps_embed : null, TRUE),
-            'tahun_berdiri'                 => $this->_post_or_existing('tahun_berdiri', $existing ? $existing->tahun_berdiri : null, TRUE),
-            'status_akreditasi'             => $this->_post_or_existing('status_akreditasi', $existing ? $existing->status_akreditasi : null, TRUE),
             'hero_overlay_color'            => $hero_overlay_color,
             'hero_overlay_opacity'          => $hero_overlay_opacity,
             'hero_title'                    => $this->_post_or_existing('hero_title', $existing ? $existing->hero_title : null, TRUE),
@@ -442,34 +436,31 @@ class Admin extends CI_Controller
     public function visi_misi_bg_save()
     {
         $this->_check_auth();
+        $profil = $this->model->get_profil();
         $update_data = [
             'visimisi_overlay_color'   => $this->input->post('visimisi_overlay_color', TRUE) ?: '#052e16',
             'visimisi_overlay_opacity' => $this->input->post('visimisi_overlay_opacity', TRUE) ?: 80,
         ];
 
         if (!empty($_FILES['visimisi_bg_image']['name'])) {
-            // Hapus file lama sebelum upload baru
-            $profil = $this->model->get_profil();
-            if ($profil && !empty($profil->visimisi_bg_image)) {
-                $this->_delete_file('profil/' . $profil->visimisi_bg_image);
-            }
             $up = $this->_upload_file('visimisi_bg_image', 'profil');
             if ($up['status']) {
                 $update_data['visimisi_bg_image'] = $up['file_name'];
+                if ($profil && !empty($profil->visimisi_bg_image) && $profil->visimisi_bg_image !== $up['file_name']) {
+                    $this->_delete_file('profil/' . $profil->visimisi_bg_image);
+                }
             } else {
                 $this->_json('error', $up['message']);
             }
         }
 
         if (!empty($_FILES['visimisi_bg_video']['name'])) {
-            // Hapus file lama sebelum upload baru
-            $profil = isset($profil) ? $profil : $this->model->get_profil();
-            if ($profil && !empty($profil->visimisi_bg_video)) {
-                $this->_delete_file('profil/' . $profil->visimisi_bg_video);
-            }
             $up = $this->_upload_video('visimisi_bg_video', 'profil');
             if ($up['status']) {
                 $update_data['visimisi_bg_video'] = $up['file_name'];
+                if ($profil && !empty($profil->visimisi_bg_video) && $profil->visimisi_bg_video !== $up['file_name']) {
+                    $this->_delete_file('profil/' . $profil->visimisi_bg_video);
+                }
             } else {
                 $this->_json('error', $up['message']);
             }

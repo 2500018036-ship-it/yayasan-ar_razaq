@@ -4,9 +4,9 @@
 <!-- PAGE HERO BANNER -->
 <!-- ============================================================ -->
 <section class="relative pt-32 pb-20 md:pt-40 md:pb-28 bg-hijau-950 overflow-hidden grain">
-    <div class="absolute inset-0 pattern-bg opacity-20"></div>
-    <div class="absolute top-1/4 -left-20 w-[400px] h-[400px] bg-hijau-700/15 rounded-full blur-[120px] floating-slow"></div>
-    <div class="absolute bottom-1/3 -right-20 w-[300px] h-[300px] bg-kuning-500/8 rounded-full blur-[100px] floating"></div>
+    <div class="absolute inset-0 pattern-bg opacity-12"></div>
+    <div class="absolute top-1/4 -left-20 w-[360px] h-[360px] bg-hijau-700/10 rounded-full blur-[80px]"></div>
+    <div class="absolute bottom-1/3 -right-20 w-[280px] h-[280px] bg-kuning-500/6 rounded-full blur-[72px]"></div>
 
     <div class="container mx-auto px-4 lg:px-8 relative z-10 text-center">
         <div class="ornament-divider mb-5 max-w-xs mx-auto">
@@ -117,8 +117,8 @@
 <?php if (!empty($nilai)): ?>
 <section class="py-24 md:py-32 bg-hijau-950 relative overflow-hidden grain">
     <div class="absolute inset-0 pattern-bg opacity-15"></div>
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-kuning-500/5 rounded-full blur-[150px]"></div>
-    <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-hijau-400/5 rounded-full blur-[120px]"></div>
+    <div class="absolute top-0 right-0 w-[420px] h-[420px] bg-kuning-500/4 rounded-full blur-[100px]"></div>
+    <div class="absolute bottom-0 left-0 w-[340px] h-[340px] bg-hijau-400/4 rounded-full blur-[88px]"></div>
 
     <div class="container mx-auto px-4 lg:px-8 relative z-10">
         <div class="text-center mb-16 reveal">

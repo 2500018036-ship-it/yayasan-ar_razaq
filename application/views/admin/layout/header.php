@@ -58,8 +58,8 @@
         #sidebar {
             transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            background: linear-gradient(180deg, #0f3a2f 0%, #0b2f25 100%);
-            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            background: linear-gradient(180deg, #1f4a43 0%, #1a3f39 100%);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         #sidebar.collapsed {
@@ -96,21 +96,21 @@
             border-radius: 10px;
             font-size: 0.8rem;
             font-weight: 500;
-            color: rgba(220, 252, 231, 0.78);
+            color: rgba(236, 253, 245, 0.82);
             transition: background 0.2s, color 0.2s;
             text-decoration: none;
         }
 
         .nav-link:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.12);
             color: #f8fafc;
         }
 
         .nav-link.active {
-            background: rgba(255, 255, 255, 0.14);
-            color: #fef3c7;
+            background: rgba(255, 255, 255, 0.17);
+            color: #fffbeb;
             font-weight: 600;
-            box-shadow: inset 0 0 0 1px rgba(250, 204, 21, 0.18);
+            box-shadow: inset 0 0 0 1px rgba(250, 204, 21, 0.24);
         }
 
         .nav-link svg {
@@ -121,7 +121,7 @@
         #main-content {
             margin-left: 224px;
             min-height: 100vh;
-            background: #f4f6f8;
+            background: #f2f5f7;
             transition: margin-left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -295,13 +295,13 @@
         }
 
         .btn-primary {
-            background: #1b5e46;
+            background: #255f56;
             color: #fff;
         }
 
         .btn-primary:hover {
-            background: #184f3c;
-            box-shadow: 0 8px 18px rgba(27, 94, 70, 0.24);
+            background: #1f5149;
+            box-shadow: 0 8px 18px rgba(37, 95, 86, 0.22);
             transform: translateY(-1px);
         }
 
@@ -536,7 +536,7 @@
     <div id="main-content">
 
         <!-- Top bar -->
-        <header class="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+        <header class="sticky top-0 z-20 bg-white/92 backdrop-blur-xl border-b border-gray-200/80 px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <!-- Sidebar toggle (all screens) -->
                 <button onclick="toggleSidebar()" class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors" title="Toggle Sidebar">

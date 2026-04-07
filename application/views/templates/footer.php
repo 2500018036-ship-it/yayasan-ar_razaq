@@ -4,10 +4,7 @@
 <footer class="bg-hijau-950 text-white relative overflow-visible">
     <div class="absolute inset-0 pattern-bg opacity-[0.03]"></div>
 
-    <!-- Wave top — rendered as a BLOCK element with negative top margin so it
-         pulls up and overlaps the preceding section regardless of its height.
-         JS detects the preceding section's bg color and writes it into the fill
-         so the wave always matches, on every single page. -->
+    <!-- Wave top -->
     <div id="footer-wave-wrap" style="display:block; line-height:0; margin-top:-79px; position:relative; z-index:5; pointer-events:none;">
         <svg id="footer-wave-svg" viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg"
             preserveAspectRatio="none"
@@ -17,58 +14,6 @@
                 fill="#ffffff" />
         </svg>
     </div>
-    <script>
-        // Detect preceding section's background color and apply to wave fill.
-        // Runs inline (before paint) to avoid any flash.
-        (function() {
-            var BG_MAP = {
-                'bg-white': '#ffffff',
-                'bg-gray-50': '#f9fafb',
-                'bg-gray-100': '#f3f4f6',
-                'bg-hijau-50': '#f0fdf4',
-                'bg-hijau-900': '#14532d',
-                'bg-hijau-950': '#052e16',
-            };
-
-            function resolveColor(el) {
-                if (!el || el === document.documentElement) return '#ffffff';
-                var cls = (el.className || '').toString();
-                for (var key in BG_MAP) {
-                    if (cls.indexOf(key) !== -1) return BG_MAP[key];
-                }
-                try {
-                    var bg = window.getComputedStyle(el).backgroundColor;
-                    if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
-                        var m = bg.match(/\d+/g);
-                        if (m && m.length >= 3) {
-                            return '#' + [m[0], m[1], m[2]].map(function(v) {
-                                return ('0' + parseInt(v).toString(16)).slice(-2);
-                            }).join('');
-                        }
-                    }
-                } catch (e) {}
-                return resolveColor(el.parentElement);
-            }
-
-            function apply() {
-                var footer = document.querySelector('footer');
-                if (!footer) return;
-                // The wave wrap itself is now INSIDE footer — so look at footer's
-                // preceding sibling in the DOM.
-                var prev = footer.previousElementSibling;
-                while (prev && (prev.tagName === 'SCRIPT' || prev.tagName === 'NOSCRIPT' || prev.tagName === 'STYLE')) {
-                    prev = prev.previousElementSibling;
-                }
-                var color = (prev ? resolveColor(prev) : null) || '#ffffff';
-                var path = document.getElementById('footer-wave-path');
-                if (path) path.setAttribute('fill', color);
-            }
-
-            apply();
-            // Also re-apply after full load (Tailwind CDN finishes computing styles)
-            window.addEventListener('load', apply);
-        })();
-    </script>
 
     <div class="container mx-auto px-4 lg:px-8 pt-8 pb-20 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 reveal">
@@ -209,12 +154,18 @@
     //     (recommended by both Lenis and GSAP docs for GSAP projects).
     //     The standalone requestAnimationFrame(raf) loop has been removed.
     // ============================================================
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const lowPowerDevice = !!(navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+    const hasVisiMisiSection = !!document.getElementById('visi-misi');
+    const isVisiMisiPage = /(?:^|\/)visi-misi\/?$/.test(window.location.pathname);
+    const perfMode = prefersReducedMotion || lowPowerDevice || hasVisiMisiSection || isVisiMisiPage;
+
     const lenis = new Lenis({
-        duration: 1.0,
+        duration: perfMode ? 0.78 : 1.0,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         orientation: 'vertical',
-        smoothWheel: true,
-        lerp: 0.1,
+        smoothWheel: !perfMode,
+        lerp: perfMode ? 0.14 : 0.1,
         wheelMultiplier: 0.9,
         touchMultiplier: 1.8,
         infinite: false,
@@ -303,6 +254,7 @@
     // HERO ENTRANCE ANIMATION
     // ============================================================
     window.addEventListener('load', () => {
+        if (!document.getElementById('hero')) return;
         const heroTl = gsap.timeline({
             delay: 0.3
         });
@@ -392,47 +344,51 @@
         }
 
         // Hero parallax — content fades out as scrolled
-        gsap.to('#hero-content', {
-            y: -80,
-            opacity: 0,
-            ease: 'none',
-            scrollTrigger: {
-                trigger: '#hero',
-                start: 'top top',
-                end: '70% top',
-                scrub: 1.5
-            }
-        });
+        if (!perfMode) {
+            gsap.to('#hero-content', {
+                y: -80,
+                opacity: 0,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '#hero',
+                    start: 'top top',
+                    end: '70% top',
+                    scrub: 1.5
+                }
+            });
 
-        // Scroll indicator fades
-        gsap.to('#scroll-indicator', {
-            opacity: 0,
-            y: 20,
-            scrollTrigger: {
-                trigger: '#hero',
-                start: '10% top',
-                end: '30% top',
-                scrub: true
-            }
-        });
+            // Scroll indicator fades
+            gsap.to('#scroll-indicator', {
+                opacity: 0,
+                y: 20,
+                scrollTrigger: {
+                    trigger: '#hero',
+                    start: '10% top',
+                    end: '30% top',
+                    scrub: true
+                }
+            });
+        }
     });
 
     // ============================================================
     // PARALLAX BACKGROUNDS
     // ============================================================
-    gsap.utils.toArray('[data-parallax-bg]').forEach(el => {
-        const speed = parseFloat(el.dataset.parallaxBg) || 0.2;
-        gsap.to(el, {
-            yPercent: speed * 80,
-            ease: 'none',
-            scrollTrigger: {
-                trigger: el.closest('section') || el.parentElement,
-                start: 'top bottom',
-                end: 'bottom top',
-                scrub: 1
-            }
+    if (!perfMode) {
+        gsap.utils.toArray('[data-parallax-bg]').forEach(el => {
+            const speed = parseFloat(el.dataset.parallaxBg) || 0.2;
+            gsap.to(el, {
+                yPercent: speed * 80,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: el.closest('section') || el.parentElement,
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: 1
+                }
+            });
         });
-    });
+    }
 
     // ============================================================
     // REVEAL ANIMATIONS
@@ -546,8 +502,6 @@
     // *** FIX: Add reducedMotion check + limit character count to
     //     avoid performance issues with many chars.
     // ============================================================
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
     if (!prefersReducedMotion) {
         try {
             gsap.utils.toArray('[data-split-reveal]').forEach(el => {
@@ -699,12 +653,11 @@
         }
 
         const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const lowPowerDevice = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
         if (prefersReduce || lowPowerDevice) {
             particleContainer.innerHTML = '';
         } else {
         const isMobile = window.innerWidth < 768;
-        const particleCount = isMobile ? 5 : 9;
+        const particleCount = isMobile ? 3 : 5;
 
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
@@ -736,9 +689,31 @@
     }
 
     // ============================================================
+    // VISI-MISI BACKGROUND VIDEO VISIBILITY CONTROL
+    // Pause video when section is outside viewport to reduce stutter.
+    // ============================================================
+    const visiVideo = document.getElementById('visi-video-bg');
+    if (visiVideo && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const p = visiVideo.play();
+                    if (p && typeof p.catch === 'function') p.catch(() => {});
+                } else {
+                    visiVideo.pause();
+                }
+            });
+        }, {
+            threshold: 0.12
+        });
+
+        observer.observe(visiVideo);
+    }
+
+    // ============================================================
     // MAGNETIC BUTTON EFFECT (Desktop only)
     // ============================================================
-    if (window.innerWidth > 1024) {
+    if (window.innerWidth > 1024 && !perfMode) {
         document.querySelectorAll('.magnetic-btn').forEach(btn => {
             btn.addEventListener('mousemove', (e) => {
                 const rect = btn.getBoundingClientRect();
@@ -764,7 +739,7 @@
     // ============================================================
     // 3D CARD TILT ON HOVER (Desktop only)
     // ============================================================
-    if (window.innerWidth > 1024) {
+    if (window.innerWidth > 1024 && !perfMode) {
         document.querySelectorAll('.card-3d').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
