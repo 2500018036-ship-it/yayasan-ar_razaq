@@ -17,6 +17,7 @@ class Frontend extends CI_Controller
         return [
             'profil'    => $profil,
             'statistik' => $this->model->get_statistik(),
+            'site_popup' => $this->model->get_popup_aktif(),
         ];
     }
 
@@ -39,20 +40,40 @@ class Frontend extends CI_Controller
 
     public function profil()
     {
-        // Render halaman utama lalu JS smooth-scroll ke section #sejarah
+        $this->tentang_kami();
+    }
+
+    public function tentang_kami()
+    {
         $data = $this->_get_base_data();
-        $data['title']      = 'Profil';
+        $data['title']      = 'Tentang Kami';
         $data['sejarah']    = $this->model->get_sejarah_aktif();
-        $data['visi']       = $this->model->get_visi_misi('visi');
-        $data['misi']       = $this->model->get_visi_misi('misi');
-        $data['nilai']      = $this->model->get_visi_misi('nilai');
-        $data['galeri']     = $this->model->get_galeri_aktif(null, 8);
-        $data['ekskul']     = $this->model->get_ekskul_aktif();
-        $data['berita']     = $this->model->get_berita_aktif(3);
-        $data['ppdb']       = $this->model->get_ppdb_aktif();
-        $data['scroll_to']  = 'sejarah';
         $this->load->view('templates/header', $data);
-        $this->load->view('frontend/home', $data);
+        $this->load->view('frontend/tentang_kami', $data);
+        $this->load->view('templates/footer', $data);
+    }
+
+    public function struktur()
+    {
+        $data = $this->_get_base_data();
+        $data['title']      = 'Struktur Organisasi';
+        $data['anggota_struktur'] = $this->model->get_struktur_anggota_aktif();
+        $this->load->view('templates/header', $data);
+        $this->load->view('frontend/struktur', $data);
+        $this->load->view('templates/footer', $data);
+    }
+
+    public function detail_struktur_anggota($slug)
+    {
+        $item = $this->model->get_struktur_anggota_by_slug(urldecode($slug));
+        if (!$item) show_404();
+
+        $data = $this->_get_base_data();
+        $data['title'] = $item->nama;
+        $data['anggota'] = $item;
+        $data['anggota_lainnya'] = $this->model->get_struktur_anggota_aktif();
+        $this->load->view('templates/header', $data);
+        $this->load->view('frontend/detail_struktur_anggota', $data);
         $this->load->view('templates/footer', $data);
     }
 

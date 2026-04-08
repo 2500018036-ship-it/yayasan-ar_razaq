@@ -11,6 +11,9 @@ $route['translate_uri_dashes'] = FALSE;
 // Frontend Pages
 $route['beranda']          = 'Frontend/index';
 $route['profil']           = 'Frontend/profil';
+$route['tentang-kami']     = 'Frontend/tentang_kami';
+$route['struktur']         = 'Frontend/struktur';
+$route['struktur/anggota/(:any)'] = 'Frontend/detail_struktur_anggota/$1';
 $route['sejarah']          = 'Frontend/sejarah';
 $route['visi-misi']        = 'Frontend/visi_misi';
 $route['galeri']           = 'Frontend/galeri';
@@ -32,8 +35,18 @@ $route['panel-admin/dashboard']         = 'Admin/dashboard';
 
 // Admin - Profil
 $route['panel-admin/profil']            = 'Admin/profil';
+$route['panel-admin/profil/tentang-kami'] = 'Admin/profil_tentang_kami';
+$route['panel-admin/profil/struktur']     = 'Admin/struktur'; // backward compatibility
 $route['panel-admin/profil/update']     = 'Admin/profil_update';
 $route['panel-admin/profil/save']       = 'Admin/profil_update'; // alias used by view
+
+// Admin - Struktur Organisasi
+$route['panel-admin/struktur']                  = 'Admin/struktur';
+$route['panel-admin/struktur/bagan/save']       = 'Admin/struktur_bagan_save';
+$route['panel-admin/struktur/anggota/store']    = 'Admin/struktur_anggota_store';
+$route['panel-admin/struktur/anggota/get/(:num)'] = 'Admin/struktur_anggota_get/$1';
+$route['panel-admin/struktur/anggota/update/(:num)'] = 'Admin/struktur_anggota_update/$1';
+$route['panel-admin/struktur/anggota/delete/(:num)'] = 'Admin/struktur_anggota_delete/$1';
 
 // Admin - Sejarah
 $route['panel-admin/sejarah']           = 'Admin/sejarah';
@@ -91,6 +104,10 @@ $route['panel-admin/ppdb/store']            = 'Admin/ppdb_store';
 $route['panel-admin/ppdb/update/(:num)']    = 'Admin/ppdb_update/$1';
 $route['panel-admin/ppdb/delete/(:num)']    = 'Admin/ppdb_delete/$1';
 $route['panel-admin/ppdb/get/(:num)']       = 'Admin/ppdb_get/$1';
+
+// Admin - Popup Website
+$route['panel-admin/popup']                 = 'Admin/popup';
+$route['panel-admin/popup/update']          = 'Admin/popup_update';
 
 // Admin - Statistik
 $route['panel-admin/statistik']                = 'Admin/statistik';

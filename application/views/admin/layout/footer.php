@@ -48,6 +48,43 @@
         }
     })();
 
+    // Sidebar group menu (Profil Yayasan -> child menus)
+    (function() {
+        const toggles = document.querySelectorAll('[data-nav-group-toggle="1"]');
+        if (!toggles.length) return;
+
+        const closeOtherGroups = (exceptId) => {
+            toggles.forEach((btn) => {
+                const id = btn.getAttribute('data-submenu-id');
+                if (!id || id === exceptId) return;
+                const submenu = document.getElementById(id);
+                btn.classList.remove('open');
+                if (submenu) submenu.classList.remove('open');
+            });
+        };
+
+        toggles.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar && sidebar.classList.contains('collapsed') && window.innerWidth >= 768) {
+                    const firstUri = btn.getAttribute('data-first-uri');
+                    if (firstUri) window.location.href = firstUri;
+                    return;
+                }
+
+                const id = btn.getAttribute('data-submenu-id');
+                if (!id) return;
+                const submenu = document.getElementById(id);
+                if (!submenu) return;
+
+                const nextOpen = !submenu.classList.contains('open');
+                closeOtherGroups(id);
+                submenu.classList.toggle('open', nextOpen);
+                btn.classList.toggle('open', nextOpen);
+            });
+        });
+    })();
+
     // ============================================================
     // TOAST SYSTEM
     // ============================================================
@@ -123,6 +160,9 @@
     function openModal(id) {
         const m = document.getElementById(id);
         if (m) {
+            if (m.classList.contains('hidden')) {
+                m.classList.remove('hidden');
+            }
             m.classList.add('open');
             document.body.style.overflow = 'hidden';
         }
@@ -132,12 +172,15 @@
         const m = document.getElementById(id);
         if (m) {
             m.classList.remove('open');
+            if (m.hasAttribute('data-modal')) {
+                m.classList.add('hidden');
+            }
             document.body.style.overflow = '';
         }
     }
 
     // Close modal on overlay click
-    document.querySelectorAll('.modal-overlay').forEach(m => {
+    document.querySelectorAll('.modal-overlay, [data-modal]').forEach(m => {
         m.addEventListener('click', e => {
             if (e.target === m) closeModal(m.id);
         });
@@ -173,6 +216,17 @@
                 })
                 .catch(() => showToast('Terjadi kesalahan.', 'error'));
         }
+    }
+
+    function showConfirm(message, onConfirm) {
+        if (!confirm(message)) return;
+        if (typeof onConfirm === 'function') onConfirm();
+    }
+
+    function confirmLogout(event) {
+        const ok = confirm('Yakin ingin keluar dari dashboard admin?');
+        if (!ok && event) event.preventDefault();
+        return ok;
     }
 
     // ============================================================

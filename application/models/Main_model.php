@@ -63,6 +63,51 @@ class Main_model extends CI_Model
             $this->db->query("UPDATE `ekskul` SET `slug` = CONCAT('ekskul-', `id`) WHERE `slug` IS NULL OR TRIM(`slug`) = ''");
         }
 
+        // Tabel popup promosi frontend
+        $this->db->query("
+            CREATE TABLE IF NOT EXISTS `popup_promosi` (
+                `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `gambar` VARCHAR(255) DEFAULT NULL,
+                `target_link` VARCHAR(255) DEFAULT NULL,
+                `target_mode` VARCHAR(20) NOT NULL DEFAULT '_self',
+                `status` TINYINT(1) NOT NULL DEFAULT 1,
+                `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (`id`),
+                KEY `idx_status` (`status`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
+
+        // Tabel anggota struktur organisasi
+        $this->db->query("
+            CREATE TABLE IF NOT EXISTS `struktur_anggota` (
+                `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `nama` VARCHAR(150) NOT NULL,
+                `jabatan` VARCHAR(150) NOT NULL,
+                `slug` VARCHAR(190) DEFAULT NULL,
+                `foto` VARCHAR(255) DEFAULT NULL,
+                `deskripsi_lengkap` LONGTEXT DEFAULT NULL,
+                `urutan` INT(11) NOT NULL DEFAULT 1,
+                `status` TINYINT(1) NOT NULL DEFAULT 1,
+                `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (`id`),
+                KEY `idx_status` (`status`),
+                KEY `idx_urutan` (`urutan`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
+
+        if ($this->db->table_exists('struktur_anggota')) {
+            if (!$this->db->field_exists('slug', 'struktur_anggota')) {
+                $this->db->query("ALTER TABLE `struktur_anggota` ADD COLUMN `slug` VARCHAR(190) NULL DEFAULT NULL AFTER `jabatan`");
+            }
+            $idx = $this->db->query("SHOW INDEX FROM `struktur_anggota` WHERE Key_name = 'idx_struktur_slug'")->result();
+            if (empty($idx)) {
+                $this->db->query("ALTER TABLE `struktur_anggota` ADD INDEX `idx_struktur_slug` (`slug`)");
+            }
+            $this->db->query("UPDATE `struktur_anggota` SET `slug` = CONCAT('anggota-', `id`) WHERE `slug` IS NULL OR TRIM(`slug`) = ''");
+        }
+
         $booted = true;
     }
 
@@ -150,12 +195,17 @@ class Main_model extends CI_Model
         $editor_role_id = isset($role_ids['Editor']) ? $role_ids['Editor'] : 0;
         $viewer_role_id = isset($role_ids['Viewer']) ? $role_ids['Viewer'] : 0;
 
-        // Seed all permissions to super admin only if empty (avoid overriding manual edits each request)
-        if ($super_role_id && count($this->get_role_permission_codes($super_role_id)) === 0) {
+        // Super Admin harus selalu punya akses penuh (tambahkan permission baru jika ada)
+        if ($super_role_id) {
             $all_codes = array_map(function ($p) {
                 return $p['kode'];
             }, $permission_catalog);
-            $this->set_role_permissions($super_role_id, $all_codes);
+            $existing_codes = $this->get_role_permission_codes($super_role_id);
+            $missing_codes = array_values(array_diff($all_codes, $existing_codes));
+            if (!empty($missing_codes)) {
+                $merged = array_values(array_unique(array_merge($existing_codes, $missing_codes)));
+                $this->set_role_permissions($super_role_id, $merged);
+            }
         }
 
         // Editor permissions
@@ -185,6 +235,11 @@ class Main_model extends CI_Model
                 'ppdb.view',
                 'ppdb.create',
                 'ppdb.edit',
+                'struktur.view',
+                'struktur.create',
+                'struktur.edit',
+                'popup.view',
+                'popup.edit',
                 'akun.view',
                 'akun.edit',
             ];
@@ -203,6 +258,8 @@ class Main_model extends CI_Model
                 'ekskul.view',
                 'berita.view',
                 'ppdb.view',
+                'struktur.view',
+                'popup.view',
                 'akun.view',
                 'akun.edit',
             ];
@@ -254,6 +311,12 @@ class Main_model extends CI_Model
             ['kode' => 'ppdb.create', 'modul' => 'ppdb', 'label' => 'Tambah PPDB', 'deskripsi' => 'Tambah data PPDB'],
             ['kode' => 'ppdb.edit', 'modul' => 'ppdb', 'label' => 'Edit PPDB', 'deskripsi' => 'Edit data PPDB'],
             ['kode' => 'ppdb.delete', 'modul' => 'ppdb', 'label' => 'Hapus PPDB', 'deskripsi' => 'Hapus data PPDB'],
+            ['kode' => 'struktur.view', 'modul' => 'struktur', 'label' => 'Lihat Struktur Organisasi', 'deskripsi' => 'Akses menu struktur organisasi'],
+            ['kode' => 'struktur.create', 'modul' => 'struktur', 'label' => 'Tambah Anggota Struktur', 'deskripsi' => 'Tambah data anggota struktur'],
+            ['kode' => 'struktur.edit', 'modul' => 'struktur', 'label' => 'Edit Struktur Organisasi', 'deskripsi' => 'Edit bagan dan data anggota struktur'],
+            ['kode' => 'struktur.delete', 'modul' => 'struktur', 'label' => 'Hapus Anggota Struktur', 'deskripsi' => 'Hapus data anggota struktur'],
+            ['kode' => 'popup.view', 'modul' => 'popup', 'label' => 'Lihat Popup Website', 'deskripsi' => 'Akses menu popup website'],
+            ['kode' => 'popup.edit', 'modul' => 'popup', 'label' => 'Edit Popup Website', 'deskripsi' => 'Ubah gambar dan link popup website'],
             ['kode' => 'akun.view', 'modul' => 'akun', 'label' => 'Lihat Akun Sendiri', 'deskripsi' => 'Akses profil akun sendiri'],
             ['kode' => 'akun.edit', 'modul' => 'akun', 'label' => 'Edit Akun Sendiri', 'deskripsi' => 'Ubah akun sendiri'],
             ['kode' => 'setting.view', 'modul' => 'setting', 'label' => 'Lihat Pengaturan', 'deskripsi' => 'Akses menu pengaturan admin'],
@@ -475,6 +538,55 @@ class Main_model extends CI_Model
     public function get_all_statistik()
     {
         return $this->db->order_by('urutan', 'ASC')->get('statistik')->result();
+    }
+
+    // ============================================================
+    // STRUKTUR ORGANISASI
+    // ============================================================
+    public function get_struktur_anggota_aktif()
+    {
+        return $this->db->where('status', 1)->order_by('urutan', 'ASC')->order_by('id', 'ASC')->get('struktur_anggota')->result();
+    }
+
+    public function get_all_struktur_anggota()
+    {
+        return $this->db->order_by('urutan', 'ASC')->order_by('id', 'ASC')->get('struktur_anggota')->result();
+    }
+
+    public function get_struktur_anggota_by_slug($slug)
+    {
+        return $this->db->where('slug', $slug)->where('status', 1)->get('struktur_anggota')->row();
+    }
+
+    public function struktur_anggota_slug_exists($slug, $exclude_id = 0)
+    {
+        $this->db->where('slug', $slug);
+        if ((int) $exclude_id > 0) {
+            $this->db->where('id !=', (int) $exclude_id);
+        }
+        return $this->db->count_all_results('struktur_anggota') > 0;
+    }
+
+    // ============================================================
+    // POPUP WEBSITE
+    // ============================================================
+    public function get_popup_aktif()
+    {
+        return $this->db->where('status', 1)->order_by('id', 'DESC')->limit(1)->get('popup_promosi')->row();
+    }
+
+    public function get_popup_admin()
+    {
+        return $this->db->order_by('id', 'DESC')->limit(1)->get('popup_promosi')->row();
+    }
+
+    public function save_popup($data)
+    {
+        $existing = $this->get_popup_admin();
+        if ($existing) {
+            return $this->db->where('id', (int) $existing->id)->update('popup_promosi', $data);
+        }
+        return $this->db->insert('popup_promosi', $data);
     }
 
     // ============================================================

@@ -137,12 +137,13 @@ $can_delete = in_array('sejarah.delete', $permission_codes, true);
     async function simpan() {
         const judul = document.getElementById('f-judul').value.trim();
         const konten = document.getElementById('f-konten').value.trim();
+        const id = (document.getElementById('f-id').value || '').trim();
         if (!judul || !konten) {
             showToast('Judul dan konten wajib diisi', 'error');
             return;
         }
         const fd = new FormData();
-        fd.append('id', document.getElementById('f-id').value);
+        fd.append('id', id);
         fd.append('judul', judul);
         fd.append('konten', konten);
         fd.append('tahun', document.getElementById('f-tahun').value);
@@ -150,18 +151,17 @@ $can_delete = in_array('sejarah.delete', $permission_codes, true);
         fd.append('status', 1);
         const gambar = document.getElementById('f-gambar').files[0];
         if (gambar) fd.append('gambar', gambar);
-        await ajaxSubmit('<?= base_url('panel-admin/sejarah/save') ?>', fd, () => {
+        const url = id ? '<?= base_url('panel-admin/sejarah/update/') ?>' + id : '<?= base_url('panel-admin/sejarah/store') ?>';
+        await ajaxSubmit(url, fd, () => {
             closeModal('modal-form');
             setTimeout(() => location.reload(), 500);
         });
     }
     async function hapus(id, judul) {
-        showConfirm(`Hapus sejarah "${judul}"?`, async () => {
-            const fd = new FormData();
-            fd.append('id', id);
-            await ajaxSubmit('<?= base_url('panel-admin/sejarah/delete') ?>', fd, () => {
-                document.getElementById('row-' + id)?.remove();
-            });
+        if (!confirm(`Hapus sejarah "${judul}"?`)) return;
+        await ajaxSubmit('<?= base_url('panel-admin/sejarah/delete/') ?>' + id, new FormData(), () => {
+            document.getElementById('row-' + id)?.remove();
+            showToast('Data sejarah berhasil dihapus!', 'success');
         });
     }
 </script>

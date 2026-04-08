@@ -154,7 +154,7 @@
                 border-color 0.45s ease,
                 box-shadow 0.45s ease,
                 margin 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow: hidden;
+            overflow: visible;
         }
 
         #navbar-shell::after {
@@ -226,6 +226,83 @@
         #navbar.scrolled .nav-link-front:hover {
             color: #14532d;
             background: #f0fdf4;
+        }
+
+        /* Profil dropdown */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .nav-dropdown-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-dropdown-caret {
+            transition: transform 0.3s ease;
+        }
+
+        .nav-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            min-width: 220px;
+            padding: 8px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(5, 46, 22, 0.94);
+            box-shadow: 0 16px 30px rgba(2, 6, 23, 0.24);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(8px) scale(0.98);
+            transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s ease;
+            z-index: 120;
+        }
+
+        #navbar.scrolled .nav-dropdown-menu {
+            background: rgba(255, 255, 255, 0.98);
+            border-color: rgba(20, 83, 45, 0.12);
+            box-shadow: 0 20px 34px rgba(20, 83, 45, 0.14);
+        }
+
+        .nav-dropdown:hover .nav-dropdown-menu,
+        .nav-dropdown:focus-within .nav-dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .nav-dropdown:hover .nav-dropdown-caret,
+        .nav-dropdown:focus-within .nav-dropdown-caret {
+            transform: rotate(180deg);
+        }
+
+        .nav-dropdown-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            border-radius: 10px;
+            padding: 10px 12px;
+            color: rgba(255, 255, 255, 0.92);
+            font-size: 13px;
+            font-weight: 600;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        .nav-dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.14);
+            color: #ffffff;
+        }
+
+        #navbar.scrolled .nav-dropdown-item {
+            color: rgba(20, 83, 45, 0.88);
+        }
+
+        #navbar.scrolled .nav-dropdown-item:hover {
+            background: #f0fdf4;
+            color: #14532d;
         }
 
         /* Logo text color transition */
@@ -658,22 +735,49 @@
                         $current_url = current_url();
                         $nav_items = [
                             ['url' => base_url(), 'label' => 'Beranda', 'scroll_top' => true],
-                            ['url' => base_url() . '#sejarah', 'label' => 'Profil'],
+                            [
+                                'label' => 'Profil',
+                                'children' => [
+                                    ['url' => base_url('tentang-kami'), 'label' => 'Tentang Kami'],
+                                    ['url' => base_url('struktur'), 'label' => 'Struktur'],
+                                ],
+                            ],
                             ['url' => base_url('galeri'), 'label' => 'Galeri'],
                             ['url' => base_url('ekskul'), 'label' => 'Ekskul'],
                             ['url' => base_url('berita'), 'label' => 'Berita'],
                             ['url' => base_url('ppdb'), 'label' => 'PPDB'],
                         ];
                         foreach ($nav_items as $item):
-                            $scroll_top_attr = !empty($item['scroll_top']) ? 'data-scroll-top="1"' : '';
+                            if (!empty($item['children'])):
+                                $first_child_url = $item['children'][0]['url'];
                             ?>
-                            <a href="<?= $item['url'] ?>"
-                                <?= $scroll_top_attr ?>
-                                class="nav-link-front px-4 py-2 rounded-xl text-sm font-semibold relative group">
-                                <?= $item['label'] ?>
-                                <span
-                                    class="nav-indicator absolute bottom-1 left-4 right-4 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left rounded-full"></span>
-                            </a>
+                                <div class="nav-dropdown group">
+                                    <a href="<?= $first_child_url ?>" class="nav-link-front nav-dropdown-toggle px-4 py-2 rounded-xl text-sm font-semibold relative group">
+                                        <?= $item['label'] ?>
+                                        <i data-feather="chevron-down" class="nav-dropdown-caret w-4 h-4"></i>
+                                        <span
+                                            class="nav-indicator absolute bottom-1 left-4 right-4 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left rounded-full"></span>
+                                    </a>
+                                    <div class="nav-dropdown-menu">
+                                        <?php foreach ($item['children'] as $child): ?>
+                                            <a href="<?= $child['url'] ?>" class="nav-dropdown-item">
+                                                <span><?= $child['label'] ?></span>
+                                                <i data-feather="arrow-up-right" class="w-3.5 h-3.5 opacity-70"></i>
+                                            </a>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            <?php else:
+                                $scroll_top_attr = !empty($item['scroll_top']) ? 'data-scroll-top="1"' : '';
+                            ?>
+                                <a href="<?= $item['url'] ?>"
+                                    <?= $scroll_top_attr ?>
+                                    class="nav-link-front px-4 py-2 rounded-xl text-sm font-semibold relative group">
+                                    <?= $item['label'] ?>
+                                    <span
+                                        class="nav-indicator absolute bottom-1 left-4 right-4 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left rounded-full"></span>
+                                </a>
+                            <?php endif; ?>
                         <?php endforeach; ?>
                         <a href="<?= base_url('ppdb') ?>" id="nav-cta-btn"
                             class="magnetic-btn ml-3 px-6 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg transition-all duration-500 hover:-translate-y-0.5">
@@ -693,11 +797,23 @@
                     class="lg:hidden bg-white/95 backdrop-blur-xl border-t border-hijau-100/50 rounded-b-2xl">
                     <div class="py-4 space-y-1">
                         <?php foreach ($nav_items as $item): ?>
-                            <a href="<?= $item['url'] ?>"
-                                <?= !empty($item['scroll_top']) ? 'data-scroll-top="1"' : '' ?>
-                                class="block px-4 py-3 text-sm font-semibold text-hijau-900 hover:bg-hijau-50 rounded-xl mx-2 transition-colors">
-                                <?= $item['label'] ?>
-                            </a>
+                            <?php if (!empty($item['children'])): ?>
+                                <div class="px-4 pt-2 pb-1 text-[11px] uppercase tracking-wide font-bold text-hijau-600/80">
+                                    <?= $item['label'] ?>
+                                </div>
+                                <?php foreach ($item['children'] as $child): ?>
+                                    <a href="<?= $child['url'] ?>"
+                                        class="block pl-8 pr-4 py-2.5 text-sm font-semibold text-hijau-900 hover:bg-hijau-50 rounded-xl mx-2 transition-colors">
+                                        <?= $child['label'] ?>
+                                    </a>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <a href="<?= $item['url'] ?>"
+                                    <?= !empty($item['scroll_top']) ? 'data-scroll-top="1"' : '' ?>
+                                    class="block px-4 py-3 text-sm font-semibold text-hijau-900 hover:bg-hijau-50 rounded-xl mx-2 transition-colors">
+                                    <?= $item['label'] ?>
+                                </a>
+                            <?php endif; ?>
                         <?php endforeach; ?>
                         <div class="px-2 pt-2">
                             <a href="<?= base_url('ppdb') ?>"

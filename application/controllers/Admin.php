@@ -58,7 +58,15 @@ class Admin extends CI_Controller
         return [
             'dashboard'                  => 'dashboard.view',
             'profil'                     => 'profil.view',
+            'profil_tentang_kami'        => 'profil.view',
+            'profil_struktur'            => 'profil.view',
             'profil_update'              => 'profil.edit',
+            'struktur'                   => 'struktur.view',
+            'struktur_bagan_save'        => 'struktur.edit',
+            'struktur_anggota_get'       => 'struktur.view',
+            'struktur_anggota_store'     => 'struktur.create',
+            'struktur_anggota_update'    => 'struktur.edit',
+            'struktur_anggota_delete'    => 'struktur.delete',
             'sejarah'                    => 'sejarah.view',
             'sejarah_get'                => 'sejarah.view',
             'sejarah_store'              => 'sejarah.create',
@@ -92,6 +100,8 @@ class Admin extends CI_Controller
             'ppdb_store'                 => 'ppdb.create',
             'ppdb_update'                => 'ppdb.edit',
             'ppdb_delete'                => 'ppdb.delete',
+            'popup'                      => 'popup.view',
+            'popup_update'               => 'popup.edit',
             'statistik'                  => 'statistik.view',
             'statistik_get'              => 'statistik.view',
             'statistik_store'            => 'statistik.create',
@@ -262,12 +272,22 @@ class Admin extends CI_Controller
     // ============================================================
     public function profil()
     {
+        redirect('panel-admin/profil/tentang-kami');
+    }
+
+    public function profil_tentang_kami()
+    {
         $this->_check_auth();
-        $data['title']  = 'Manajemen Profil';
+        $data['title']  = 'Profil Yayasan • Tentang Kami';
         $data['profil'] = $this->model->get_profil();
         $this->load->view('admin/layout/header', $data);
-        $this->load->view('admin/profil', $data);
+        $this->load->view('admin/profil_tentang_kami', $data);
         $this->load->view('admin/layout/footer');
+    }
+
+    public function profil_struktur()
+    {
+        redirect('panel-admin/struktur');
     }
 
     public function profil_update()
@@ -347,6 +367,149 @@ class Admin extends CI_Controller
     }
 
     // ============================================================
+    // STRUKTUR ORGANISASI
+    // ============================================================
+    public function struktur()
+    {
+        $this->_check_auth();
+        $data['title'] = 'Manajemen Struktur Organisasi';
+        $data['profil'] = $this->model->get_profil();
+        $data['anggota'] = $this->model->get_all_struktur_anggota();
+        $this->load->view('admin/layout/header', $data);
+        $this->load->view('admin/struktur', $data);
+        $this->load->view('admin/layout/footer');
+    }
+
+    public function struktur_bagan_save()
+    {
+        $this->_check_auth();
+        $profil = $this->model->get_profil();
+
+        $update_data = [
+            'struktur_organisasi_judul' => $this->input->post('struktur_organisasi_judul', TRUE),
+            'struktur_organisasi_deskripsi' => $this->input->post('struktur_organisasi_deskripsi'),
+        ];
+
+        if (!empty($_FILES['struktur_organisasi_gambar']['name'])) {
+            $up = $this->_upload_file('struktur_organisasi_gambar', 'profil');
+            if ($up['status']) {
+                $update_data['struktur_organisasi_gambar'] = $up['file_name'];
+                if ($profil && !empty($profil->struktur_organisasi_gambar) && $profil->struktur_organisasi_gambar !== $up['file_name']) {
+                    $this->_delete_file('profil/' . $profil->struktur_organisasi_gambar);
+                }
+            } else {
+                $this->_json('error', $up['message']);
+            }
+        }
+
+        $this->model->update_profil($update_data);
+        $this->_json('success', 'Bagan struktur berhasil diperbarui.');
+    }
+
+    public function struktur_anggota_get($id)
+    {
+        $this->_check_auth();
+        $item = $this->model->get_by_id('struktur_anggota', (int) $id);
+        if (!$item) {
+            $this->_json('error', 'Data anggota tidak ditemukan.');
+        }
+        $this->_json('success', 'OK', $item);
+    }
+
+    public function struktur_anggota_store()
+    {
+        $this->_check_auth();
+
+        $nama = trim((string) $this->input->post('nama', TRUE));
+        $jabatan = trim((string) $this->input->post('jabatan', TRUE));
+        if ($nama === '' || $jabatan === '') {
+            $this->_json('error', 'Nama dan jabatan wajib diisi.');
+        }
+
+        $slug = $this->_make_unique_struktur_anggota_slug($nama);
+
+        $data = [
+            'nama' => $nama,
+            'jabatan' => $jabatan,
+            'slug' => $slug,
+            'deskripsi_lengkap' => $this->input->post('deskripsi_lengkap'),
+            'urutan' => $this->input->post('urutan', TRUE) ?: 1,
+            'status' => $this->input->post('status', TRUE) ?: 1,
+        ];
+
+        if (!empty($_FILES['foto']['name'])) {
+            $up = $this->_upload_file('foto', 'struktur');
+            if ($up['status']) {
+                $data['foto'] = $up['file_name'];
+            } else {
+                $this->_json('error', $up['message']);
+            }
+        }
+
+        $this->model->insert('struktur_anggota', $data);
+        $this->_json('success', 'Anggota struktur berhasil ditambahkan.');
+    }
+
+    public function struktur_anggota_update($id)
+    {
+        $this->_check_auth();
+        $id = (int) $id;
+        $item = $this->model->get_by_id('struktur_anggota', $id);
+        if (!$item) {
+            $this->_json('error', 'Data anggota tidak ditemukan.');
+        }
+
+        $nama = trim((string) $this->input->post('nama', TRUE));
+        $jabatan = trim((string) $this->input->post('jabatan', TRUE));
+        if ($nama === '' || $jabatan === '') {
+            $this->_json('error', 'Nama dan jabatan wajib diisi.');
+        }
+
+        $slug = $this->_make_unique_struktur_anggota_slug($nama, $id);
+
+        $data = [
+            'nama' => $nama,
+            'jabatan' => $jabatan,
+            'slug' => $slug,
+            'deskripsi_lengkap' => $this->input->post('deskripsi_lengkap'),
+            'urutan' => $this->input->post('urutan', TRUE) ?: 1,
+            'status' => $this->input->post('status', TRUE) ?: 1,
+        ];
+
+        if (!empty($_FILES['foto']['name'])) {
+            $up = $this->_upload_file('foto', 'struktur');
+            if ($up['status']) {
+                $data['foto'] = $up['file_name'];
+                if (!empty($item->foto) && $item->foto !== $up['file_name']) {
+                    $this->_delete_file('struktur/' . $item->foto);
+                }
+            } else {
+                $this->_json('error', $up['message']);
+            }
+        }
+
+        $this->model->update('struktur_anggota', $data, $id);
+        $this->_json('success', 'Data anggota struktur berhasil diperbarui.');
+    }
+
+    public function struktur_anggota_delete($id)
+    {
+        $this->_check_auth();
+        $id = (int) $id;
+        $item = $this->model->get_by_id('struktur_anggota', $id);
+        if (!$item) {
+            $this->_json('error', 'Data anggota tidak ditemukan.');
+        }
+
+        if (!empty($item->foto)) {
+            $this->_delete_file('struktur/' . $item->foto);
+        }
+
+        $this->model->delete('struktur_anggota', $id);
+        $this->_json('success', 'Data anggota struktur berhasil dihapus.');
+    }
+
+    // ============================================================
     // SEJARAH CRUD
     // ============================================================
     public function sejarah()
@@ -410,11 +573,20 @@ class Admin extends CI_Controller
         $this->_json('success', 'Data sejarah berhasil diperbarui!');
     }
 
-    public function sejarah_delete($id)
+    public function sejarah_delete($id = null)
     {
         $this->_check_auth();
+        $id = $id ? (int) $id : (int) $this->input->post('id', TRUE);
+        if ($id <= 0) {
+            $this->_json('error', 'ID sejarah tidak valid.');
+        }
+
         $item = $this->model->get_by_id('sejarah', $id);
-        if ($item && $item->gambar) $this->_delete_file('sejarah/' . $item->gambar);
+        if (!$item) {
+            $this->_json('error', 'Data sejarah tidak ditemukan.');
+        }
+
+        if (!empty($item->gambar)) $this->_delete_file('sejarah/' . $item->gambar);
         $this->model->delete('sejarah', $id);
         $this->_json('success', 'Data sejarah berhasil dihapus!');
     }
@@ -877,6 +1049,60 @@ class Admin extends CI_Controller
     }
 
     // ============================================================
+    // POPUP WEBSITE
+    // ============================================================
+    public function popup()
+    {
+        $this->_check_auth();
+        $data['title'] = 'Popup Website';
+        $data['popup'] = $this->model->get_popup_admin();
+        $this->load->view('admin/layout/header', $data);
+        $this->load->view('admin/popup', $data);
+        $this->load->view('admin/layout/footer');
+    }
+
+    public function popup_update()
+    {
+        $this->_check_auth();
+        $existing = $this->model->get_popup_admin();
+
+        $status = (int) $this->input->post('status', TRUE);
+        $target_link = trim((string) $this->input->post('target_link', TRUE));
+        $target_mode = $this->input->post('target_mode', TRUE) === '_blank' ? '_blank' : '_self';
+        $remove_image = (int) $this->input->post('remove_image', TRUE) === 1;
+
+        $update_data = [
+            'status'      => $status ? 1 : 0,
+            'target_link' => $target_link !== '' ? $target_link : null,
+            'target_mode' => $target_mode,
+        ];
+
+        if ($remove_image && $existing && !empty($existing->gambar)) {
+            $this->_delete_file('popup/' . $existing->gambar);
+            $update_data['gambar'] = null;
+        }
+
+        if (!empty($_FILES['gambar']['name'])) {
+            $up = $this->_upload_file('gambar', 'popup');
+            if ($up['status']) {
+                $update_data['gambar'] = $up['file_name'];
+                if ($existing && !empty($existing->gambar) && $existing->gambar !== $up['file_name']) {
+                    $this->_delete_file('popup/' . $existing->gambar);
+                }
+            } else {
+                $this->_json('error', $up['message']);
+            }
+        }
+
+        $ok = $this->model->save_popup($update_data);
+        if (!$ok) {
+            $this->_json('error', 'Gagal menyimpan data popup.');
+        }
+
+        $this->_json('success', 'Popup website berhasil diperbarui.');
+    }
+
+    // ============================================================
     // STATISTIK CRUD
     // ============================================================
     public function statistik()
@@ -1236,6 +1462,22 @@ class Admin extends CI_Controller
         while ($this->model->ekskul_slug_exists($slug, (int) $exclude_id)) {
             $slug = $base . '-' . $counter++;
         }
+        return $slug;
+    }
+
+    private function _make_unique_struktur_anggota_slug($nama, $exclude_id = 0)
+    {
+        $base = $this->_make_slug($nama ?: ('anggota-' . date('YmdHis')));
+        if ($base === '') {
+            $base = 'anggota-' . date('YmdHis');
+        }
+
+        $slug = $base;
+        $counter = 1;
+        while ($this->model->struktur_anggota_slug_exists($slug, (int) $exclude_id)) {
+            $slug = $base . '-' . $counter++;
+        }
+
         return $slug;
     }
 

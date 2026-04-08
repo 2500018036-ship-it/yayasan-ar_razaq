@@ -315,6 +315,7 @@ $vm_ov_alpha   = round($vm_overlay_opacity / 100, 2);
 $vm_has_video  = !empty($vm_bg_video);
 $vm_has_image  = !empty($vm_bg_image);
 $vm_has_custom = $vm_has_video || $vm_has_image;
+$vm_use_video_on_home = $vm_has_video && !$vm_has_image;
 ?>
 <section id="visi-misi" class="min-h-screen relative overflow-hidden<?= !$vm_has_custom ? ' bg-hijau-950 grain' : '' ?>" style="isolation:isolate; display:flex; flex-direction:column; justify-content:center; contain: layout style;">
 
@@ -325,11 +326,11 @@ $vm_has_custom = $vm_has_video || $vm_has_image;
         </svg>
     </div>
 
-    <?php if ($vm_has_video): ?>
+    <?php if ($vm_use_video_on_home): ?>
         <!-- VIDEO BACKGROUND — optimized: decoding on separate thread, no preload of full video -->
-        <video id="visi-video-bg" autoplay muted loop playsinline preload="metadata" disablepictureinpicture
+        <video id="visi-video-bg" muted loop playsinline preload="none" disablepictureinpicture
             class="absolute inset-0 w-full h-full object-cover"
-            style="z-index:0; will-change:auto;">
+            style="z-index:0; transform:translateZ(0); backface-visibility:hidden;">
             <source src="<?= base_url('assets/images/uploads/profil/' . $vm_bg_video) ?>" type="video/mp4">
         </video>
 
@@ -351,9 +352,9 @@ $vm_has_custom = $vm_has_video || $vm_has_image;
 
     <!-- Decorative blobs — reduced blur radius for GPU savings -->
     <div class="absolute top-0 right-0 w-96 h-96 rounded-full"
-        style="z-index:3; background:radial-gradient(circle, rgba(234,179,8,0.05) 0%, transparent 70%); filter:blur(60px);"></div>
+        style="z-index:3; background:radial-gradient(circle, rgba(234,179,8,0.05) 0%, transparent 70%); opacity:.85;"></div>
     <div class="absolute bottom-0 left-0 w-80 h-80 rounded-full"
-        style="z-index:3; background:rgba(74,222,128,0.03); filter:blur(52px);"></div>
+        style="z-index:3; background:radial-gradient(circle, rgba(74,222,128,0.04) 0%, transparent 72%); opacity:.75;"></div>
 
     <!-- Floating particles (CSS-only, no GSAP, runs on compositor thread) -->
     <div id="visi-particles" class="absolute inset-0 overflow-hidden pointer-events-none" style="z-index:3;"></div>

@@ -24,13 +24,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 $scheme = 'http';
-if (
+if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+	$scheme = trim(explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'])[0]) === 'https' ? 'https' : 'http';
+} elseif (
 	(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
 	|| (isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] === 'https')
 ) {
 	$scheme = 'https';
 }
-$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
+
+$host = 'localhost';
+if (!empty($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+	$host = trim(explode(',', $_SERVER['HTTP_X_FORWARDED_HOST'])[0]);
+} elseif (!empty($_SERVER['HTTP_HOST'])) {
+	$host = $_SERVER['HTTP_HOST'];
+}
+
 $script_dir = isset($_SERVER['SCRIPT_NAME']) ? dirname(str_replace('\\', '/', $_SERVER['SCRIPT_NAME'])) : '';
 $script_dir = trim($script_dir, '/.');
 $config['base_url'] = $scheme . '://' . $host . ($script_dir !== '' ? '/' . $script_dir . '/' : '/');

@@ -70,10 +70,11 @@
                 <ul class="space-y-3">
                     <?php
                     $links = [
-                        ['#sejarah', 'Profil Yayasan'],
-                        ['#visi-misi', 'Visi & Misi'],
-                        ['#galeri', 'Galeri'],
-                        ['#ekskul', 'Ekstrakurikuler'],
+                        [base_url('tentang-kami'), 'Tentang Kami'],
+                        [base_url('struktur'), 'Struktur'],
+                        [base_url('visi-misi'), 'Visi & Misi'],
+                        [base_url('galeri'), 'Galeri'],
+                        [base_url('ekskul'), 'Ekstrakurikuler'],
                         [base_url('berita'), 'Berita'],
                         [base_url('ppdb'), 'PPDB'],
                     ];
@@ -140,6 +141,44 @@
     <i data-feather="arrow-up" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
 </button>
 
+<?php
+$popup_data = isset($site_popup) ? $site_popup : null;
+if ($popup_data && !empty($popup_data->gambar)):
+    $popup_img_url = base_url('assets/images/uploads/popup/' . $popup_data->gambar);
+    $popup_target_link = trim((string) $popup_data->target_link);
+    $popup_target_mode = ($popup_data->target_mode === '_blank') ? '_blank' : '_self';
+    $popup_state_key = 'popup_' . (int) $popup_data->id . '_' . md5((string) $popup_data->updated_at . '|' . (string) $popup_data->gambar . '|' . (string) $popup_data->target_link);
+?>
+    <div id="site-popup-overlay"
+        class="fixed inset-0 z-[100] bg-black/65 backdrop-blur-[2px] hidden items-center justify-center p-4 sm:p-6"
+        aria-hidden="true">
+        <div class="relative w-[92vw] sm:w-[86vw] md:w-[72vw] lg:w-[58vw] max-w-[860px]">
+            <button id="site-popup-close"
+                type="button"
+                class="absolute -top-3 -right-3 z-10 w-10 h-10 rounded-full bg-white text-gray-700 shadow-lg hover:bg-gray-100 transition-colors flex items-center justify-center"
+                aria-label="Tutup popup">
+                <i data-feather="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="rounded-2xl overflow-hidden shadow-2xl bg-white max-h-[82vh]">
+                <?php if ($popup_target_link !== ''): ?>
+                    <a href="<?= htmlspecialchars($popup_target_link, ENT_QUOTES, 'UTF-8') ?>"
+                        target="<?= $popup_target_mode ?>"
+                        <?= $popup_target_mode === '_blank' ? 'rel="noopener noreferrer"' : '' ?>
+                        class="block w-full h-full"
+                        id="site-popup-image-link">
+                        <img src="<?= $popup_img_url ?>" alt="Popup Promosi" class="block max-w-full w-auto h-auto max-h-[82vh] object-contain mx-auto">
+                    </a>
+                <?php else: ?>
+                    <div class="block w-full h-full">
+                        <img src="<?= $popup_img_url ?>" alt="Popup Promosi" class="block max-w-full w-auto h-auto max-h-[82vh] object-contain mx-auto">
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
 <!-- ============================================================ -->
 <!-- GLOBAL ANIMATION ENGINE — FIXED & OPTIMIZED                  -->
 <!-- ============================================================ -->
@@ -158,7 +197,9 @@
     const lowPowerDevice = !!(navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
     const hasVisiMisiSection = !!document.getElementById('visi-misi');
     const isVisiMisiPage = /(?:^|\/)visi-misi\/?$/.test(window.location.pathname);
-    const perfMode = prefersReducedMotion || lowPowerDevice || hasVisiMisiSection || isVisiMisiPage;
+    // Perf mode dibatasi untuk device lemah / reduced motion / halaman visi-misi khusus
+    // agar animasi scroll GSAP di beranda tetap aktif penuh.
+    const perfMode = prefersReducedMotion || lowPowerDevice || isVisiMisiPage;
 
     const lenis = new Lenis({
         duration: perfMode ? 0.78 : 1.0,
@@ -653,7 +694,8 @@
         }
 
         const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (prefersReduce || lowPowerDevice) {
+        const disableParticlesOnHome = hasVisiMisiSection && !isVisiMisiPage;
+        if (prefersReduce || lowPowerDevice || disableParticlesOnHome) {
             particleContainer.innerHTML = '';
         } else {
         const isMobile = window.innerWidth < 768;
@@ -694,17 +736,29 @@
     // ============================================================
     const visiVideo = document.getElementById('visi-video-bg');
     if (visiVideo && 'IntersectionObserver' in window) {
+        const homeWithVm = hasVisiMisiSection && !isVisiMisiPage;
+        let playTimer = null;
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    const p = visiVideo.play();
-                    if (p && typeof p.catch === 'function') p.catch(() => {});
+                    if (playTimer) clearTimeout(playTimer);
+                    if (homeWithVm) {
+                        // Delay kecil agar transisi scroll ke section tidak drop frame
+                        playTimer = setTimeout(() => {
+                            const p = visiVideo.play();
+                            if (p && typeof p.catch === 'function') p.catch(() => {});
+                        }, 140);
+                    } else {
+                        const p = visiVideo.play();
+                        if (p && typeof p.catch === 'function') p.catch(() => {});
+                    }
                 } else {
+                    if (playTimer) clearTimeout(playTimer);
                     visiVideo.pause();
                 }
             });
         }, {
-            threshold: 0.12
+            threshold: homeWithVm ? 0.42 : 0.12
         });
 
         observer.observe(visiVideo);
@@ -779,6 +833,10 @@
                 lenis.scrollTo(0, {
                     duration: 1.2
                 });
+                const cleanPath = targetUrl.pathname + (targetUrl.search || '');
+                if (window.location.hash) {
+                    history.replaceState(null, '', cleanPath);
+                }
                 if (mobileMenu) mobileMenu.classList.remove('open');
             }
         });
@@ -835,7 +893,54 @@
     }, {
         passive: true
     });
+
+    // ============================================================
+    // FRONTEND POPUP IMAGE
+    // ============================================================
+    (function() {
+        const overlay = document.getElementById('site-popup-overlay');
+        if (!overlay) return;
+
+        const closeBtn = document.getElementById('site-popup-close');
+        const popupStateKey = '<?= isset($popup_state_key) ? $popup_state_key : '' ?>';
+
+        const closePopup = () => {
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+            document.body.classList.remove('popup-open');
+        };
+
+        const openPopup = () => {
+            if (popupStateKey && sessionStorage.getItem(popupStateKey) === '1') return;
+            if (popupStateKey) sessionStorage.setItem(popupStateKey, '1');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            document.body.classList.add('popup-open');
+            feather.replace();
+        };
+
+        closeBtn?.addEventListener('click', closePopup);
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closePopup();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && overlay.classList.contains('flex')) {
+                closePopup();
+            }
+        });
+
+        window.addEventListener('load', () => {
+            setTimeout(openPopup, 450);
+        }, {
+            once: true
+        });
+    })();
 </script>
+<style>
+    body.popup-open {
+        overflow: hidden;
+    }
+</style>
 </body>
 
 </html>

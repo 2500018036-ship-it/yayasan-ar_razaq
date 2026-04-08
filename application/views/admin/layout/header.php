@@ -80,6 +80,14 @@
             display: none;
         }
 
+        #sidebar.collapsed .nav-submenu {
+            display: none !important;
+        }
+
+        #sidebar.collapsed .nav-group-caret {
+            display: none;
+        }
+
         #sidebar.collapsed .sidebar-user-info {
             display: none;
         }
@@ -115,6 +123,69 @@
 
         .nav-link svg {
             flex-shrink: 0;
+        }
+
+        .nav-group-toggle {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .nav-group-main {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .nav-group-caret {
+            width: 14px;
+            height: 14px;
+            opacity: 0.85;
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .nav-group-toggle.open .nav-group-caret {
+            transform: rotate(90deg);
+        }
+
+        .nav-submenu {
+            margin: 4px 0 8px 30px;
+            padding-left: 12px;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.24s ease, opacity 0.2s ease;
+        }
+
+        .nav-submenu.open {
+            max-height: 180px;
+            opacity: 1;
+        }
+
+        .nav-sublink {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            color: rgba(236, 253, 245, 0.78);
+            font-size: 0.78rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .nav-sublink:hover {
+            background: rgba(255, 255, 255, 0.11);
+            color: #f8fafc;
+        }
+
+        .nav-sublink.active {
+            background: rgba(255, 255, 255, 0.16);
+            color: #fffbeb;
+            font-weight: 600;
         }
 
         /* Main content area */
@@ -460,7 +531,8 @@
 
     $nav_items = [
         ['uri' => 'panel-admin/dashboard',  'label' => 'Dashboard',       'icon' => 'grid', 'perm' => 'dashboard.view'],
-        ['uri' => 'panel-admin/profil',     'label' => 'Profil Yayasan',  'icon' => 'settings', 'perm' => 'profil.view'],
+        ['uri' => 'panel-admin/profil/tentang-kami', 'label' => 'Profil Yayasan', 'icon' => 'settings', 'perm' => 'profil.view'],
+        ['uri' => 'panel-admin/struktur',  'label' => 'Struktur',        'icon' => 'git-branch', 'perm' => 'struktur.view'],
         ['uri' => 'panel-admin/statistik',  'label' => 'Statistik',       'icon' => 'bar-chart-2', 'perm' => 'statistik.view'],
         ['uri' => 'panel-admin/sejarah',    'label' => 'Sejarah',         'icon' => 'clock', 'perm' => 'sejarah.view'],
         ['uri' => 'panel-admin/visi-misi',  'label' => 'Visi & Misi',     'icon' => 'eye', 'perm' => 'visi_misi.view'],
@@ -468,6 +540,7 @@
         ['uri' => 'panel-admin/ekskul',     'label' => 'Ekstrakurikuler', 'icon' => 'star', 'perm' => 'ekskul.view'],
         ['uri' => 'panel-admin/berita',     'label' => 'Berita',          'icon' => 'file-text', 'perm' => 'berita.view'],
         ['uri' => 'panel-admin/ppdb',       'label' => 'PPDB',            'icon' => 'user-plus', 'perm' => 'ppdb.view'],
+        ['uri' => 'panel-admin/popup',      'label' => 'Popup',           'icon' => 'image', 'perm' => 'popup.view'],
         ['uri' => 'panel-admin/setting',    'label' => 'Setting',         'icon' => 'shield', 'perm' => 'setting.view'],
         ['uri' => 'panel-admin/akun',       'label' => 'Akun Saya',       'icon' => 'user', 'perm' => 'akun.view'],
     ];
@@ -494,13 +567,57 @@
             <!-- Nav -->
             <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
                 <?php foreach ($nav_items as $item):
-                    if (isset($item['perm']) && !$can($item['perm'])) continue;
-                    $is_active = strpos($current_uri, $item['uri']) !== false;
+                    if (isset($item['type']) && $item['type'] === 'group'):
+                        $children = [];
+                        if (!empty($item['children']) && is_array($item['children'])) {
+                            foreach ($item['children'] as $child_item) {
+                                if (isset($child_item['perm']) && !$can($child_item['perm'])) continue;
+                                $children[] = $child_item;
+                            }
+                        }
+                        if (empty($children)) continue;
+
+                        $is_group_active = false;
+                        foreach ($children as $child_item) {
+                            if (strpos($current_uri, $child_item['uri']) === 0) {
+                                $is_group_active = true;
+                                break;
+                            }
+                        }
+                        $submenu_id = 'submenu-' . md5($item['label']);
                 ?>
-                    <a href="<?= base_url($item['uri']) ?>" class="nav-link <?= $is_active ? 'active' : '' ?>" title="<?= $item['label'] ?>">
-                        <i data-feather="<?= $item['icon'] ?>" class="w-4 h-4"></i>
-                        <span><?= $item['label'] ?></span>
-                    </a>
+                        <button type="button"
+                            class="nav-link nav-group-toggle <?= $is_group_active ? 'active open' : '' ?>"
+                            data-nav-group-toggle="1"
+                            data-submenu-id="<?= $submenu_id ?>"
+                            data-first-uri="<?= base_url($children[0]['uri']) ?>"
+                            title="<?= $item['label'] ?>">
+                            <span class="nav-group-main">
+                                <i data-feather="<?= $item['icon'] ?>" class="w-4 h-4"></i>
+                                <span><?= $item['label'] ?></span>
+                            </span>
+                            <i data-feather="chevron-right" class="nav-group-caret"></i>
+                        </button>
+                        <div id="<?= $submenu_id ?>" class="nav-submenu <?= $is_group_active ? 'open' : '' ?>">
+                            <?php foreach ($children as $child_item):
+                                $is_child_active = strpos($current_uri, $child_item['uri']) === 0;
+                            ?>
+                                <a href="<?= base_url($child_item['uri']) ?>" class="nav-sublink <?= $is_child_active ? 'active' : '' ?>" title="<?= $child_item['label'] ?>">
+                                    <i data-feather="<?= $child_item['icon'] ?>" class="w-3.5 h-3.5"></i>
+                                    <span><?= $child_item['label'] ?></span>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php
+                    else:
+                        if (isset($item['perm']) && !$can($item['perm'])) continue;
+                        $is_active = strpos($current_uri, $item['uri']) === 0;
+                    ?>
+                        <a href="<?= base_url($item['uri']) ?>" class="nav-link <?= $is_active ? 'active' : '' ?>" title="<?= $item['label'] ?>">
+                            <i data-feather="<?= $item['icon'] ?>" class="w-4 h-4"></i>
+                            <span><?= $item['label'] ?></span>
+                        </a>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             </nav>
 
@@ -519,7 +636,7 @@
                         <div class="text-hijau-400/40 text-[10px]"><?= $admin_role ?></div>
                     </div>
                 </div>
-                <a href="<?= base_url('panel-admin/logout') ?>" class="nav-link w-full" style="color:rgba(248,113,113,0.7);" title="Keluar">
+                <a href="<?= base_url('panel-admin/logout') ?>" onclick="return confirmLogout(event)" class="nav-link w-full" style="color:rgba(248,113,113,0.7);" title="Keluar">
                     <i data-feather="log-out" class="w-4 h-4"></i>
                     <span>Keluar</span>
                 </a>

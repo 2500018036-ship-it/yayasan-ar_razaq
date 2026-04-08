@@ -65,3 +65,79 @@ ADD COLUMN IF NOT EXISTS `detail_lengkap` LONGTEXT NULL DEFAULT NULL AFTER `desk
 UPDATE `ekskul`
 SET `slug` = CONCAT('ekskul-', `id`)
 WHERE `slug` IS NULL OR TRIM(`slug`) = '';
+
+-- 6. Popup website awal akses
+CREATE TABLE IF NOT EXISTS `popup_promosi` (
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `gambar` VARCHAR(255) DEFAULT NULL,
+  `target_link` VARCHAR(255) DEFAULT NULL,
+  `target_mode` VARCHAR(20) NOT NULL DEFAULT '_self',
+  `status` TINYINT(1) NOT NULL DEFAULT 1,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 7. Struktur organisasi: data anggota
+CREATE TABLE IF NOT EXISTS `struktur_anggota` (
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nama` VARCHAR(150) NOT NULL,
+  `jabatan` VARCHAR(150) NOT NULL,
+  `slug` VARCHAR(190) DEFAULT NULL,
+  `foto` VARCHAR(255) DEFAULT NULL,
+  `deskripsi_lengkap` LONGTEXT DEFAULT NULL,
+  `urutan` INT(11) NOT NULL DEFAULT 1,
+  `status` TINYINT(1) NOT NULL DEFAULT 1,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_urutan` (`urutan`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `struktur_anggota`
+ADD COLUMN IF NOT EXISTS `slug` VARCHAR(190) NULL DEFAULT NULL AFTER `jabatan`;
+
+ALTER TABLE `struktur_anggota`
+ADD INDEX `idx_struktur_slug` (`slug`);
+
+UPDATE `struktur_anggota`
+SET `slug` = CONCAT('anggota-', `id`)
+WHERE `slug` IS NULL OR TRIM(`slug`) = '';
+
+INSERT INTO `admin_permissions` (`kode`, `modul`, `label`, `deskripsi`)
+SELECT 'popup.view', 'popup', 'Lihat Popup Website', 'Akses menu popup website'
+WHERE NOT EXISTS (
+  SELECT 1 FROM `admin_permissions` WHERE `kode` = 'popup.view'
+);
+
+INSERT INTO `admin_permissions` (`kode`, `modul`, `label`, `deskripsi`)
+SELECT 'popup.edit', 'popup', 'Edit Popup Website', 'Ubah gambar dan link popup website'
+WHERE NOT EXISTS (
+  SELECT 1 FROM `admin_permissions` WHERE `kode` = 'popup.edit'
+);
+
+INSERT INTO `admin_permissions` (`kode`, `modul`, `label`, `deskripsi`)
+SELECT 'struktur.view', 'struktur', 'Lihat Struktur Organisasi', 'Akses menu struktur organisasi'
+WHERE NOT EXISTS (
+  SELECT 1 FROM `admin_permissions` WHERE `kode` = 'struktur.view'
+);
+
+INSERT INTO `admin_permissions` (`kode`, `modul`, `label`, `deskripsi`)
+SELECT 'struktur.create', 'struktur', 'Tambah Anggota Struktur', 'Tambah data anggota struktur'
+WHERE NOT EXISTS (
+  SELECT 1 FROM `admin_permissions` WHERE `kode` = 'struktur.create'
+);
+
+INSERT INTO `admin_permissions` (`kode`, `modul`, `label`, `deskripsi`)
+SELECT 'struktur.edit', 'struktur', 'Edit Struktur Organisasi', 'Edit bagan dan data anggota struktur'
+WHERE NOT EXISTS (
+  SELECT 1 FROM `admin_permissions` WHERE `kode` = 'struktur.edit'
+);
+
+INSERT INTO `admin_permissions` (`kode`, `modul`, `label`, `deskripsi`)
+SELECT 'struktur.delete', 'struktur', 'Hapus Anggota Struktur', 'Hapus data anggota struktur'
+WHERE NOT EXISTS (
+  SELECT 1 FROM `admin_permissions` WHERE `kode` = 'struktur.delete'
+);
