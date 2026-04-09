@@ -531,7 +531,7 @@
 
     $nav_items = [
         ['uri' => 'panel-admin/dashboard',  'label' => 'Dashboard',       'icon' => 'grid', 'perm' => 'dashboard.view'],
-        ['uri' => 'panel-admin/profil/tentang-kami', 'label' => 'Profil Yayasan', 'icon' => 'settings', 'perm' => 'profil.view'],
+        ['uri' => 'panel-admin/profil', 'label' => 'Profil Yayasan', 'icon' => 'settings', 'perm' => 'profil.view'],
         ['uri' => 'panel-admin/struktur',  'label' => 'Struktur',        'icon' => 'git-branch', 'perm' => 'struktur.view'],
         ['uri' => 'panel-admin/statistik',  'label' => 'Statistik',       'icon' => 'bar-chart-2', 'perm' => 'statistik.view'],
         ['uri' => 'panel-admin/sejarah',    'label' => 'Sejarah',         'icon' => 'clock', 'perm' => 'sejarah.view'],

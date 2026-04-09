@@ -2,33 +2,71 @@
 $p = $profil;
 $permission_codes = isset($permission_codes) && is_array($permission_codes) ? $permission_codes : [];
 $can_edit = in_array('profil.edit', $permission_codes, true);
+
+$about_media = $p && !empty($p->about_section_media) ? (string) $p->about_section_media : '';
+$about_media_ext = strtolower(pathinfo($about_media, PATHINFO_EXTENSION));
+$about_media_is_video = in_array($about_media_ext, ['mp4', 'webm', 'ogg'], true);
 ?>
-<div class="max-w-4xl space-y-6">
+
+<div class="max-w-5xl space-y-6">
     <!-- ============================================================ -->
     <!-- PROFIL YAYASAN -->
     <!-- ============================================================ -->
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div class="px-6 py-5 border-b border-gray-100 bg-gray-50">
             <h2 class="font-display font-bold text-gray-900">Informasi Profil Yayasan</h2>
-            <p class="text-sm text-gray-500 mt-1">Perubahan akan langsung tampil di website</p>
+            <p class="text-sm text-gray-500 mt-1">Semua input lama tetap dipakai, lalu saya tambahkan pengaturan untuk section Sejarah &amp; Profil pada frontend.</p>
         </div>
         <div class="p-6 space-y-6">
             <!-- Basic info -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Yayasan <span class="text-red-500">*</span></label>
-                    <input type="text" id="f-nama" value="<?= $p ? $p->nama_yayasan : '' ?>" placeholder="Nama yayasan..."
+                    <input type="text" id="f-nama" value="<?= $p ? html_escape($p->nama_yayasan) : '' ?>" placeholder="Nama yayasan..."
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tagline</label>
-                    <input type="text" id="f-tagline" value="<?= $p ? $p->tagline : '' ?>" placeholder="Tagline singkat yayasan..."
+                    <input type="text" id="f-tagline" value="<?= $p ? html_escape($p->tagline) : '' ?>" placeholder="Tagline singkat yayasan..."
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Deskripsi Lengkap</label>
                     <textarea id="f-deskripsi-lengkap" rows="6" placeholder="Deskripsi utama yayasan. Konten ini tampil di halaman Tentang Kami..."
-                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500 resize-y"><?= $p ? $p->deskripsi_lengkap : '' ?></textarea>
+                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500 resize-y"><?= $p ? html_escape($p->deskripsi_lengkap) : '' ?></textarea>
+                </div>
+            </div>
+
+            <hr class="border-gray-100">
+
+            <!-- Section Sejarah & Profil -->
+            <h3 class="font-semibold text-gray-800 text-sm">Section Sejarah &amp; Profil</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Label Kecil</label>
+                    <input type="text" id="f-about-label" value="<?= $p ? html_escape($p->about_section_label) : 'About Us' ?>" placeholder="About Us"
+                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Sub Bagian</label>
+                    <input type="text" id="f-about-badge" value="<?= $p ? html_escape($p->about_section_badge) : 'Profil Singkat' ?>" placeholder="Profil Singkat"
+                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Profil Singkat</label>
+                    <textarea id="f-deskripsi-singkat" rows="4" placeholder="Ringkasan singkat untuk section Sejarah & Profil..."
+                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500 resize-y"><?= $p ? html_escape($p->deskripsi_singkat) : '' ?></textarea>
+                    <p class="text-xs text-gray-400 mt-2">Jika dikosongkan, sistem akan membuat ringkasan otomatis dari deskripsi lengkap.</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Teks Tombol</label>
+                    <input type="text" id="f-about-cta-text" value="<?= $p ? html_escape($p->about_section_cta_text) : 'Selengkapnya' ?>" placeholder="Selengkapnya"
+                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Link Tombol</label>
+                    <input type="text" id="f-about-cta-link" value="<?= $p ? html_escape($p->about_section_cta_link) : 'tentang-kami' ?>" placeholder="tentang-kami atau https://..."
+                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
                 </div>
             </div>
 
@@ -40,21 +78,21 @@ $can_edit = in_array('profil.edit', $permission_codes, true);
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Alamat</label>
                     <textarea id="f-alamat" rows="2" placeholder="Alamat lengkap yayasan..."
-                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500 resize-none"><?= $p ? $p->alamat : '' ?></textarea>
+                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500 resize-none"><?= $p ? html_escape($p->alamat) : '' ?></textarea>
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Telepon</label>
-                    <input type="text" id="f-telepon" value="<?= $p ? $p->telepon : '' ?>" placeholder="(0411) 123456"
+                    <input type="text" id="f-telepon" value="<?= $p ? html_escape($p->telepon) : '' ?>" placeholder="(0411) 123456"
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
-                    <input type="email" id="f-email" value="<?= $p ? $p->email : '' ?>" placeholder="info@yayasan.sch.id"
+                    <input type="email" id="f-email" value="<?= $p ? html_escape($p->email) : '' ?>" placeholder="info@yayasan.sch.id"
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Website</label>
-                    <input type="url" id="f-website" value="<?= $p ? $p->website : '' ?>" placeholder="https://yayasan.sch.id"
+                    <input type="url" id="f-website" value="<?= $p ? html_escape($p->website) : '' ?>" placeholder="https://yayasan.sch.id"
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
                 </div>
             </div>
@@ -66,22 +104,22 @@ $can_edit = in_array('profil.edit', $permission_codes, true);
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Facebook URL</label>
-                    <input type="url" id="f-facebook" value="<?= $p ? $p->facebook : '' ?>" placeholder="https://facebook.com/..."
+                    <input type="url" id="f-facebook" value="<?= $p ? html_escape($p->facebook) : '' ?>" placeholder="https://facebook.com/..."
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Instagram URL</label>
-                    <input type="url" id="f-instagram" value="<?= $p ? $p->instagram : '' ?>" placeholder="https://instagram.com/..."
+                    <input type="url" id="f-instagram" value="<?= $p ? html_escape($p->instagram) : '' ?>" placeholder="https://instagram.com/..."
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">YouTube URL</label>
-                    <input type="url" id="f-youtube" value="<?= $p ? $p->youtube : '' ?>" placeholder="https://youtube.com/..."
+                    <input type="url" id="f-youtube" value="<?= $p ? html_escape($p->youtube) : '' ?>" placeholder="https://youtube.com/..."
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">WhatsApp (angka saja)</label>
-                    <input type="text" id="f-whatsapp" value="<?= $p ? $p->whatsapp : '' ?>" placeholder="6281234567890"
+                    <input type="text" id="f-whatsapp" value="<?= $p ? html_escape($p->whatsapp) : '' ?>" placeholder="6281234567890"
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
                 </div>
             </div>
@@ -89,7 +127,7 @@ $can_edit = in_array('profil.edit', $permission_codes, true);
             <hr class="border-gray-100">
 
             <!-- Media uploads -->
-            <h3 class="font-semibold text-gray-800 text-sm">Logo & Hero Image</h3>
+            <h3 class="font-semibold text-gray-800 text-sm">Logo &amp; Hero Image</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Logo Yayasan</label>
@@ -111,6 +149,51 @@ $can_edit = in_array('profil.edit', $permission_codes, true);
                 </div>
             </div>
 
+            <div class="rounded-2xl border border-dashed border-hijau-200 bg-hijau-50/40 p-5">
+                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-800">Media Section Sejarah &amp; Profil</h4>
+                        <p class="text-xs text-gray-500 mt-1">Tambahan baru sesuai instruksi Anda. Input lama tidak dihapus. Media ini akan tampil di kolom kiri section frontend.</p>
+                    </div>
+                    <?php if ($about_media && $can_edit): ?>
+                        <button type="button" onclick="hapusMediaSection()"
+                            class="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 transition-colors">
+                            <i data-feather="trash-2" class="w-4 h-4"></i>
+                            Hapus Media
+                        </button>
+                    <?php endif; ?>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_260px] gap-5 mt-4">
+                    <div>
+                        <input type="file" id="f-about-media" accept="image/*,video/mp4,video/webm,video/ogg" onchange="previewSectionMedia(this)"
+                            class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-hijau-100 file:text-hijau-800 hover:file:bg-hijau-200">
+                        <div class="mt-3 rounded-xl bg-white border border-gray-100 px-4 py-3 text-xs text-gray-500 space-y-1">
+                            <p>Format gambar: JPG, JPEG, PNG, GIF, WEBP.</p>
+                            <p>Format video: MP4, WEBM, OGG.</p>
+                            <p>File lama akan dihapus otomatis saat diganti atau dihapus.</p>
+                        </div>
+                    </div>
+
+                    <div id="about-media-preview" class="rounded-2xl border border-gray-100 bg-white p-3">
+                        <?php if ($about_media): ?>
+                            <?php if ($about_media_is_video): ?>
+                                <video controls class="w-full aspect-[4/5] rounded-xl object-cover bg-gray-900">
+                                    <source src="<?= base_url('assets/images/uploads/profil/' . $about_media) ?>" type="video/<?= html_escape($about_media_ext) ?>">
+                                </video>
+                            <?php else: ?>
+                                <img src="<?= base_url('assets/images/uploads/profil/' . $about_media) ?>" alt="Media section"
+                                    class="w-full aspect-[4/5] rounded-xl object-cover">
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <div class="aspect-[4/5] rounded-xl border border-dashed border-gray-200 bg-gray-50 flex items-center justify-center text-center text-sm text-gray-400 px-4">
+                                Preview media section
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+
             <hr class="border-gray-100">
 
             <!-- Struktur organisasi -->
@@ -118,13 +201,13 @@ $can_edit = in_array('profil.edit', $permission_codes, true);
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Judul Struktur</label>
-                    <input type="text" id="f-struktur-judul" value="<?= $p ? $p->struktur_organisasi_judul : '' ?>" placeholder="Contoh: Struktur Organisasi Yayasan"
+                    <input type="text" id="f-struktur-judul" value="<?= $p ? html_escape($p->struktur_organisasi_judul) : '' ?>" placeholder="Contoh: Struktur Organisasi Yayasan"
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Deskripsi Struktur</label>
                     <textarea id="f-struktur-deskripsi" rows="4" placeholder="Deskripsi singkat struktur organisasi..."
-                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500 resize-y"><?= $p ? $p->struktur_organisasi_deskripsi : '' ?></textarea>
+                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500 resize-y"><?= $p ? html_escape($p->struktur_organisasi_deskripsi) : '' ?></textarea>
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Gambar Struktur Organisasi</label>
@@ -164,7 +247,6 @@ $can_edit = in_array('profil.edit', $permission_codes, true);
             </div>
         </div>
         <div class="p-6 space-y-6">
-            <!-- Live Preview -->
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Preview Hero Section</label>
                 <div class="rounded-2xl overflow-hidden border border-gray-200 relative" style="height: 240px;" id="hero-preview">
@@ -188,30 +270,30 @@ $can_edit = in_array('profil.edit', $permission_codes, true);
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Judul Hero <span class="text-xs text-gray-400 font-normal">(kosongkan = nama yayasan)</span></label>
-                    <input type="text" id="f-hero-title" value="<?= $p ? $p->hero_title : '' ?>" placeholder="<?= $p ? $p->nama_yayasan : '' ?>"
+                    <input type="text" id="f-hero-title" value="<?= $p ? html_escape($p->hero_title) : '' ?>" placeholder="<?= $p ? html_escape($p->nama_yayasan) : '' ?>"
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500"
                         oninput="updateHeroPreview()">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Subtitle Hero <span class="text-xs text-gray-400 font-normal">(kosongkan = tagline)</span></label>
-                    <input type="text" id="f-hero-subtitle" value="<?= $p ? $p->hero_subtitle : '' ?>" placeholder="<?= $p ? $p->tagline : '' ?>"
+                    <input type="text" id="f-hero-subtitle" value="<?= $p ? html_escape($p->hero_subtitle) : '' ?>" placeholder="<?= $p ? html_escape($p->tagline) : '' ?>"
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500"
                         oninput="updateHeroPreview()">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Warna Overlay</label>
                     <div class="flex items-center gap-3">
-                        <input type="color" id="f-hero-color" value="<?= $p ? $p->hero_overlay_color : '#052e16' ?>"
+                        <input type="color" id="f-hero-color" value="<?= $p ? html_escape($p->hero_overlay_color) : '#052e16' ?>"
                             class="w-12 h-12 rounded-xl border border-gray-200 cursor-pointer p-1"
                             onchange="updateHeroPreview()">
-                        <input type="text" id="f-hero-color-text" value="<?= $p ? $p->hero_overlay_color : '#052e16' ?>" placeholder="#052e16"
+                        <input type="text" id="f-hero-color-text" value="<?= $p ? html_escape($p->hero_overlay_color) : '#052e16' ?>" placeholder="#052e16"
                             class="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500"
                             oninput="document.getElementById('f-hero-color').value = this.value; updateHeroPreview()">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Opacity Overlay: <span id="opacity-value"><?= $p ? $p->hero_overlay_opacity : '80' ?></span>%</label>
-                    <input type="range" id="f-hero-opacity" min="0" max="100" value="<?= $p ? $p->hero_overlay_opacity : '80' ?>"
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Opacity Overlay: <span id="opacity-value"><?= $p ? (int) $p->hero_overlay_opacity : 80 ?></span>%</label>
+                    <input type="range" id="f-hero-opacity" min="0" max="100" value="<?= $p ? (int) $p->hero_overlay_opacity : 80 ?>"
                         class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-hijau-600 mt-3"
                         oninput="document.getElementById('opacity-value').textContent = this.value; updateHeroPreview()">
                     <div class="flex justify-between text-xs text-gray-400 mt-1">
@@ -250,6 +332,40 @@ $can_edit = in_array('profil.edit', $permission_codes, true);
         document.getElementById('f-hero-color-text').value = color;
     }
 
+    function previewSectionMedia(input) {
+        const preview = document.getElementById('about-media-preview');
+        const file = input.files && input.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        const url = URL.createObjectURL(file);
+        const isVideo = file.type.startsWith('video/');
+
+        preview.innerHTML = isVideo
+            ? `<video controls class="w-full aspect-[4/5] rounded-xl object-cover bg-gray-900"><source src="${url}" type="${file.type}"></video>`
+            : `<img src="${url}" alt="Preview media section" class="w-full aspect-[4/5] rounded-xl object-cover">`;
+    }
+
+    async function hapusMediaSection() {
+        if (!canEditProfil) {
+            showToast('Anda tidak punya izin edit profil yayasan.', 'error');
+            return;
+        }
+
+        if (!confirm('Hapus media section Sejarah & Profil? File terkait juga akan dihapus dari folder upload.')) {
+            return;
+        }
+
+        const fd = new FormData();
+        fd.append('remove_about_section_media', '1');
+
+        await ajaxSubmit('<?= base_url('panel-admin/profil/save') ?>', fd, () => {
+            setTimeout(() => location.reload(), 800);
+        });
+    }
+
     async function simpan() {
         if (!canEditProfil) {
             showToast('Anda tidak punya izin edit profil yayasan.', 'error');
@@ -260,10 +376,16 @@ $can_edit = in_array('profil.edit', $permission_codes, true);
             showToast('Nama yayasan wajib diisi', 'error');
             return;
         }
+
         const fd = new FormData();
         fd.append('nama_yayasan', nama);
         fd.append('tagline', document.getElementById('f-tagline').value);
         fd.append('deskripsi_lengkap', document.getElementById('f-deskripsi-lengkap').value);
+        fd.append('deskripsi_singkat', document.getElementById('f-deskripsi-singkat').value);
+        fd.append('about_section_label', document.getElementById('f-about-label').value);
+        fd.append('about_section_badge', document.getElementById('f-about-badge').value);
+        fd.append('about_section_cta_text', document.getElementById('f-about-cta-text').value);
+        fd.append('about_section_cta_link', document.getElementById('f-about-cta-link').value);
         fd.append('struktur_organisasi_judul', document.getElementById('f-struktur-judul').value);
         fd.append('struktur_organisasi_deskripsi', document.getElementById('f-struktur-deskripsi').value);
         fd.append('alamat', document.getElementById('f-alamat').value);
@@ -274,18 +396,21 @@ $can_edit = in_array('profil.edit', $permission_codes, true);
         fd.append('instagram', document.getElementById('f-instagram').value);
         fd.append('youtube', document.getElementById('f-youtube').value);
         fd.append('whatsapp', document.getElementById('f-whatsapp').value);
-        // Hero section
         fd.append('hero_overlay_color', document.getElementById('f-hero-color').value);
         fd.append('hero_overlay_opacity', document.getElementById('f-hero-opacity').value);
         fd.append('hero_title', document.getElementById('f-hero-title').value);
         fd.append('hero_subtitle', document.getElementById('f-hero-subtitle').value);
-        // Files
+
         const logo = document.getElementById('f-logo').files[0];
         const hero = document.getElementById('f-hero').files[0];
         const struktur = document.getElementById('f-struktur-gambar').files[0];
+        const aboutMedia = document.getElementById('f-about-media').files[0];
+
         if (logo) fd.append('logo', logo);
         if (hero) fd.append('hero_image', hero);
         if (struktur) fd.append('struktur_organisasi_gambar', struktur);
+        if (aboutMedia) fd.append('about_section_media', aboutMedia);
+
         await ajaxSubmit('<?= base_url('panel-admin/profil/save') ?>', fd, () => {
             setTimeout(() => location.reload(), 800);
         });

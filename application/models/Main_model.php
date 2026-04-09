@@ -41,6 +41,21 @@ class Main_model extends CI_Model
             if (!$this->db->field_exists('struktur_organisasi_gambar', 'profil')) {
                 $this->db->query("ALTER TABLE `profil` ADD COLUMN `struktur_organisasi_gambar` VARCHAR(255) NULL DEFAULT NULL");
             }
+            if (!$this->db->field_exists('about_section_label', 'profil')) {
+                $this->db->query("ALTER TABLE `profil` ADD COLUMN `about_section_label` VARCHAR(120) NULL DEFAULT NULL");
+            }
+            if (!$this->db->field_exists('about_section_badge', 'profil')) {
+                $this->db->query("ALTER TABLE `profil` ADD COLUMN `about_section_badge` VARCHAR(120) NULL DEFAULT NULL");
+            }
+            if (!$this->db->field_exists('about_section_cta_text', 'profil')) {
+                $this->db->query("ALTER TABLE `profil` ADD COLUMN `about_section_cta_text` VARCHAR(120) NULL DEFAULT NULL");
+            }
+            if (!$this->db->field_exists('about_section_cta_link', 'profil')) {
+                $this->db->query("ALTER TABLE `profil` ADD COLUMN `about_section_cta_link` VARCHAR(255) NULL DEFAULT NULL");
+            }
+            if (!$this->db->field_exists('about_section_media', 'profil')) {
+                $this->db->query("ALTER TABLE `profil` ADD COLUMN `about_section_media` VARCHAR(255) NULL DEFAULT NULL");
+            }
         }
 
         if ($this->db->table_exists('galeri') && !$this->db->field_exists('label', 'galeri')) {

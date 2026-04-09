@@ -9,7 +9,12 @@ ADD COLUMN IF NOT EXISTS `visimisi_bg_image` VARCHAR(255) NULL DEFAULT NULL AFTE
 ADD COLUMN IF NOT EXISTS `visimisi_bg_video` VARCHAR(255) NULL DEFAULT NULL AFTER `visimisi_bg_image`,
 ADD COLUMN IF NOT EXISTS `visimisi_overlay_color` VARCHAR(20) NOT NULL DEFAULT '#052e16' AFTER `visimisi_bg_video`,
 ADD COLUMN IF NOT EXISTS `visimisi_overlay_opacity` INT NOT NULL DEFAULT 80 AFTER `visimisi_overlay_color`,
-ADD COLUMN IF NOT EXISTS `struktur_organisasi_judul` VARCHAR(255) NULL DEFAULT NULL AFTER `visimisi_overlay_opacity`,
+ADD COLUMN IF NOT EXISTS `about_section_label` VARCHAR(120) NULL DEFAULT NULL AFTER `visimisi_overlay_opacity`,
+ADD COLUMN IF NOT EXISTS `about_section_badge` VARCHAR(120) NULL DEFAULT NULL AFTER `about_section_label`,
+ADD COLUMN IF NOT EXISTS `about_section_cta_text` VARCHAR(120) NULL DEFAULT NULL AFTER `about_section_badge`,
+ADD COLUMN IF NOT EXISTS `about_section_cta_link` VARCHAR(255) NULL DEFAULT NULL AFTER `about_section_cta_text`,
+ADD COLUMN IF NOT EXISTS `about_section_media` VARCHAR(255) NULL DEFAULT NULL AFTER `about_section_cta_link`,
+ADD COLUMN IF NOT EXISTS `struktur_organisasi_judul` VARCHAR(255) NULL DEFAULT NULL AFTER `about_section_media`,
 ADD COLUMN IF NOT EXISTS `struktur_organisasi_deskripsi` TEXT NULL DEFAULT NULL AFTER `struktur_organisasi_judul`,
 ADD COLUMN IF NOT EXISTS `struktur_organisasi_gambar` VARCHAR(255) NULL DEFAULT NULL AFTER `struktur_organisasi_deskripsi`;
 

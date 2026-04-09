@@ -35,7 +35,7 @@ $route['panel-admin/dashboard']         = 'Admin/dashboard';
 
 // Admin - Profil
 $route['panel-admin/profil']            = 'Admin/profil';
-$route['panel-admin/profil/tentang-kami'] = 'Admin/profil_tentang_kami';
+$route['panel-admin/profil/tentang-kami'] = 'Admin/profil';
 $route['panel-admin/profil/struktur']     = 'Admin/struktur'; // backward compatibility
 $route['panel-admin/profil/update']     = 'Admin/profil_update';
 $route['panel-admin/profil/save']       = 'Admin/profil_update'; // alias used by view

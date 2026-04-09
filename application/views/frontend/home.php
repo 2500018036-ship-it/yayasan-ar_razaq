@@ -88,22 +88,6 @@
             </a>
         </div>
     </div>
-
-    <!-- Scroll indicator -->
-    <div id="scroll-indicator"
-        class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 opacity-0 z-10">
-        <span class="text-hijau-400/60 text-[10px] font-semibold tracking-[0.3em] uppercase">Scroll</span>
-        <div class="w-5 h-9 border-2 border-hijau-400/30 rounded-full flex items-start justify-center p-1.5">
-            <div class="w-1 h-2 bg-kuning-400/70 rounded-full animate-bounce"></div>
-        </div>
-    </div>
-
-    <!-- Wave divider at bottom -->
-    <div class="wave-divider wave-bottom z-20">
-        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;">
-            <path d="M0,80 C240,120 480,40 720,80 C960,120 1200,40 1440,80 L1440,120 L0,120 Z" fill="white" />
-        </svg>
-    </div>
 </section>
 
 <!-- ============================================================ -->
@@ -115,7 +99,8 @@
 
         <div class="container mx-auto px-4 lg:px-8 relative z-10">
             <div class="max-w-5xl mx-auto">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                <div class="grid gap-6 md:gap-8 justify-center"
+                    style="grid-template-columns: repeat(auto-fit, minmax(200px, max-content));">
                     <?php foreach ($statistik as $idx => $stat): ?>
                         <div class="stat-card reveal text-center group" style="transition-delay: <?= $idx * 100 ?>ms;">
                             <div
@@ -144,160 +129,175 @@
 <!-- ============================================================ -->
 <!-- SEJARAH SECTION -->
 <!-- ============================================================ -->
-<section id="sejarah" class="py-24 md:py-32 bg-white relative overflow-hidden">
-    <!-- Subtle decorative elements -->
+<section id="sejarah" class="py-12 md:py-16 bg-white relative overflow-hidden">
     <div class="absolute top-20 right-0 w-72 h-72 bg-hijau-50 rounded-full blur-[100px] opacity-60"></div>
     <div class="absolute bottom-20 left-0 w-60 h-60 bg-kuning-50 rounded-full blur-[80px] opacity-40"></div>
+    <div class="absolute inset-x-0 top-1/2 h-px bg-gradient-to-r from-transparent via-hijau-100 to-transparent"></div>
 
     <div class="container mx-auto px-4 lg:px-8 relative z-10">
-        <!-- Section header -->
-        <div class="text-center mb-20 reveal">
+        <div class="text-center mb-16 reveal">
             <div class="ornament-divider mb-5 max-w-xs mx-auto">
                 <span class="font-arabic text-hijau-600/70 text-xl">الجذور</span>
             </div>
             <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-hijau-900 mb-5 split-text"
-                data-split-reveal>Sejarah Yayasan</h2>
+                data-split-reveal>Sejarah & Profil Yayasan</h2>
             <p class="text-gray-500 max-w-lg mx-auto text-base">Perjalanan panjang kami dalam mendidik generasi terbaik
                 bangsa</p>
         </div>
 
         <?php
-        $profil_desc_full = isset($profil) && $profil ? trim(preg_replace('/\s+/', ' ', strip_tags((string) $profil->deskripsi_lengkap))) : '';
-        $profil_desc_short = $profil_desc_full;
-        $profil_desc_can_toggle = false;
-        if ($profil_desc_full !== '') {
+        $about_label = isset($profil) && $profil && trim((string) $profil->about_section_label) !== '' ? trim((string) $profil->about_section_label) : 'About Us';
+        $about_badge = isset($profil) && $profil && trim((string) $profil->about_section_badge) !== '' ? trim((string) $profil->about_section_badge) : 'Profil Singkat';
+        $about_name = isset($profil) && $profil && trim((string) $profil->nama_yayasan) !== '' ? trim((string) $profil->nama_yayasan) : 'Yayasan Ar-Razaq';
+        $about_tagline = isset($profil) && $profil && trim((string) $profil->tagline) !== '' ? trim((string) $profil->tagline) : 'Jejak pengabdian, pendidikan, dan pembinaan generasi Islami.';
+
+        $about_desc_full = isset($profil) && $profil ? trim(preg_replace('/\s+/', ' ', strip_tags((string) $profil->deskripsi_lengkap))) : '';
+        $about_desc = isset($profil) && $profil ? trim((string) $profil->deskripsi_singkat) : '';
+        if ($about_desc === '' && $about_desc_full !== '') {
             if (function_exists('mb_strlen') && function_exists('mb_substr')) {
-                $profil_desc_can_toggle = mb_strlen($profil_desc_full, 'UTF-8') > 220;
-                if ($profil_desc_can_toggle) $profil_desc_short = rtrim(mb_substr($profil_desc_full, 0, 220, 'UTF-8')) . '...';
+                $about_desc = mb_strlen($about_desc_full, 'UTF-8') > 250
+                    ? rtrim(mb_substr($about_desc_full, 0, 250, 'UTF-8')) . '...'
+                    : $about_desc_full;
             } else {
-                $profil_desc_can_toggle = strlen($profil_desc_full) > 220;
-                if ($profil_desc_can_toggle) $profil_desc_short = rtrim(substr($profil_desc_full, 0, 220)) . '...';
+                $about_desc = strlen($about_desc_full) > 250
+                    ? rtrim(substr($about_desc_full, 0, 250)) . '...'
+                    : $about_desc_full;
             }
         }
+        if ($about_desc === '') {
+            $about_desc = 'Informasi singkat yayasan belum tersedia. Silakan lengkapi melalui panel admin.';
+        }
+
+        $about_cta_text = isset($profil) && $profil && trim((string) $profil->about_section_cta_text) !== '' ? trim((string) $profil->about_section_cta_text) : 'Selengkapnya';
+        $about_cta_link_raw = isset($profil) && $profil ? trim((string) $profil->about_section_cta_link) : '';
+        if ($about_cta_link_raw === '') {
+            $about_cta_link = base_url('tentang-kami');
+        } elseif (preg_match('#^(https?:)?//#i', $about_cta_link_raw) || strpos($about_cta_link_raw, '#') === 0 || strpos($about_cta_link_raw, 'mailto:') === 0 || strpos($about_cta_link_raw, 'tel:') === 0) {
+            $about_cta_link = $about_cta_link_raw;
+        } else {
+            $about_cta_link = base_url(ltrim($about_cta_link_raw, '/'));
+        }
+
+        $about_media_file = isset($profil) && $profil && trim((string) $profil->about_section_media) !== ''
+            ? trim((string) $profil->about_section_media)
+            : (isset($profil) && $profil && trim((string) $profil->hero_image) !== '' ? trim((string) $profil->hero_image) : '');
+        $about_media_ext = strtolower(pathinfo($about_media_file, PATHINFO_EXTENSION));
+        $about_media_is_video = in_array($about_media_ext, ['mp4', 'webm', 'ogg'], true);
+        $about_media_url = $about_media_file !== ''
+            ? base_url('assets/images/uploads/profil/' . $about_media_file)
+            : base_url('assets/images/placeholder.jpg');
+
+        $about_history_items = !empty($sejarah) && is_array($sejarah) ? array_slice($sejarah, 0, 3) : [];
+        $about_history_count = !empty($sejarah) && is_array($sejarah) ? count($sejarah) : 0;
         ?>
-        <?php if ($profil_desc_full !== ''): ?>
-            <div class="max-w-3xl mx-auto mb-14 reveal">
-                <div class="rounded-3xl border border-hijau-100/70 bg-gradient-to-br from-hijau-50 to-white p-7 md:p-8 shadow-sm" data-toggle-card="1">
-                    <div class="flex items-start justify-between gap-4">
-                        <h3 class="font-display text-2xl font-bold text-hijau-900">Profil Singkat Yayasan</h3>
-                        <div class="w-10 h-10 rounded-xl bg-hijau-100 flex items-center justify-center text-hijau-700 flex-shrink-0">
-                            <i data-feather="book-open" class="w-5 h-5"></i>
-                        </div>
-                    </div>
 
-                    <p class="text-gray-600 leading-relaxed mt-4 sejarah-overview-short"><?= htmlspecialchars($profil_desc_short, ENT_QUOTES) ?></p>
+        <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] gap-10 lg:gap-14 items-center">
+            <div class="reveal-left relative">
+                <div class="absolute -top-6 -right-6 w-24 h-24 rounded-[28px] bg-kuning-100/70 blur-2xl"></div>
+                <div class="absolute -bottom-8 -left-8 w-28 h-28 rounded-full bg-hijau-100/80 blur-3xl"></div>
 
-                    <div class="sejarah-overview-full-wrap mt-4 hidden" style="height:0; opacity:0; overflow:hidden;">
-                        <p class="text-gray-600 leading-relaxed"><?= nl2br(htmlspecialchars($profil_desc_full, ENT_QUOTES)) ?></p>
-                    </div>
-
-                    <?php if ($profil_desc_can_toggle): ?>
-                        <button type="button"
-                            class="sejarah-overview-toggle mt-5 inline-flex items-center gap-2 text-hijau-700 hover:text-hijau-900 text-sm font-semibold transition-colors"
-                            data-open="0">
-                            <span class="sejarah-overview-label">Lihat deskripsi lengkap</span>
-                            <i data-feather="chevron-down" class="w-4 h-4 sejarah-overview-arrow transition-transform duration-300"></i>
-                        </button>
+                <div class="relative overflow-hidden rounded-[32px] border border-hijau-100/70 bg-hijau-950 shadow-[0_40px_80px_rgba(5,46,22,0.16)]">
+                    <?php if ($about_media_is_video): ?>
+                        <video autoplay muted loop playsinline preload="metadata"
+                            class="w-full h-[320px] sm:h-[420px] lg:h-[520px] object-cover">
+                            <source src="<?= $about_media_url ?>" type="video/<?= html_escape($about_media_ext) ?>">
+                        </video>
+                    <?php else: ?>
+                        <img src="<?= $about_media_url ?>" alt="<?= html_escape($about_name) ?>"
+                            class="w-full h-[320px] sm:h-[420px] lg:h-[520px] object-cover">
                     <?php endif; ?>
                 </div>
             </div>
-        <?php endif; ?>
 
-        <!-- Timeline -->
-        <?php if (!empty($sejarah)): ?>
-            <div class="relative max-w-4xl mx-auto">
-                <!-- Timeline line (grows on scroll) -->
-                <div class="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-hijau-100 hidden md:block"></div>
-                <div class="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-hijau-500 via-hijau-600 to-kuning-500 hidden md:block timeline-progress"
-                    id="timeline-line"></div>
+            <div class="reveal-right">
+                <div class="mt-5 flex flex-wrap items-center gap-3">
+                    <span class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-semibold text-gray-600 border border-gray-200">
+                        <i data-feather="book-open" class="w-3.5 h-3.5 text-hijau-700"></i>
+                        <?= html_escape($about_badge) ?>
+                    </span>
+                </div>
 
-                <?php foreach ($sejarah as $idx => $item):
-                    $is_even = $idx % 2 === 0; ?>
-                    <div
-                        class="relative flex flex-col md:flex-row items-center gap-8 mb-20 <?= $is_even ? 'md:flex-row' : 'md:flex-row-reverse' ?>">
-                        <!-- Content -->
-                        <div
-                            class="flex-1 <?= $is_even ? 'md:text-right md:pr-16' : 'md:text-left md:pl-16' ?> reveal<?= $is_even ? '-left' : '-right' ?>">
-                            <?php if ($item->gambar): ?>
-                                <div class="rounded-3xl overflow-hidden mb-5 aspect-video bg-hijau-50 shadow-lg shadow-hijau-900/5">
-                                    <img src="<?= base_url('assets/images/uploads/sejarah/' . $item->gambar) ?>"
-                                        alt="<?= $item->judul ?>"
-                                        class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
-                                </div>
-                            <?php endif; ?>
-                            <div class="bg-white rounded-3xl p-7 border border-hijau-100/50 card-hover shadow-sm" data-toggle-card="1">
-                                <h3 class="font-display text-xl font-bold text-hijau-900 mb-3"><?= $item->judul ?></h3>
-                                <?php
-                                $sejarah_full = trim(preg_replace('/\s+/', ' ', strip_tags((string) $item->konten)));
-                                $sejarah_short = $sejarah_full;
-                                $sejarah_can_toggle = false;
-                                if ($sejarah_full !== '') {
-                                    if (function_exists('mb_strlen') && function_exists('mb_substr')) {
-                                        $sejarah_can_toggle = mb_strlen($sejarah_full, 'UTF-8') > 170;
-                                        if ($sejarah_can_toggle) $sejarah_short = rtrim(mb_substr($sejarah_full, 0, 170, 'UTF-8')) . '...';
-                                    } else {
-                                        $sejarah_can_toggle = strlen($sejarah_full) > 170;
-                                        if ($sejarah_can_toggle) $sejarah_short = rtrim(substr($sejarah_full, 0, 170)) . '...';
-                                    }
-                                }
-                                ?>
-                                <p class="text-gray-500 leading-relaxed text-sm sejarah-item-short"><?= htmlspecialchars($sejarah_short, ENT_QUOTES) ?></p>
+                <h2 class="mt-6 font-display text-4xl md:text-5xl lg:text-6xl font-bold text-hijau-900 leading-tight split-text"
+                    data-split-reveal><?= html_escape($about_name) ?></h2>
+                <p class="mt-6 text-gray-600 text-base md:text-lg leading-[1.95] max-w-2xl"><?= nl2br(html_escape($about_desc)) ?></p>
 
-                                <?php if ($sejarah_can_toggle): ?>
-                                    <div class="sejarah-item-full-wrap mt-3 hidden" style="height:0; opacity:0; overflow:hidden;">
-                                        <p class="text-gray-500 leading-relaxed text-sm"><?= nl2br(htmlspecialchars($sejarah_full, ENT_QUOTES)) ?></p>
-                                    </div>
-                                    <button type="button"
-                                        class="sejarah-item-toggle mt-3 inline-flex items-center gap-2 text-hijau-700 hover:text-hijau-900 text-xs font-semibold transition-colors"
-                                        data-open="0">
-                                        <span class="sejarah-item-label">Lihat deskripsi lengkap</span>
-                                        <i data-feather="chevron-down" class="w-4 h-4 sejarah-item-arrow transition-transform duration-300"></i>
-                                    </button>
-                                <?php endif; ?>
-                            </div>
-                        </div>
 
-                        <!-- Timeline dot -->
-                        <div
-                            class="hidden md:flex w-12 h-12 bg-white border-2 border-hijau-500 rounded-full items-center justify-center shadow-lg shadow-hijau-500/10 flex-shrink-0 z-10 reveal-scale">
-                            <span class="text-hijau-800 font-bold text-sm"><?= str_pad($idx + 1, 2, '0', STR_PAD_LEFT) ?></span>
-                        </div>
-
-                        <!-- Empty space -->
-                        <div class="flex-1 hidden md:block"></div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-
-        <?php
-        $struktur_title = isset($profil) && $profil && !empty($profil->struktur_organisasi_judul) ? $profil->struktur_organisasi_judul : 'Struktur Organisasi Yayasan';
-        $struktur_desc = isset($profil) && $profil ? trim((string) $profil->struktur_organisasi_deskripsi) : '';
-        $struktur_img = isset($profil) && $profil ? trim((string) $profil->struktur_organisasi_gambar) : '';
-        $has_struktur = ($struktur_desc !== '' || $struktur_img !== '');
-        ?>
-        <?php if ($has_struktur): ?>
-            <div id="struktur-organisasi" class="max-w-5xl mx-auto mt-20 reveal">
-                <div class="rounded-3xl border border-hijau-100/70 bg-white shadow-sm overflow-hidden">
-                    <div class="px-7 py-6 md:px-8 md:py-7 border-b border-hijau-100/70 bg-gradient-to-r from-hijau-50 to-kuning-50/40">
-                        <h3 class="font-display text-2xl md:text-3xl font-bold text-hijau-900"><?= htmlspecialchars($struktur_title, ENT_QUOTES) ?></h3>
-                        <?php if ($struktur_desc !== ''): ?>
-                            <p class="text-gray-600 mt-2"><?= nl2br(htmlspecialchars($struktur_desc, ENT_QUOTES)) ?></p>
-                        <?php endif; ?>
-                    </div>
-                    <?php if ($struktur_img !== ''): ?>
-                        <div class="p-6 md:p-8 bg-white">
-                            <img src="<?= base_url('assets/images/uploads/profil/' . $struktur_img) ?>"
-                                alt="<?= htmlspecialchars($struktur_title, ENT_QUOTES) ?>"
-                                class="w-full h-auto rounded-2xl border border-gray-100 shadow-sm object-contain"
-                                loading="lazy">
-                        </div>
-                    <?php endif; ?>
+                <div class="mt-8 flex flex-col sm:flex-row sm:items-center gap-4">
+                    <a href="<?= $about_cta_link ?>"
+                        class="sejarah-item-toggle mt-3 inline-flex items-center gap-2 text-hijau-700 hover:text-hijau-900 text-xs font-semibold transition-colors">
+                        <?= html_escape($about_cta_text) ?>
+                        <i data-feather="arrow-right" class="w-4 h-4"></i>
+                    </a>
                 </div>
             </div>
-        <?php endif; ?>
+        </div>
     </div>
+    <!-- Timeline -->
+    <?php if (!empty($sejarah)): ?>
+        <div class="relative max-w-4xl mx-auto">
+            <!-- Timeline line (grows on scroll) -->
+            <div class="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-hijau-100 hidden md:block"></div>
+            <div class="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-hijau-500 via-hijau-600 to-kuning-500 hidden md:block timeline-progress"
+                id="timeline-line"></div>
 
+            <?php foreach ($sejarah as $idx => $item):
+                $is_even = $idx % 2 === 0; ?>
+                <div
+                    class="relative flex flex-col md:flex-row items-center gap-8 mb-20 <?= $is_even ? 'md:flex-row' : 'md:flex-row-reverse' ?>">
+                    <!-- Content -->
+                    <div
+                        class="flex-1 <?= $is_even ? 'md:text-right md:pr-16' : 'md:text-left md:pl-16' ?> reveal<?= $is_even ? '-left' : '-right' ?>">
+                        <?php if ($item->gambar): ?>
+                            <div class="rounded-3xl overflow-hidden mb-5 aspect-video bg-hijau-50 shadow-lg shadow-hijau-900/5">
+                                <img src="<?= base_url('assets/images/uploads/sejarah/' . $item->gambar) ?>"
+                                    alt="<?= $item->judul ?>"
+                                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                            </div>
+                        <?php endif; ?>
+                        <div class="bg-white rounded-3xl p-7 border border-hijau-100/50 card-hover shadow-sm" data-toggle-card="1">
+                            <h3 class="font-display text-xl font-bold text-hijau-900 mb-3"><?= $item->judul ?></h3>
+                            <?php
+                            $sejarah_full = trim(preg_replace('/\s+/', ' ', strip_tags((string) $item->konten)));
+                            $sejarah_short = $sejarah_full;
+                            $sejarah_can_toggle = false;
+                            if ($sejarah_full !== '') {
+                                if (function_exists('mb_strlen') && function_exists('mb_substr')) {
+                                    $sejarah_can_toggle = mb_strlen($sejarah_full, 'UTF-8') > 170;
+                                    if ($sejarah_can_toggle) $sejarah_short = rtrim(mb_substr($sejarah_full, 0, 170, 'UTF-8')) . '...';
+                                } else {
+                                    $sejarah_can_toggle = strlen($sejarah_full) > 170;
+                                    if ($sejarah_can_toggle) $sejarah_short = rtrim(substr($sejarah_full, 0, 170)) . '...';
+                                }
+                            }
+                            ?>
+                            <p class="text-gray-500 leading-relaxed text-sm sejarah-item-short"><?= htmlspecialchars($sejarah_short, ENT_QUOTES) ?></p>
+
+                            <?php if ($sejarah_can_toggle): ?>
+                                <div class="sejarah-item-full-wrap mt-3 hidden" style="height:0; opacity:0; overflow:hidden;">
+                                    <p class="text-gray-500 leading-relaxed text-sm"><?= nl2br(htmlspecialchars($sejarah_full, ENT_QUOTES)) ?></p>
+                                </div>
+                                <button type="button"
+                                    class="sejarah-item-toggle mt-3 inline-flex items-center gap-2 text-hijau-700 hover:text-hijau-900 text-xs font-semibold transition-colors"
+                                    data-open="0">
+                                    <span class="sejarah-item-label">Lihat deskripsi lengkap</span>
+                                    <i data-feather="chevron-down" class="w-4 h-4 sejarah-item-arrow transition-transform duration-300"></i>
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <!-- Timeline dot -->
+                    <div
+                        class="hidden md:flex w-12 h-12 bg-white border-2 border-hijau-500 rounded-full items-center justify-center shadow-lg shadow-hijau-500/10 flex-shrink-0 z-10 reveal-scale">
+                        <span class="text-hijau-800 font-bold text-sm"><?= str_pad($idx + 1, 2, '0', STR_PAD_LEFT) ?></span>
+                    </div>
+
+                    <!-- Empty space -->
+                    <div class="flex-1 hidden md:block"></div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 </section>
 
 <!-- ============================================================ -->
@@ -318,13 +318,6 @@ $vm_has_custom = $vm_has_video || $vm_has_image;
 $vm_use_video_on_home = $vm_has_video && !$vm_has_image;
 ?>
 <section id="visi-misi" class="min-h-screen relative overflow-hidden<?= !$vm_has_custom ? ' bg-hijau-950 grain' : '' ?>" style="isolation:isolate; display:flex; flex-direction:column; justify-content:center; contain: layout style;">
-
-    <!-- Wave TOP — seamlessly transitions from the white sejarah section into this dark section -->
-    <div class="absolute top-0 left-0 w-full pointer-events-none" style="z-index:15; line-height:0;">
-        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block; width:100%; height:clamp(60px,10vw,120px);">
-            <path d="M0,60 C360,110 720,10 1080,60 C1260,85 1380,75 1440,60 L1440,0 L0,0 Z" fill="#ffffff" />
-        </svg>
-    </div>
 
     <?php if ($vm_use_video_on_home): ?>
         <!-- VIDEO BACKGROUND — optimized: decoding on separate thread, no preload of full video -->
@@ -428,13 +421,6 @@ $vm_use_video_on_home = $vm_has_video && !$vm_has_image;
                 </div>
             </div>
         <?php endif; ?>
-    </div>
-
-    <!-- Wave BOTTOM — blends seamlessly into the next section (galeri bg-gray-50) -->
-    <div class="absolute bottom-0 left-0 w-full pointer-events-none" style="z-index:15; line-height:0;">
-        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block; width:100%; height:clamp(60px,10vw,120px);">
-            <path d="M0,60 C360,110 720,10 1080,60 C1260,85 1380,75 1440,60 L1440,120 L0,120 Z" fill="#f9fafb" />
-        </svg>
     </div>
 </section>
 
@@ -608,13 +594,6 @@ $vm_use_video_on_home = $vm_has_video && !$vm_has_image;
             </div>
         <?php endif; ?>
     </div>
-
-    <!-- Wave divider -->
-    <div class="wave-divider wave-bottom">
-        <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;">
-            <path d="M0,30 C360,80 720,0 1080,50 C1260,70 1380,40 1440,30 L1440,80 L0,80 Z" fill="#f9fafb" />
-        </svg>
-    </div>
 </section>
 
 <!-- ============================================================ -->
@@ -696,28 +675,12 @@ $vm_use_video_on_home = $vm_has_video && !$vm_has_image;
             </div>
         <?php endif; ?>
     </div>
-
-    <!-- Wave ke footer bila PPDB tidak tampil -->
-    <?php if (empty($ppdb)): ?>
-        <div class="wave-divider wave-bottom" style="z-index:10;">
-            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;">
-                <path d="M0,62 C240,76 480,48 720,62 C960,76 1200,48 1440,62 L1440,80 L0,80 Z" fill="#052e16" />
-            </svg>
-        </div>
-    <?php endif; ?>
 </section>
 
 <!-- ============================================================ -->
 <!-- PPDB SECTION (CTA Banner) -->
 <!-- ============================================================ -->
 <?php if (!empty($ppdb)): ?>
-    <!-- Dedicated transition wave to avoid top clipping -->
-    <div class="relative h-16 md:h-20 -mb-px bg-hijau-900 overflow-hidden" style="z-index:12;">
-        <svg class="absolute left-1/2 top-0 -translate-x-1/2 block w-[calc(100%+24px)] min-w-full h-full"
-            viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,0 L1440,0 L1440,70 C1200,108 960,24 720,70 C480,108 240,24 0,70 Z" fill="#f9fafb" />
-        </svg>
-    </div>
     <section id="ppdb" class="pt-16 md:pt-20 pb-24 md:pb-32 relative overflow-hidden grain">
 
         <!-- Solid background -->
@@ -803,13 +766,6 @@ $vm_use_video_on_home = $vm_has_video && !$vm_has_image;
                     <?php endif; ?>
                 </div>
             </div>
-        </div>
-
-        <!-- Wave bottom to footer -->
-        <div class="wave-divider wave-bottom" style="z-index:5;">
-            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;">
-                <path d="M0,62 C240,76 480,48 720,62 C960,76 1200,48 1440,62 L1440,80 L0,80 Z" fill="#052e16" />
-            </svg>
         </div>
     </section>
 <?php endif; ?>

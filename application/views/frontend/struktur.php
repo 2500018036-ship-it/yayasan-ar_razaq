@@ -9,6 +9,20 @@ $struktur_img = isset($profil) && $profil ? trim((string) $profil->struktur_orga
 $anggota = isset($anggota_struktur) && is_array($anggota_struktur) ? $anggota_struktur : [];
 ?>
 
+<section class="relative pt-32 pb-20 md:pt-40 md:pb-28 bg-hijau-950 overflow-hidden grain">
+    <div class="absolute inset-0 pattern-bg opacity-20"></div>
+    <div class="absolute top-1/4 -left-20 w-[400px] h-[400px] bg-hijau-700/15 rounded-full blur-[120px] floating-slow"></div>
+    <div class="absolute bottom-1/3 -right-20 w-[300px] h-[300px] bg-kuning-500/8 rounded-full blur-[100px] floating"></div>
+
+    <div class="container mx-auto px-4 lg:px-8 relative z-10 text-center">
+        <div class="ornament-divider mb-5 max-w-xs mx-auto">
+            <span class="font-arabic text-kuning-400/70 text-xl">بنية</span>
+        </div>
+        <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">Struktur</h1>
+        <p class="text-hijau-200/70 text-lg max-w-xl mx-auto">Informasi terbaru dari Yayasan Ar-Razaq</p>
+    </div>
+</section>
+
 <section class="relative pt-32 pb-20 md:pt-40 md:pb-24 bg-[#eef2f2] overflow-hidden">
     <div class="container mx-auto px-4 lg:px-8">
         <div class="max-w-5xl mx-auto">

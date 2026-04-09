@@ -272,16 +272,21 @@ class Admin extends CI_Controller
     // ============================================================
     public function profil()
     {
-        redirect('panel-admin/profil/tentang-kami');
+        $this->_check_auth();
+        $data['title']  = 'Profil Yayasan';
+        $data['profil'] = $this->model->get_profil();
+        $this->load->view('admin/layout/header', $data);
+        $this->load->view('admin/profil', $data);
+        $this->load->view('admin/layout/footer');
     }
 
     public function profil_tentang_kami()
     {
-        $this->_check_auth();
+        return $this->profil();
         $data['title']  = 'Profil Yayasan • Tentang Kami';
         $data['profil'] = $this->model->get_profil();
         $this->load->view('admin/layout/header', $data);
-        $this->load->view('admin/profil_tentang_kami', $data);
+        // Legacy alias kept for backward compatibility.
         $this->load->view('admin/layout/footer');
     }
 
@@ -296,7 +301,8 @@ class Admin extends CI_Controller
         $existing = $this->model->get_profil();
 
         $deskripsi_lengkap = trim((string) $this->_post_or_existing('deskripsi_lengkap', $existing ? $existing->deskripsi_lengkap : '', FALSE));
-        $deskripsi_singkat = $this->_make_excerpt($deskripsi_lengkap, 180);
+        $deskripsi_singkat_input = trim((string) $this->_post_or_existing('deskripsi_singkat', $existing ? $existing->deskripsi_singkat : '', FALSE));
+        $deskripsi_singkat = $deskripsi_singkat_input !== '' ? $deskripsi_singkat_input : $this->_make_excerpt($deskripsi_lengkap, 180);
 
         $hero_overlay_color = trim((string) $this->_post_or_existing('hero_overlay_color', $existing ? $existing->hero_overlay_color : '#052e16', TRUE));
         if ($hero_overlay_color === '') $hero_overlay_color = '#052e16';
@@ -305,6 +311,9 @@ class Admin extends CI_Controller
             ? 80
             : (int) $hero_overlay_opacity_raw;
         if ($hero_overlay_opacity < 0 || $hero_overlay_opacity > 100) $hero_overlay_opacity = 80;
+
+        $uploaded_files = [];
+        $files_to_delete = [];
 
         $update_data = [
             'nama_yayasan'                  => $this->_post_or_existing('nama_yayasan', $existing ? $existing->nama_yayasan : null, TRUE),
@@ -324,6 +333,10 @@ class Admin extends CI_Controller
             'hero_overlay_opacity'          => $hero_overlay_opacity,
             'hero_title'                    => $this->_post_or_existing('hero_title', $existing ? $existing->hero_title : null, TRUE),
             'hero_subtitle'                 => $this->_post_or_existing('hero_subtitle', $existing ? $existing->hero_subtitle : null, TRUE),
+            'about_section_label'           => $this->_post_or_existing('about_section_label', $existing ? $existing->about_section_label : null, TRUE),
+            'about_section_badge'           => $this->_post_or_existing('about_section_badge', $existing ? $existing->about_section_badge : null, TRUE),
+            'about_section_cta_text'        => $this->_post_or_existing('about_section_cta_text', $existing ? $existing->about_section_cta_text : null, TRUE),
+            'about_section_cta_link'        => $this->_post_or_existing('about_section_cta_link', $existing ? $existing->about_section_cta_link : null, TRUE),
             'struktur_organisasi_judul'     => $this->_post_or_existing('struktur_organisasi_judul', $existing ? $existing->struktur_organisasi_judul : null, TRUE),
             'struktur_organisasi_deskripsi' => $this->_post_or_existing('struktur_organisasi_deskripsi', $existing ? $existing->struktur_organisasi_deskripsi : null, FALSE),
         ];
@@ -332,10 +345,14 @@ class Admin extends CI_Controller
             $upload_result = $this->_upload_file('logo', 'profil');
             if ($upload_result['status']) {
                 $update_data['logo'] = $upload_result['file_name'];
+                $uploaded_files[] = 'profil/' . $upload_result['file_name'];
                 if ($existing && !empty($existing->logo) && $existing->logo !== $upload_result['file_name']) {
-                    $this->_delete_file('profil/' . $existing->logo);
+                    $files_to_delete[] = 'profil/' . $existing->logo;
                 }
             } else {
+                foreach ($uploaded_files as $path) {
+                    $this->_delete_file($path);
+                }
                 $this->_json('error', $upload_result['message']);
             }
         }
@@ -344,9 +361,15 @@ class Admin extends CI_Controller
             $upload_result = $this->_upload_file('hero_image', 'profil');
             if ($upload_result['status']) {
                 $update_data['hero_image'] = $upload_result['file_name'];
+                $uploaded_files[] = 'profil/' . $upload_result['file_name'];
                 if ($existing && !empty($existing->hero_image) && $existing->hero_image !== $upload_result['file_name']) {
-                    $this->_delete_file('profil/' . $existing->hero_image);
+                    $files_to_delete[] = 'profil/' . $existing->hero_image;
                 }
+            } else {
+                foreach ($uploaded_files as $path) {
+                    $this->_delete_file($path);
+                }
+                $this->_json('error', $upload_result['message']);
             }
         }
 
@@ -354,15 +377,49 @@ class Admin extends CI_Controller
             $upload_result = $this->_upload_file('struktur_organisasi_gambar', 'profil');
             if ($upload_result['status']) {
                 $update_data['struktur_organisasi_gambar'] = $upload_result['file_name'];
+                $uploaded_files[] = 'profil/' . $upload_result['file_name'];
                 if ($existing && !empty($existing->struktur_organisasi_gambar) && $existing->struktur_organisasi_gambar !== $upload_result['file_name']) {
-                    $this->_delete_file('profil/' . $existing->struktur_organisasi_gambar);
+                    $files_to_delete[] = 'profil/' . $existing->struktur_organisasi_gambar;
                 }
             } else {
+                foreach ($uploaded_files as $path) {
+                    $this->_delete_file($path);
+                }
                 $this->_json('error', $upload_result['message']);
             }
         }
 
-        $this->model->update_profil($update_data);
+        if (!empty($_FILES['about_section_media']['name'])) {
+            $upload_result = $this->_upload_media('about_section_media', 'profil');
+            if ($upload_result['status']) {
+                $update_data['about_section_media'] = $upload_result['file_name'];
+                $uploaded_files[] = 'profil/' . $upload_result['file_name'];
+                if ($existing && !empty($existing->about_section_media) && $existing->about_section_media !== $upload_result['file_name']) {
+                    $files_to_delete[] = 'profil/' . $existing->about_section_media;
+                }
+            } else {
+                foreach ($uploaded_files as $path) {
+                    $this->_delete_file($path);
+                }
+                $this->_json('error', $upload_result['message']);
+            }
+        } elseif ((int) $this->input->post('remove_about_section_media', TRUE) === 1 && $existing && !empty($existing->about_section_media)) {
+            $update_data['about_section_media'] = null;
+            $files_to_delete[] = 'profil/' . $existing->about_section_media;
+        }
+
+        $saved = $this->model->update_profil($update_data);
+        if (!$saved) {
+            foreach ($uploaded_files as $path) {
+                $this->_delete_file($path);
+            }
+            $this->_json('error', 'Gagal menyimpan data profil.');
+        }
+
+        foreach (array_unique($files_to_delete) as $path) {
+            $this->_delete_file($path);
+        }
+
         $this->_json('success', 'Data profil berhasil diperbarui!');
     }
 
@@ -1501,12 +1558,11 @@ class Admin extends CI_Controller
         return rtrim(substr($plain, 0, $limit)) . '...';
     }
 
-    // ============================================================
-    // HELPER: UPLOAD FILE (GAMBAR)
-    // ============================================================
-    private function _upload_file($field_name, $subfolder = '')
+    private function _prepare_upload_path($subfolder = '')
     {
-        $upload_path = FCPATH . 'assets/images/uploads/' . ($subfolder ? $subfolder . '/' : '');
+        $normalized = trim(str_replace('\\', '/', (string) $subfolder), '/');
+        $upload_path = FCPATH . 'assets/images/uploads/' . ($normalized !== '' ? $normalized . '/' : '');
+
         if (!is_dir($upload_path)) {
             if (!@mkdir($upload_path, 0777, TRUE) && !is_dir($upload_path)) {
                 return ['status' => FALSE, 'message' => 'Folder upload tidak bisa dibuat: ' . $upload_path];
@@ -1521,10 +1577,20 @@ class Admin extends CI_Controller
             return ['status' => FALSE, 'message' => 'Folder upload tidak writable: ' . $upload_path];
         }
 
+        return ['status' => TRUE, 'path' => $upload_path];
+    }
+
+    private function _handle_upload($field_name, $subfolder, $allowed_types, $max_size)
+    {
+        $path_result = $this->_prepare_upload_path($subfolder);
+        if (!$path_result['status']) {
+            return $path_result;
+        }
+
         $config = [
-            'upload_path'   => $upload_path,
-            'allowed_types' => 'jpg|jpeg|png|gif|webp',
-            'max_size'      => 5120,
+            'upload_path'   => $path_result['path'],
+            'allowed_types' => $allowed_types,
+            'max_size'      => $max_size,
             'encrypt_name'  => TRUE,
         ];
 
@@ -1533,9 +1599,17 @@ class Admin extends CI_Controller
         if ($this->upload->do_upload($field_name)) {
             $upload_data = $this->upload->data();
             return ['status' => TRUE, 'file_name' => $upload_data['file_name']];
-        } else {
-            return ['status' => FALSE, 'message' => $this->upload->display_errors('', '')];
         }
+
+        return ['status' => FALSE, 'message' => $this->upload->display_errors('', '')];
+    }
+
+    // ============================================================
+    // HELPER: UPLOAD FILE (GAMBAR)
+    // ============================================================
+    private function _upload_file($field_name, $subfolder = '')
+    {
+        return $this->_handle_upload($field_name, $subfolder, 'jpg|jpeg|png|gif|webp', 5120);
     }
 
     // ============================================================
@@ -1543,8 +1617,34 @@ class Admin extends CI_Controller
     // ============================================================
     private function _delete_file($path)
     {
-        $full_path = FCPATH . 'assets/images/uploads/' . $path;
-        if (file_exists($full_path)) unlink($full_path);
+        $relative_path = trim(str_replace('\\', '/', (string) $path), '/');
+        if ($relative_path === '' || strpos($relative_path, '..') !== false) {
+            return FALSE;
+        }
+
+        $base_path = realpath(FCPATH . 'assets/images/uploads');
+        if ($base_path === FALSE) {
+            return FALSE;
+        }
+
+        $target_path = $base_path . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relative_path);
+        $target_dir = realpath(dirname($target_path));
+        if ($target_dir === FALSE) {
+            return FALSE;
+        }
+
+        $normalized_base = rtrim(str_replace('\\', '/', $base_path), '/');
+        $normalized_dir = rtrim(str_replace('\\', '/', $target_dir), '/');
+        if ($normalized_dir !== $normalized_base && strpos($normalized_dir . '/', $normalized_base . '/') !== 0) {
+            return FALSE;
+        }
+
+        $resolved_path = $target_dir . DIRECTORY_SEPARATOR . basename($target_path);
+        if (!is_file($resolved_path)) {
+            return FALSE;
+        }
+
+        return @unlink($resolved_path);
     }
 
     // ============================================================
@@ -1552,35 +1652,11 @@ class Admin extends CI_Controller
     // ============================================================
     private function _upload_video($field_name, $subfolder = '')
     {
-        $upload_path = FCPATH . 'assets/images/uploads/' . ($subfolder ? $subfolder . '/' : '');
-        if (!is_dir($upload_path)) {
-            if (!@mkdir($upload_path, 0777, TRUE) && !is_dir($upload_path)) {
-                return ['status' => FALSE, 'message' => 'Folder upload tidak bisa dibuat: ' . $upload_path];
-            }
-            @chmod($upload_path, 0777);
-        }
+        return $this->_handle_upload($field_name, $subfolder, 'mp4|webm|ogg', 51200);
+    }
 
-        if (!is_writable($upload_path)) {
-            @chmod($upload_path, 0777);
-        }
-        if (!is_writable($upload_path)) {
-            return ['status' => FALSE, 'message' => 'Folder upload tidak writable: ' . $upload_path];
-        }
-
-        $config = [
-            'upload_path'   => $upload_path,
-            'allowed_types' => 'mp4|webm|ogg',
-            'max_size'      => 51200, // 50 MB
-            'encrypt_name'  => TRUE,
-        ];
-
-        $this->upload->initialize($config);
-
-        if ($this->upload->do_upload($field_name)) {
-            $upload_data = $this->upload->data();
-            return ['status' => TRUE, 'file_name' => $upload_data['file_name']];
-        } else {
-            return ['status' => FALSE, 'message' => $this->upload->display_errors('', '')];
-        }
+    private function _upload_media($field_name, $subfolder = '')
+    {
+        return $this->_handle_upload($field_name, $subfolder, 'jpg|jpeg|png|gif|webp|mp4|webm|ogg', 51200);
     }
 }

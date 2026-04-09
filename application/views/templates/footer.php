@@ -3,18 +3,6 @@
 <!-- ============================================================ -->
 <footer class="bg-hijau-950 text-white relative overflow-visible">
     <div class="absolute inset-0 pattern-bg opacity-[0.03]"></div>
-
-    <!-- Wave top -->
-    <div id="footer-wave-wrap" style="display:block; line-height:0; margin-top:-79px; position:relative; z-index:5; pointer-events:none;">
-        <svg id="footer-wave-svg" viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="none"
-            style="display:block; width:100%; height:80px;">
-            <path id="footer-wave-path"
-                d="M0,24 C240,4 480,44 720,24 C960,4 1200,44 1440,24 L1440,0 L0,0 Z"
-                fill="#ffffff" />
-        </svg>
-    </div>
-
     <div class="container mx-auto px-4 lg:px-8 pt-8 pb-20 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 reveal">
             <!-- Brand -->
@@ -130,7 +118,7 @@
                 &copy; <?= date('Y') ?> <?= isset($profil) && $profil ? $profil->nama_yayasan : 'Yayasan Ar-Razaq' ?>. Hak Cipta Dilindungi.
             </p>
             <div class="flex items-center gap-2">
-                <span class="text-2xl font-arabic text-kuning-400/40">بِسْمِ اللهِ</span>
+                <span class="text-2xl font-arabic text-kuning-400/40">الحمد لله</span>
             </div>
         </div>
     </div>
@@ -698,20 +686,20 @@ if ($popup_data && !empty($popup_data->gambar)):
         if (prefersReduce || lowPowerDevice || disableParticlesOnHome) {
             particleContainer.innerHTML = '';
         } else {
-        const isMobile = window.innerWidth < 768;
-        const particleCount = isMobile ? 3 : 5;
+            const isMobile = window.innerWidth < 768;
+            const particleCount = isMobile ? 3 : 5;
 
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            const size = Math.random() * 3 + 1;
-            const isGold = Math.random() > 0.5;
-            const delay = (Math.random() * 2.4).toFixed(2);
-            const dur = (Math.random() * 3.2 + 4.8).toFixed(2);
-            const driftX = (Math.random() * 24 - 12).toFixed(1) + 'px';
-            const driftY = (Math.random() * 42 - 21).toFixed(1) + 'px';
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 3 + 1;
+                const isGold = Math.random() > 0.5;
+                const delay = (Math.random() * 2.4).toFixed(2);
+                const dur = (Math.random() * 3.2 + 4.8).toFixed(2);
+                const driftX = (Math.random() * 24 - 12).toFixed(1) + 'px';
+                const driftY = (Math.random() * 42 - 21).toFixed(1) + 'px';
 
-            particle.style.cssText = `
+                particle.style.cssText = `
                 width: ${size}px;
                 height: ${size}px;
                 left: ${Math.random() * 100}%;
@@ -725,9 +713,9 @@ if ($popup_data && !empty($popup_data->gambar)):
                 --vm-y: ${driftY};
                 animation: vmParticleFloat ${dur}s ease-in-out ${delay}s infinite;
             `;
-            particleContainer.appendChild(particle);
+                particleContainer.appendChild(particle);
+            }
         }
-      }
     }
 
     // ============================================================
