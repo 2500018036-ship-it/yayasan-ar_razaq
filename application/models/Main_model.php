@@ -77,6 +77,10 @@ class Main_model extends CI_Model
             $this->db->query("ALTER TABLE `galeri` ADD COLUMN `label` VARCHAR(120) NULL DEFAULT NULL AFTER `kategori`");
         }
 
+        if ($this->db->table_exists('sejarah') && !$this->db->field_exists('tahun', 'sejarah')) {
+            $this->db->query("ALTER TABLE `sejarah` ADD COLUMN `tahun` VARCHAR(10) NULL DEFAULT NULL AFTER `judul`");
+        }
+
         if ($this->db->table_exists('ekskul') && !$this->db->field_exists('slug', 'ekskul')) {
             $this->db->query("ALTER TABLE `ekskul` ADD COLUMN `slug` VARCHAR(190) NULL DEFAULT NULL AFTER `nama`");
         }

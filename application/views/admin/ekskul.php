@@ -228,7 +228,7 @@ $can_delete = in_array('ekskul.delete', $permission_codes, true);
         showConfirm(`Hapus ekskul "${nama}"?`, async () => {
             const fd = new FormData();
             fd.append('id', id);
-            await ajaxSubmit('<?= base_url('panel-admin/ekskul/delete') ?>', fd, () => {
+            await ajaxSubmit('<?= base_url('panel-admin/ekskul_delete') ?>', fd, () => {
                 document.getElementById('row-' + id)?.remove();
             });
         });

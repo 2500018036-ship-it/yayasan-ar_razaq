@@ -16,20 +16,8 @@
     </div>
 
     <div class="container mx-auto px-4 lg:px-8 relative z-10 text-center">
-        <?php if (!empty($ppdb)): ?>
-            <div class="inline-flex items-center gap-2 bg-kuning-400/10 border border-kuning-400/20 text-kuning-300 px-5 py-2 rounded-full text-sm font-medium mb-8">
-                <span class="w-2 h-2 bg-kuning-400 rounded-full animate-pulse"></span>
-                Pendaftaran Tahun Ajaran <?= $ppdb->tahun_ajaran ?>
-            </div>
-        <?php endif; ?>
         <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">Penerimaan Santri Baru</h1>
         <p class="text-hijau-200/70 text-lg max-w-xl mx-auto">Bergabunglah bersama kami dalam membentuk generasi Qurani yang berakhlak mulia</p>
-    </div>
-
-    <div class="wave-divider wave-bottom">
-        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,60 C360,120 720,0 1080,60 C1260,90 1380,80 1440,60 L1440,120 L0,120 Z" fill="white"/>
-        </svg>
     </div>
 </section>
 

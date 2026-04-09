@@ -1,9 +1,12 @@
 <!-- ============================================================ -->
-<!-- FOOTER -->
+<!-- FOOTER                                                        -->
 <!-- ============================================================ -->
 <footer class="bg-hijau-950 text-white relative overflow-visible">
+    <!-- Top accent line -->
+    <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-kuning-500/30 to-transparent"></div>
     <div class="absolute inset-0 pattern-bg opacity-[0.03]"></div>
-    <div class="container mx-auto px-4 lg:px-8 pt-8 pb-20 relative z-10">
+
+    <div class="container mx-auto px-4 lg:px-8 pt-12 pb-20 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 reveal">
             <!-- Brand -->
             <div class="lg:col-span-2">
@@ -22,36 +25,45 @@
                         <div class="text-hijau-400/50 text-sm">Pesantren Modern Terpadu</div>
                     </div>
                 </div>
+
+                <!-- Decorative separator -->
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="h-px w-8 bg-kuning-500/30"></div>
+                    <div class="w-1 h-1 rounded-full bg-kuning-500/30"></div>
+                    <div class="h-px w-4 bg-white/10"></div>
+                </div>
+
                 <p class="text-hijau-300/50 text-sm leading-relaxed mb-8 max-w-sm">
                     <?= isset($profil) && $profil ? $profil->deskripsi_singkat : 'Membentuk generasi Qurani yang berakhlak mulia dan berwawasan luas.' ?>
                 </p>
+
                 <!-- Social -->
-                <div class="flex gap-3">
+                <div class="flex gap-2.5">
                     <?php if (isset($profil) && $profil): ?>
                         <?php if ($profil->facebook): ?>
-                            <a href="<?= $profil->facebook ?>" target="_blank" class="w-10 h-10 bg-white/[0.04] hover:bg-kuning-500 rounded-xl flex items-center justify-center text-hijau-400/60 hover:text-hijau-950 transition-all duration-500">
+                            <a href="<?= $profil->facebook ?>" target="_blank" class="w-10 h-10 bg-white/[0.04] hover:bg-kuning-500 rounded-xl flex items-center justify-center text-hijau-400/60 hover:text-hijau-950 transition-all duration-400 border border-white/[0.04] hover:border-kuning-400">
                                 <i data-feather="facebook" class="w-4 h-4"></i>
                             </a>
                         <?php endif; ?>
                         <?php if ($profil->instagram): ?>
-                            <a href="<?= $profil->instagram ?>" target="_blank" class="w-10 h-10 bg-white/[0.04] hover:bg-kuning-500 rounded-xl flex items-center justify-center text-hijau-400/60 hover:text-hijau-950 transition-all duration-500">
+                            <a href="<?= $profil->instagram ?>" target="_blank" class="w-10 h-10 bg-white/[0.04] hover:bg-kuning-500 rounded-xl flex items-center justify-center text-hijau-400/60 hover:text-hijau-950 transition-all duration-400 border border-white/[0.04] hover:border-kuning-400">
                                 <i data-feather="instagram" class="w-4 h-4"></i>
                             </a>
                         <?php endif; ?>
                         <?php if ($profil->youtube): ?>
-                            <a href="<?= $profil->youtube ?>" target="_blank" class="w-10 h-10 bg-white/[0.04] hover:bg-kuning-500 rounded-xl flex items-center justify-center text-hijau-400/60 hover:text-hijau-950 transition-all duration-500">
+                            <a href="<?= $profil->youtube ?>" target="_blank" class="w-10 h-10 bg-white/[0.04] hover:bg-kuning-500 rounded-xl flex items-center justify-center text-hijau-400/60 hover:text-hijau-950 transition-all duration-400 border border-white/[0.04] hover:border-kuning-400">
                                 <i data-feather="youtube" class="w-4 h-4"></i>
                             </a>
                         <?php endif; ?>
                         <?php if ($profil->whatsapp): ?>
-                            <a href="https://wa.me/<?= $profil->whatsapp ?>" target="_blank" class="w-10 h-10 bg-white/[0.04] hover:bg-kuning-500 rounded-xl flex items-center justify-center text-hijau-400/60 hover:text-hijau-950 transition-all duration-500">
+                            <a href="https://wa.me/<?= $profil->whatsapp ?>" target="_blank" class="w-10 h-10 bg-white/[0.04] hover:bg-kuning-500 rounded-xl flex items-center justify-center text-hijau-400/60 hover:text-hijau-950 transition-all duration-400 border border-white/[0.04] hover:border-kuning-400">
                                 <i data-feather="message-circle" class="w-4 h-4"></i>
                             </a>
                         <?php endif; ?>
                         <?php if (!empty($profil->tiktok)): ?>
-                            <a href="<?= htmlspecialchars($profil->tiktok, ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-white/[0.04] hover:bg-kuning-500 rounded-xl flex items-center justify-center text-hijau-400/60 hover:text-hijau-950 transition-all duration-500">
+                            <a href="<?= htmlspecialchars($profil->tiktok, ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-white/[0.04] hover:bg-kuning-500 rounded-xl flex items-center justify-center text-hijau-400/60 hover:text-hijau-950 transition-all duration-400 border border-white/[0.04] hover:border-kuning-400">
                                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.96a8.22 8.22 0 0 0 4.81 1.54V7.07a4.85 4.85 0 0 1-1.04-.38z"/>
+                                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.96a8.22 8.22 0 0 0 4.81 1.54V7.07a4.85 4.85 0 0 1-1.04-.38z" />
                                 </svg>
                             </a>
                         <?php endif; ?>
@@ -61,7 +73,7 @@
 
             <!-- Quick Links -->
             <div>
-                <h4 class="font-display font-semibold text-kuning-400/80 mb-6 text-base">Navigasi</h4>
+                <h4 class="font-display font-semibold text-kuning-400/70 mb-6 text-sm uppercase tracking-widest">Navigasi</h4>
                 <ul class="space-y-3">
                     <?php
                     $links = [
@@ -76,8 +88,8 @@
                     foreach ($links as $link):
                     ?>
                         <li>
-                            <a href="<?= $link[0] ?>" class="text-hijau-300/50 hover:text-kuning-400 text-sm transition-colors duration-300 flex items-center gap-2 group">
-                                <span class="w-1 h-1 bg-kuning-500/50 rounded-full group-hover:w-2 transition-all duration-300"></span>
+                            <a href="<?= $link[0] ?>" class="text-hijau-300/45 hover:text-kuning-400 text-sm transition-colors duration-300 flex items-center gap-2 group">
+                                <span class="w-1 h-1 bg-kuning-500/40 rounded-full group-hover:w-2 transition-all duration-300"></span>
                                 <?= $link[1] ?>
                             </a>
                         </li>
@@ -87,31 +99,31 @@
 
             <!-- Contact -->
             <div>
-                <h4 class="font-display font-semibold text-kuning-400/80 mb-6 text-base">Kontak Kami</h4>
+                <h4 class="font-display font-semibold text-kuning-400/70 mb-6 text-sm uppercase tracking-widest">Kontak Kami</h4>
                 <ul class="space-y-4">
                     <?php if (isset($profil) && $profil): ?>
                         <?php if ($profil->alamat): ?>
                             <li class="flex gap-3">
-                                <div class="w-8 h-8 bg-white/[0.04] rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <div class="w-8 h-8 bg-white/[0.04] rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 border border-white/[0.04]">
                                     <i data-feather="map-pin" class="w-3.5 h-3.5 text-kuning-400/60"></i>
                                 </div>
-                                <span class="text-hijau-300/50 text-sm leading-relaxed"><?= $profil->alamat ?></span>
+                                <span class="text-hijau-300/45 text-sm leading-relaxed"><?= $profil->alamat ?></span>
                             </li>
                         <?php endif; ?>
                         <?php if ($profil->telepon): ?>
                             <li class="flex gap-3 items-center">
-                                <div class="w-8 h-8 bg-white/[0.04] rounded-lg flex items-center justify-center flex-shrink-0">
+                                <div class="w-8 h-8 bg-white/[0.04] rounded-lg flex items-center justify-center flex-shrink-0 border border-white/[0.04]">
                                     <i data-feather="phone" class="w-3.5 h-3.5 text-kuning-400/60"></i>
                                 </div>
-                                <a href="tel:<?= $profil->telepon ?>" class="text-hijau-300/50 hover:text-kuning-400 text-sm transition-colors"><?= $profil->telepon ?></a>
+                                <a href="tel:<?= $profil->telepon ?>" class="text-hijau-300/45 hover:text-kuning-400 text-sm transition-colors"><?= $profil->telepon ?></a>
                             </li>
                         <?php endif; ?>
                         <?php if ($profil->email): ?>
                             <li class="flex gap-3 items-center">
-                                <div class="w-8 h-8 bg-white/[0.04] rounded-lg flex items-center justify-center flex-shrink-0">
+                                <div class="w-8 h-8 bg-white/[0.04] rounded-lg flex items-center justify-center flex-shrink-0 border border-white/[0.04]">
                                     <i data-feather="mail" class="w-3.5 h-3.5 text-kuning-400/60"></i>
                                 </div>
-                                <a href="mailto:<?= $profil->email ?>" class="text-hijau-300/50 hover:text-kuning-400 text-sm transition-colors"><?= $profil->email ?></a>
+                                <a href="mailto:<?= $profil->email ?>" class="text-hijau-300/45 hover:text-kuning-400 text-sm transition-colors"><?= $profil->email ?></a>
                             </li>
                         <?php endif; ?>
                     <?php endif; ?>
@@ -121,11 +133,11 @@
 
         <!-- Bottom bar -->
         <div class="mt-16 pt-8 border-t border-white/[0.05] flex flex-col md:flex-row items-center justify-between gap-4">
-            <p class="text-hijau-400/40 text-sm text-center">
+            <p class="text-hijau-400/35 text-sm text-center">
                 &copy; <?= date('Y') ?> <?= isset($profil) && $profil ? $profil->nama_yayasan : 'Yayasan Ar-Razaq' ?>. Hak Cipta Dilindungi.
             </p>
             <div class="flex items-center gap-2">
-                <span class="text-2xl font-arabic text-kuning-400/40">الحمد لله</span>
+                <span class="text-2xl font-arabic text-kuning-400/30">الحمد لله</span>
             </div>
         </div>
     </div>
@@ -144,32 +156,39 @@ if ($popup_data && !empty($popup_data->gambar)):
     $popup_target_mode = ($popup_data->target_mode === '_blank') ? '_blank' : '_self';
     $popup_state_key = 'popup_' . (int) $popup_data->id . '_' . md5((string) $popup_data->updated_at . '|' . (string) $popup_data->gambar . '|' . (string) $popup_data->target_link);
 ?>
+    <!-- ============================================================ -->
+    <!-- POPUP: Clean full-image, no background container             -->
+    <!-- ============================================================ -->
     <div id="site-popup-overlay"
-        class="fixed inset-0 z-[100] bg-black/65 backdrop-blur-[2px] hidden items-center justify-center p-4 sm:p-6"
+        class="fixed inset-0 z-[100] bg-black/70 backdrop-blur-[3px] hidden items-center justify-center p-4 sm:p-8"
         aria-hidden="true">
-        <div class="relative w-[92vw] sm:w-[86vw] md:w-[72vw] lg:w-[58vw] max-w-[860px]">
+
+        <div class="relative inline-block" id="site-popup-inner">
+            <!-- Close button — floating top-right of the image -->
             <button id="site-popup-close"
                 type="button"
-                class="absolute -top-3 -right-3 z-10 w-10 h-10 rounded-full bg-white text-gray-700 shadow-lg hover:bg-gray-100 transition-colors flex items-center justify-center"
+                class="absolute -top-4 -right-4 z-10 w-10 h-10 rounded-full bg-white/95 text-gray-600 shadow-lg hover:bg-white hover:text-gray-900 transition-all duration-200 flex items-center justify-center"
                 aria-label="Tutup popup">
                 <i data-feather="x" class="w-5 h-5"></i>
             </button>
 
-            <div class="rounded-2xl overflow-hidden shadow-2xl bg-white max-h-[82vh]">
-                <?php if ($popup_target_link !== ''): ?>
-                    <a href="<?= htmlspecialchars($popup_target_link, ENT_QUOTES, 'UTF-8') ?>"
-                        target="<?= $popup_target_mode ?>"
-                        <?= $popup_target_mode === '_blank' ? 'rel="noopener noreferrer"' : '' ?>
-                        class="block w-full h-full"
-                        id="site-popup-image-link">
-                        <img src="<?= $popup_img_url ?>" alt="Popup Promosi" class="block max-w-full w-auto h-auto max-h-[82vh] object-contain mx-auto">
-                    </a>
-                <?php else: ?>
-                    <div class="block w-full h-full">
-                        <img src="<?= $popup_img_url ?>" alt="Popup Promosi" class="block max-w-full w-auto h-auto max-h-[82vh] object-contain mx-auto">
-                    </div>
-                <?php endif; ?>
-            </div>
+            <!-- Pure image — no background wrapper, no container box -->
+            <?php if ($popup_target_link !== ''): ?>
+                <a href="<?= htmlspecialchars($popup_target_link, ENT_QUOTES, 'UTF-8') ?>"
+                    target="<?= $popup_target_mode ?>"
+                    <?= $popup_target_mode === '_blank' ? 'rel="noopener noreferrer"' : '' ?>
+                    id="site-popup-image-link">
+                    <img src="<?= $popup_img_url ?>"
+                        alt="Popup Promosi"
+                        class="block max-w-[90vw] max-h-[85vh] w-auto h-auto object-contain rounded-xl shadow-2xl"
+                        style="box-shadow: 0 32px 64px rgba(0,0,0,0.5);">
+                </a>
+            <?php else: ?>
+                <img src="<?= $popup_img_url ?>"
+                    alt="Popup Promosi"
+                    class="block max-w-[90vw] max-h-[85vh] w-auto h-auto object-contain rounded-xl shadow-2xl"
+                    style="box-shadow: 0 32px 64px rgba(0,0,0,0.5);">
+            <?php endif; ?>
         </div>
     </div>
 <?php endif; ?>
@@ -183,17 +202,11 @@ if ($popup_data && !empty($popup_data->gambar)):
 
     // ============================================================
     // LENIS SMOOTH SCROLL
-    // *** FIX: Remove double-tick. Only ONE of these two patterns
-    //     should drive Lenis. We use the GSAP ticker exclusively
-    //     (recommended by both Lenis and GSAP docs for GSAP projects).
-    //     The standalone requestAnimationFrame(raf) loop has been removed.
     // ============================================================
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const lowPowerDevice = !!(navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
     const hasVisiMisiSection = !!document.getElementById('visi-misi');
     const isVisiMisiPage = /(?:^|\/)visi-misi\/?$/.test(window.location.pathname);
-    // Perf mode dibatasi untuk device lemah / reduced motion / halaman visi-misi khusus
-    // agar animasi scroll GSAP di beranda tetap aktif penuh.
     const perfMode = prefersReducedMotion || lowPowerDevice || isVisiMisiPage;
 
     const lenis = new Lenis({
@@ -207,588 +220,374 @@ if ($popup_data && !empty($popup_data->gambar)):
         infinite: false,
     });
 
-    // Register GSAP plugin first
     gsap.registerPlugin(ScrollTrigger);
 
-    // *** FIX: Use ONLY the GSAP ticker to drive Lenis
-    //     (previously both RAF + gsap.ticker were running, causing double frames)
     gsap.ticker.add((time) => {
         lenis.raf(time * 1000);
     });
 
-    // Disable GSAP's default lag smoothing to keep Lenis in full control
     gsap.ticker.lagSmoothing(0);
-
-    // Sync ScrollTrigger with Lenis
     lenis.on('scroll', ScrollTrigger.update);
 
     // ============================================================
-    // NAVBAR
+    // NAVBAR + TOPBAR HIDE ON SCROLL
     // ============================================================
     const navbar = document.getElementById('navbar');
+    const topbar = document.getElementById('topbar');
     const menuToggle = document.getElementById('menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
-
     const menuToggleBtn = document.getElementById('menu-toggle');
 
-    const NAV_SCROLL_THRESHOLD = 42;
+    const TOPBAR_H = topbar ? topbar.offsetHeight : 44;
+    const NAV_SCROLL_THRESHOLD = TOPBAR_H + 10;
+
+    // Offset navbar top by topbar height initially
+    if (navbar) {
+        navbar.style.top = TOPBAR_H + 'px';
+        navbar.style.transition = 'top 0.4s ease, padding 0.5s cubic-bezier(0.16,1,0.3,1)';
+    }
 
     const updateNavbarState = (forcedScroll) => {
         const currentScroll = typeof forcedScroll === 'number' ? forcedScroll : window.scrollY;
 
         if (currentScroll > NAV_SCROLL_THRESHOLD) {
             navbar.classList.add('scrolled');
+            // Hide topbar, move navbar to top
+            if (topbar) {
+                topbar.style.maxHeight = '0';
+                topbar.style.opacity = '0';
+                topbar.style.pointerEvents = 'none';
+            }
+            if (navbar) navbar.style.top = '0';
             if (menuToggleBtn) {
                 menuToggleBtn.classList.remove('text-white', 'hover:bg-white/10');
                 menuToggleBtn.classList.add('text-hijau-800', 'hover:bg-hijau-50');
             }
         } else {
             navbar.classList.remove('scrolled');
+            // Restore topbar
+            if (topbar) {
+                topbar.style.maxHeight = '44px';
+                topbar.style.opacity = '1';
+                topbar.style.pointerEvents = '';
+            }
+            if (navbar) navbar.style.top = TOPBAR_H + 'px';
             if (menuToggleBtn) {
                 menuToggleBtn.classList.add('text-white', 'hover:bg-white/10');
                 menuToggleBtn.classList.remove('text-hijau-800', 'hover:bg-hijau-50');
             }
         }
-
-        // Back to top button
-        const backTop = document.getElementById('back-to-top');
-        if (backTop) {
-            if (currentScroll > 500) {
-                backTop.classList.remove('opacity-0', 'invisible');
-                backTop.classList.add('opacity-100', 'visible');
-            } else {
-                backTop.classList.add('opacity-0', 'invisible');
-                backTop.classList.remove('opacity-100', 'visible');
-            }
-        }
     };
 
-    // Keep navbar state in sync with Lenis virtual scroll position
-    lenis.on('scroll', (evt) => {
-        const nextScroll = evt && typeof evt.scroll === 'number' ? evt.scroll : window.scrollY;
-        updateNavbarState(nextScroll);
-    });
-
-    // Keep state correct on hard refresh / history navigation
+    lenis.on('scroll', ({
+        scroll
+    }) => updateNavbarState(scroll));
     updateNavbarState(window.scrollY);
 
     // Mobile menu toggle
-    if (menuToggle && mobileMenu) {
-        menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.toggle('open');
-        });
-    }
-
-    // Back to top
-    document.getElementById('back-to-top')?.addEventListener('click', () => {
-        lenis.scrollTo(0, {
-            duration: 2
-        });
+    menuToggle?.addEventListener('click', () => {
+        mobileMenu?.classList.toggle('open');
     });
 
     // ============================================================
-    // HERO ENTRANCE ANIMATION
+    // HERO ENTRANCE ANIMATIONS
     // ============================================================
     window.addEventListener('load', () => {
-        if (!document.getElementById('hero')) return;
-        const heroTl = gsap.timeline({
-            delay: 0.3
+        const heroArabic = document.getElementById('hero-arabic');
+        const heroBadge = document.getElementById('hero-badge');
+        const heroTitle = document.getElementById('hero-title');
+        const heroDivider = document.getElementById('hero-divider');
+        const heroTagline = document.getElementById('hero-tagline');
+        const heroCta = document.getElementById('hero-cta');
+        const scrollInd = document.getElementById('scroll-indicator');
+
+        const tl = gsap.timeline({
+            delay: 0.2
         });
 
-        try {
-            const heroTitleSplit = new SplitType('#hero-title', {
-                types: 'chars'
-            });
-            heroTl
-                .to('#hero-arabic', {
-                    opacity: 1,
-                    y: 0,
-                    duration: 1,
-                    ease: 'power3.out'
-                })
-                .to('#hero-badge', {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.7,
-                    ease: 'power3.out'
-                }, '-=0.5')
-                .from(heroTitleSplit.chars, {
-                    opacity: 0,
-                    y: 60,
-                    rotateX: -40,
-                    stagger: 0.03,
-                    duration: 0.8,
-                    ease: 'power3.out'
-                }, '-=0.3')
-                .set('#hero-title', {
-                    opacity: 1
-                }, '<')
-                .to('#hero-tagline', {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.8,
-                    ease: 'power3.out'
-                }, '-=0.4')
-                .to('#hero-cta', {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.8,
-                    ease: 'power3.out'
-                }, '-=0.5')
-                .to('#scroll-indicator', {
-                    opacity: 1,
-                    duration: 1,
-                    ease: 'power3.out'
-                }, '-=0.3');
-        } catch (e) {
-            heroTl
-                .to('#hero-arabic', {
-                    opacity: 1,
-                    y: 0,
-                    duration: 1,
-                    ease: 'power3.out'
-                })
-                .to('#hero-badge', {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.7,
-                    ease: 'power3.out'
-                }, '-=0.5')
-                .to('#hero-title', {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.9,
-                    ease: 'power3.out'
-                }, '-=0.3')
-                .to('#hero-tagline', {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.8,
-                    ease: 'power3.out'
-                }, '-=0.5')
-                .to('#hero-cta', {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.8,
-                    ease: 'power3.out'
-                }, '-=0.4')
-                .to('#scroll-indicator', {
-                    opacity: 1,
-                    duration: 1,
-                    ease: 'power3.out'
-                }, '-=0.3');
-        }
-
-        // Hero parallax — content fades out as scrolled
-        if (!perfMode) {
-            gsap.to('#hero-content', {
-                y: -80,
-                opacity: 0,
-                ease: 'none',
-                scrollTrigger: {
-                    trigger: '#hero',
-                    start: 'top top',
-                    end: '70% top',
-                    scrub: 1.5
-                }
-            });
-
-            // Scroll indicator fades
-            gsap.to('#scroll-indicator', {
-                opacity: 0,
-                y: 20,
-                scrollTrigger: {
-                    trigger: '#hero',
-                    start: '10% top',
-                    end: '30% top',
-                    scrub: true
-                }
-            });
-        }
-    });
-
-    // ============================================================
-    // PARALLAX BACKGROUNDS
-    // ============================================================
-    if (!perfMode) {
-        gsap.utils.toArray('[data-parallax-bg]').forEach(el => {
-            const speed = parseFloat(el.dataset.parallaxBg) || 0.2;
-            gsap.to(el, {
-                yPercent: speed * 80,
-                ease: 'none',
-                scrollTrigger: {
-                    trigger: el.closest('section') || el.parentElement,
-                    start: 'top bottom',
-                    end: 'bottom top',
-                    scrub: 1
-                }
-            });
-        });
-    }
-
-    // ============================================================
-    // REVEAL ANIMATIONS
-    // *** FIX: Use BatchPlugin-style grouping via markers:false to
-    //     reduce the number of active ScrollTrigger instances.
-    //     Also use will-change only during animation, not permanently.
-    // ============================================================
-    ScrollTrigger.batch('.reveal', {
-        onEnter: (elements) => {
-            gsap.to(elements, {
-                opacity: 1,
-                y: 0,
-                duration: 0.9,
-                ease: 'power3.out',
-                stagger: 0.08,
-                overwrite: true
-            });
-        },
-        start: 'top 88%',
-        once: true // Only trigger once, saves memory
-    });
-
-    ScrollTrigger.batch('.reveal-left', {
-        onEnter: (elements) => {
-            gsap.to(elements, {
-                opacity: 1,
-                x: 0,
-                duration: 1,
-                ease: 'power3.out',
-                stagger: 0.1,
-                overwrite: true
-            });
-        },
-        start: 'top 88%',
-        once: true
-    });
-
-    ScrollTrigger.batch('.reveal-right', {
-        onEnter: (elements) => {
-            gsap.to(elements, {
-                opacity: 1,
-                x: 0,
-                duration: 1,
-                ease: 'power3.out',
-                stagger: 0.1,
-                overwrite: true
-            });
-        },
-        start: 'top 88%',
-        once: true
-    });
-
-    ScrollTrigger.batch('.reveal-scale', {
-        onEnter: (elements) => {
-            gsap.to(elements, {
-                opacity: 1,
-                scale: 1,
-                duration: 0.7,
-                ease: 'back.out(1.7)',
-                stagger: 0.08,
-                overwrite: true
-            });
-        },
-        start: 'top 88%',
-        once: true
-    });
-
-    // ============================================================
-    // STAGGER CHILDREN — Visi Misi cards & nilai
-    // *** FIX: Use a single ScrollTrigger per parent, not per child.
-    //     Reduced stagger for smoother, faster cascade.
-    //     Added will-change cleanup after animation completes.
-    // ============================================================
-    gsap.utils.toArray('.stagger-parent').forEach(parent => {
-        const children = parent.querySelectorAll('.stagger-child');
-        if (!children.length) return;
-
-        // Set initial state without relying on CSS (more predictable)
-        gsap.set(children, {
-            opacity: 0,
-            y: 40,
-            willChange: 'transform, opacity'
-        });
-
-        gsap.to(children, {
+        if (heroArabic) tl.to(heroArabic, {
             opacity: 1,
             y: 0,
-            duration: 0.65, // Shorter = feels snappier, less lag
-            stagger: {
-                each: 0.1, // 100ms between each card — smooth, not jarring
-                from: 'start',
-                ease: 'power2.out'
-            },
-            ease: 'power3.out',
-            scrollTrigger: {
-                trigger: parent,
-                start: 'top 82%',
-                once: true,
-                onComplete: () => {
-                    // Release will-change to free GPU memory after animation
-                    gsap.set(children, {
-                        willChange: 'auto'
-                    });
-                }
+            duration: 0.7,
+            ease: 'power2.out'
+        }, 0);
+        if (heroBadge) tl.to(heroBadge, {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'power2.out'
+        }, 0.15);
+        if (heroTitle) {
+            // SplitType word reveal
+            try {
+                const split = new SplitType(heroTitle, {
+                    types: 'words'
+                });
+                gsap.set(heroTitle, {
+                    opacity: 1
+                });
+                tl.from(split.words, {
+                    y: 30,
+                    opacity: 0,
+                    duration: 0.65,
+                    stagger: 0.06,
+                    ease: 'power3.out'
+                }, 0.25);
+            } catch (e) {
+                tl.to(heroTitle, {
+                    opacity: 1,
+                    duration: 0.7,
+                    ease: 'power2.out'
+                }, 0.25);
             }
-        });
+        }
+        if (heroDivider) tl.to(heroDivider, {
+            opacity: 1,
+            duration: 0.5,
+            ease: 'power2.out'
+        }, 0.5);
+        if (heroTagline) tl.to(heroTagline, {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'power2.out'
+        }, 0.55);
+        if (heroCta) tl.to(heroCta, {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'power3.out'
+        }, 0.7);
+        if (scrollInd) tl.to(scrollInd, {
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power2.out'
+        }, 1.1);
     });
 
     // ============================================================
-    // SPLIT TEXT REVEALS (section headers)
-    // *** FIX: Add reducedMotion check + limit character count to
-    //     avoid performance issues with many chars.
+    // SCROLL REVEAL (sections)
     // ============================================================
-    if (!prefersReducedMotion) {
-        try {
-            gsap.utils.toArray('[data-split-reveal]').forEach(el => {
-                const split = new SplitType(el, {
-                    types: 'chars, words'
+    const revealConfig = {
+        threshold: 0.12,
+        rootMargin: '0px 0px -40px 0px'
+    };
+
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                gsap.to(entry.target, {
+                    opacity: 1,
+                    y: 0,
+                    x: 0,
+                    scale: 1,
+                    duration: 0.75,
+                    ease: 'power3.out'
                 });
-                const chars = split.chars;
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, revealConfig);
 
-                // Skip if too many characters (performance threshold)
-                if (!chars || chars.length > 80) return;
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => {
+        revealObserver.observe(el);
+    });
 
-                gsap.set(el, {
-                    opacity: 1
-                }); // Make wrapper visible
-                gsap.from(chars, {
-                    opacity: 0,
-                    y: 35,
-                    rotateX: -25,
-                    stagger: 0.02,
-                    duration: 0.6,
+    // Stagger children
+    const staggerObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const children = entry.target.querySelectorAll('.stagger-child');
+                gsap.to(children, {
+                    opacity: 1,
+                    y: 0,
+                    x: 0,
+                    scale: 1,
+                    duration: 0.65,
                     ease: 'power3.out',
-                    scrollTrigger: {
-                        trigger: el,
-                        start: 'top 85%',
-                        once: true
+                    stagger: 0.1
+                });
+                // Set initial state
+                gsap.set(children, {});
+                staggerObserver.unobserve(entry.target);
+            }
+        });
+    }, revealConfig);
+
+    document.querySelectorAll('.stagger-parent').forEach(el => {
+        const children = el.querySelectorAll('.stagger-child');
+        gsap.set(children, {
+            opacity: 0,
+            y: 30
+        });
+        staggerObserver.observe(el);
+    });
+
+    // ============================================================
+    // COUNTER ANIMATION
+    // ============================================================
+    const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+            const target = parseInt(el.getAttribute('data-count'), 10) || 0;
+            const duration = 1800;
+            const start = performance.now();
+            const update = (now) => {
+                const elapsed = now - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                el.textContent = Math.round(eased * target).toLocaleString('id-ID');
+                if (progress < 1) requestAnimationFrame(update);
+                else el.textContent = target.toLocaleString('id-ID');
+            };
+            requestAnimationFrame(update);
+            counterObserver.unobserve(el);
+        });
+    }, {
+        threshold: 0.5
+    });
+
+    document.querySelectorAll('.counter-number[data-count]').forEach(el => {
+        counterObserver.observe(el);
+    });
+
+    // ============================================================
+    // SPLIT TEXT REVEAL (section headings)
+    // ============================================================
+    document.querySelectorAll('[data-split-reveal]').forEach(el => {
+        try {
+            const split = new SplitType(el, {
+                types: 'words'
+            });
+            gsap.set(split.words, {
+                opacity: 0,
+                y: 20
+            });
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        gsap.to(split.words, {
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.55,
+                            stagger: 0.07,
+                            ease: 'power3.out'
+                        });
+                        obs.unobserve(entry.target);
                     }
                 });
+            }, {
+                threshold: 0.2
             });
-        } catch (e) {
-            // SplitType unavailable — let the text show normally
-            gsap.utils.toArray('[data-split-reveal]').forEach(el => {
-                gsap.set(el, {
-                    opacity: 1
-                });
-            });
-        }
-    } else {
-        // Respect user's reduced motion preference
-        gsap.utils.toArray('[data-split-reveal]').forEach(el => {
-            gsap.set(el, {
-                opacity: 1
-            });
-        });
-        gsap.utils.toArray('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => {
-            gsap.set(el, {
-                opacity: 1,
-                y: 0,
-                x: 0,
-                scale: 1
-            });
-        });
-    }
-
-    // ============================================================
-    // COUNTER ANIMATION (Statistics)
-    // ============================================================
-    gsap.utils.toArray('.counter-number').forEach(counter => {
-        const target = counter.dataset.count;
-        const isNumber = !isNaN(parseFloat(target)) && isFinite(target);
-
-        if (isNumber) {
-            const obj = {
-                val: 0
-            };
-            gsap.to(obj, {
-                val: parseFloat(target),
-                duration: 2.5,
-                ease: 'power2.out',
-                scrollTrigger: {
-                    trigger: counter,
-                    start: 'top 85%',
-                    once: true
-                },
-                onUpdate: () => {
-                    counter.textContent = Math.floor(obj.val).toLocaleString('id-ID');
-                }
-            });
-        } else {
-            ScrollTrigger.create({
-                trigger: counter,
-                start: 'top 85%',
-                once: true,
-                onEnter: () => {
-                    counter.textContent = target;
-                }
-            });
-        }
+            obs.observe(el);
+        } catch (e) {}
     });
 
     // ============================================================
-    // HORIZONTAL GALLERY SCROLL
-    // ============================================================
-    const galleryWrapper = document.getElementById('gallery-scroll-wrapper');
-    const gallerySection = document.getElementById('gallery-scroll-section');
-
-    if (galleryWrapper && gallerySection && window.innerWidth > 768) {
-        const totalScrollWidth = galleryWrapper.scrollWidth - window.innerWidth + 200;
-
-        gsap.to(galleryWrapper, {
-            x: () => -totalScrollWidth,
-            ease: 'none',
-            scrollTrigger: {
-                trigger: gallerySection,
-                start: 'top 20%',
-                end: () => '+=' + totalScrollWidth,
-                pin: true,
-                scrub: 1.5,
-                invalidateOnRefresh: true,
-                anticipatePin: 1
-            }
-        });
-    }
-
-    // ============================================================
-    // TIMELINE GROWING LINE
+    // TIMELINE LINE ANIMATION
     // ============================================================
     const timelineLine = document.getElementById('timeline-line');
     if (timelineLine) {
-        gsap.to(timelineLine, {
-            scaleY: 1,
-            ease: 'none',
-            scrollTrigger: {
-                trigger: '#sejarah',
-                start: 'top 60%',
-                end: 'bottom 40%',
-                scrub: 1.5
+        ScrollTrigger.create({
+            trigger: '#sejarah',
+            start: 'top 70%',
+            end: 'bottom 30%',
+            onUpdate: (self) => {
+                gsap.set(timelineLine, {
+                    scaleY: self.progress
+                });
             }
         });
     }
 
     // ============================================================
-    // FLOATING PARTICLES (Visi Misi section)
-    // *** FIX: Reduce particle count on mobile, use CSS animation
-    //     instead of GSAP for static floaters to reduce JS overhead.
+    // BACK TO TOP
+    // ============================================================
+    const backToTop = document.getElementById('back-to-top');
+    if (backToTop) {
+        lenis.on('scroll', ({
+            scroll
+        }) => {
+            if (scroll > 500) {
+                backToTop.classList.remove('opacity-0', 'invisible');
+                backToTop.classList.add('opacity-100', 'visible');
+            } else {
+                backToTop.classList.add('opacity-0', 'invisible');
+                backToTop.classList.remove('opacity-100', 'visible');
+            }
+        });
+        backToTop.addEventListener('click', () => {
+            lenis.scrollTo(0, {
+                duration: 1.4,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+            });
+        });
+    }
+
+    // ============================================================
+    // GALLERY HORIZONTAL SCROLL (GSAP-driven)
+    // ============================================================
+    const galleryWrapper = document.getElementById('gallery-scroll-wrapper');
+    if (galleryWrapper) {
+        const gallerySection = document.getElementById('gallery-scroll-section');
+        const maxScroll = galleryWrapper.scrollWidth - galleryWrapper.parentElement.offsetWidth;
+
+        if (maxScroll > 0 && !perfMode) {
+            gsap.to(galleryWrapper, {
+                x: -maxScroll,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: gallerySection,
+                    start: 'top top',
+                    end: `+=${maxScroll * 1.2}`,
+                    pin: true,
+                    scrub: 1.5,
+                    anticipatePin: 1,
+                }
+            });
+        } else {
+            // Fallback: native horizontal scroll
+            galleryWrapper.style.overflowX = 'auto';
+            galleryWrapper.style.paddingBottom = '12px';
+        }
+    }
+
+    // ============================================================
+    // VISI-MISI PARTICLES
     // ============================================================
     const particleContainer = document.getElementById('visi-particles');
-    if (particleContainer) {
-        if (!document.getElementById('vm-particle-style')) {
-            const style = document.createElement('style');
-            style.id = 'vm-particle-style';
-            style.textContent = `
-                @keyframes vmParticleFloat {
-                    0% { transform: translate3d(0, 0, 0); opacity: .18; }
-                    50% { transform: translate3d(var(--vm-x), var(--vm-y), 0); opacity: .48; }
-                    100% { transform: translate3d(0, 0, 0); opacity: .18; }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-
-        const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const disableParticlesOnHome = hasVisiMisiSection && !isVisiMisiPage;
-        if (prefersReduce || lowPowerDevice || disableParticlesOnHome) {
-            particleContainer.innerHTML = '';
-        } else {
-            const isMobile = window.innerWidth < 768;
-            const particleCount = isMobile ? 3 : 5;
-
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                const size = Math.random() * 3 + 1;
-                const isGold = Math.random() > 0.5;
-                const delay = (Math.random() * 2.4).toFixed(2);
-                const dur = (Math.random() * 3.2 + 4.8).toFixed(2);
-                const driftX = (Math.random() * 24 - 12).toFixed(1) + 'px';
-                const driftY = (Math.random() * 42 - 21).toFixed(1) + 'px';
-
-                particle.style.cssText = `
+    if (particleContainer && !perfMode) {
+        const particleCount = 10;
+        for (let i = 0; i < particleCount; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 3 + 1.5;
+            p.style.cssText = `
                 width: ${size}px;
                 height: ${size}px;
                 left: ${Math.random() * 100}%;
                 top: ${Math.random() * 100}%;
-                background: ${isGold ? 'rgba(234, 179, 8, 0.35)' : 'rgba(74, 222, 128, 0.25)'};
-                opacity: ${(Math.random() * 0.4 + 0.15).toFixed(2)};
-                position: absolute;
-                border-radius: 50%;
-                pointer-events: none;
-                --vm-x: ${driftX};
-                --vm-y: ${driftY};
-                animation: vmParticleFloat ${dur}s ease-in-out ${delay}s infinite;
+                background: rgba(250, 204, 21, ${Math.random() * 0.25 + 0.05});
             `;
-                particleContainer.appendChild(particle);
-            }
+            particleContainer.appendChild(p);
+            gsap.to(p, {
+                y: -(Math.random() * 80 + 30),
+                x: (Math.random() - 0.5) * 40,
+                opacity: 0,
+                duration: Math.random() * 6 + 5,
+                repeat: -1,
+                ease: 'power1.inOut',
+                delay: Math.random() * 6,
+                yoyo: false
+            });
         }
     }
 
     // ============================================================
-    // VISI-MISI BACKGROUND VIDEO VISIBILITY CONTROL
-    // Pause video when section is outside viewport to reduce stutter.
+    // 3D CARD TILT EFFECT
     // ============================================================
-    const visiVideo = document.getElementById('visi-video-bg');
-    if (visiVideo && 'IntersectionObserver' in window) {
-        const homeWithVm = hasVisiMisiSection && !isVisiMisiPage;
-        let playTimer = null;
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    if (playTimer) clearTimeout(playTimer);
-                    if (homeWithVm) {
-                        // Delay kecil agar transisi scroll ke section tidak drop frame
-                        playTimer = setTimeout(() => {
-                            const p = visiVideo.play();
-                            if (p && typeof p.catch === 'function') p.catch(() => {});
-                        }, 140);
-                    } else {
-                        const p = visiVideo.play();
-                        if (p && typeof p.catch === 'function') p.catch(() => {});
-                    }
-                } else {
-                    if (playTimer) clearTimeout(playTimer);
-                    visiVideo.pause();
-                }
-            });
-        }, {
-            threshold: homeWithVm ? 0.42 : 0.12
-        });
-
-        observer.observe(visiVideo);
-    }
-
-    // ============================================================
-    // MAGNETIC BUTTON EFFECT (Desktop only)
-    // ============================================================
-    if (window.innerWidth > 1024 && !perfMode) {
-        document.querySelectorAll('.magnetic-btn').forEach(btn => {
-            btn.addEventListener('mousemove', (e) => {
-                const rect = btn.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-                btn.style.transform = `translate(${x * 0.12}px, ${y * 0.12}px)`;
-            }, {
-                passive: true
-            });
-
-            btn.addEventListener('mouseleave', () => {
-                gsap.to(btn, {
-                    x: 0,
-                    y: 0,
-                    duration: 0.4,
-                    ease: 'elastic.out(1, 0.5)'
-                });
-                btn.style.transform = '';
-            });
-        });
-    }
-
-    // ============================================================
-    // 3D CARD TILT ON HOVER (Desktop only)
-    // ============================================================
-    if (window.innerWidth > 1024 && !perfMode) {
+    if (!('ontouchstart' in window)) {
         document.querySelectorAll('.card-3d').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
@@ -812,7 +611,6 @@ if ($popup_data && !empty($popup_data->gambar)):
     // ============================================================
     const normalizePath = (path) => (path || '').replace(/\/+$/, '') || '/';
 
-    // Beranda click: if still on current page, smooth scroll to top (no reload)
     document.querySelectorAll('a[data-scroll-top="1"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             const rawHref = this.getAttribute('href');
@@ -890,7 +688,7 @@ if ($popup_data && !empty($popup_data->gambar)):
     });
 
     // ============================================================
-    // FRONTEND POPUP IMAGE
+    // POPUP
     // ============================================================
     (function() {
         const overlay = document.getElementById('site-popup-overlay');
@@ -900,9 +698,26 @@ if ($popup_data && !empty($popup_data->gambar)):
         const popupStateKey = '<?= isset($popup_state_key) ? $popup_state_key : '' ?>';
 
         const closePopup = () => {
-            overlay.classList.add('hidden');
-            overlay.classList.remove('flex');
-            document.body.classList.remove('popup-open');
+            gsap.to(overlay.querySelector('#site-popup-inner'), {
+                scale: 0.94,
+                opacity: 0,
+                duration: 0.25,
+                ease: 'power2.in',
+                onComplete: () => {
+                    overlay.classList.add('hidden');
+                    overlay.classList.remove('flex');
+                    document.body.classList.remove('popup-open');
+                    gsap.set(overlay.querySelector('#site-popup-inner'), {
+                        scale: 1,
+                        opacity: 1
+                    });
+                }
+            });
+            gsap.to(overlay, {
+                opacity: 0,
+                duration: 0.3,
+                ease: 'power2.in'
+            });
         };
 
         const openPopup = () => {
@@ -912,6 +727,28 @@ if ($popup_data && !empty($popup_data->gambar)):
             overlay.classList.add('flex');
             document.body.classList.add('popup-open');
             feather.replace();
+
+            // Entrance animation
+            const inner = overlay.querySelector('#site-popup-inner');
+            gsap.fromTo(overlay, {
+                opacity: 0
+            }, {
+                opacity: 1,
+                duration: 0.35,
+                ease: 'power2.out'
+            });
+            gsap.fromTo(inner, {
+                scale: 0.90,
+                opacity: 0,
+                y: 20
+            }, {
+                scale: 1,
+                opacity: 1,
+                y: 0,
+                duration: 0.45,
+                ease: 'power3.out',
+                delay: 0.05
+            });
         };
 
         closeBtn?.addEventListener('click', closePopup);
@@ -925,7 +762,7 @@ if ($popup_data && !empty($popup_data->gambar)):
         });
 
         window.addEventListener('load', () => {
-            setTimeout(openPopup, 450);
+            setTimeout(openPopup, 600);
         }, {
             once: true
         });

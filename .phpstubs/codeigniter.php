@@ -9,6 +9,43 @@
  * Tambahkan path file ini ke pengaturan "intelephense.stubs" di .vscode/settings.json.
  */
 
+if (! function_exists('base_url')) {
+    /**
+     * Generate a fully qualified base URL.
+     *
+     * @param string $uri
+     * @param string|null $protocol
+     * @return string
+     */
+    function base_url($uri = '', $protocol = null)
+    {
+    }
+}
+
+if (! function_exists('site_url')) {
+    /**
+     * Generate a site URL.
+     *
+     * @param string|array $uri
+     * @param string|null $protocol
+     * @return string
+     */
+    function site_url($uri = '', $protocol = null)
+    {
+    }
+}
+
+if (! function_exists('current_url')) {
+    /**
+     * Return the current page URL.
+     *
+     * @return string
+     */
+    function current_url()
+    {
+    }
+}
+
 if (false) {
     /**
      * CodeIgniter base controller with all common magic-injected properties.

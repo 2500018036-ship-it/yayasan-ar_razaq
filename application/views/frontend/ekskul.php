@@ -15,12 +15,6 @@
         <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">Ekstrakurikuler</h1>
         <p class="text-hijau-200/70 text-lg max-w-xl mx-auto">Mengembangkan bakat dan potensi santri melalui berbagai kegiatan unggulan</p>
     </div>
-
-    <div class="wave-divider wave-bottom">
-        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,60 C360,120 720,0 1080,60 C1260,90 1380,80 1440,60 L1440,120 L0,120 Z" fill="white"/>
-        </svg>
-    </div>
 </section>
 
 <!-- ============================================================ -->
@@ -50,12 +44,6 @@
                             <?php endif; ?>
 
                             <div class="p-7">
-                                <div class="flex items-start justify-between mb-4">
-                                    <div class="w-12 h-12 bg-hijau-50 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-hijau-100 transition-colors duration-300">
-                                        <i data-feather="<?= $item->ikon ?: 'star' ?>" class="w-6 h-6 text-hijau-700"></i>
-                                    </div>
-                                    <span class="text-xs font-semibold text-hijau-600 bg-hijau-50 px-3 py-1.5 rounded-full">Aktif</span>
-                                </div>
                                 <h3 class="font-display text-xl font-bold text-hijau-900 mb-3"><?= $item->nama ?></h3>
                                 <p class="text-gray-500 text-sm leading-relaxed mb-5"><?= $item->deskripsi ?></p>
 

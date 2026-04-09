@@ -54,8 +54,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Scheherazade+New:wght@400;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Scheherazade+New:wght@400;700&display=swap"
         rel="stylesheet">
 
     <!-- Feather Icons -->
@@ -124,6 +123,21 @@
         }
 
         /* ============================================================
+           TOPBAR
+           ============================================================ */
+        #topbar {
+            background: #052e16;
+            transition: transform 0.4s ease, opacity 0.4s ease, max-height 0.4s ease;
+            max-height: 44px;
+            overflow: hidden;
+        }
+
+        #topbar.hidden-topbar {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        /* ============================================================
            NAVBAR STATES (Top vs Scrolled/Floating)
            ============================================================ */
         #navbar {
@@ -188,8 +202,8 @@
             margin: 0;
             border-radius: 20px;
             border-color: rgba(255, 255, 255, 0.24);
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(245, 255, 250, 0.93) 100%);
-            box-shadow: 0 16px 36px rgba(5, 46, 22, 0.18);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(245, 255, 250, 0.95) 100%);
+            box-shadow: 0 16px 36px rgba(5, 46, 22, 0.18), 0 2px 8px rgba(5, 46, 22, 0.06);
             transform: translateY(0) scale(0.998);
         }
 
@@ -469,8 +483,15 @@
         }
 
         @keyframes pulse-glow {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.88; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.88;
+            }
         }
 
         @keyframes shimmer {
@@ -570,7 +591,6 @@
 
         .wave-divider svg {
             display: block;
-            /* Bigger overscan to prevent edge clipping on any zoom/device */
             width: calc(100% + 24px);
             margin-left: -12px;
             height: auto;
@@ -688,13 +708,98 @@
             pointer-events: none;
             will-change: transform, opacity;
         }
+
+        /* ============================================================
+           TOPBAR SOCIAL ICONS
+           ============================================================ */
+        .topbar-social {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.6);
+            transition: background 0.25s ease, color 0.25s ease;
+        }
+
+        .topbar-social:hover {
+            background: rgba(250, 204, 21, 0.2);
+            color: #facc15;
+        }
     </style>
 </head>
 
 <body class="bg-white text-gray-800 overflow-x-hidden">
 
     <!-- ============================================================ -->
-    <!-- NAVBAR -->
+    <!-- TOPBAR                                                        -->
+    <!-- ============================================================ -->
+    <div id="topbar" class="w-full text-white text-xs z-[60] relative border-b border-white/[0.07]">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="flex items-center justify-between h-11 gap-4">
+                <!-- Left: Phone & Email -->
+                <div class="flex items-center gap-5 overflow-hidden">
+                    <?php if (isset($profil) && $profil && $profil->telepon): ?>
+                        <a href="tel:<?= $profil->telepon ?>"
+                            class="flex items-center gap-1.5 text-white/60 hover:text-kuning-400 transition-colors duration-300 whitespace-nowrap">
+                            <i data-feather="phone" class="w-3 h-3 flex-shrink-0"></i>
+                            <span><?= $profil->telepon ?></span>
+                        </a>
+                    <?php endif; ?>
+                    <?php if (isset($profil) && $profil && $profil->email): ?>
+                        <a href="mailto:<?= $profil->email ?>"
+                            class="hidden sm:flex items-center gap-1.5 text-white/60 hover:text-kuning-400 transition-colors duration-300 whitespace-nowrap">
+                            <i data-feather="mail" class="w-3 h-3 flex-shrink-0"></i>
+                            <span><?= $profil->email ?></span>
+                        </a>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Right: Arabic + Social Media -->
+                <div class="flex items-center gap-3">
+                    <!-- Subtle Arabic greeting -->
+                    <span class="hidden md:inline-block font-arabic text-white/30 text-base leading-none">بسم الله</span>
+                    <div class="w-px h-4 bg-white/10 hidden md:block"></div>
+
+                    <!-- Social Media Icons -->
+                    <div class="flex items-center gap-1.5">
+                        <?php if (isset($profil) && $profil && $profil->facebook): ?>
+                            <a href="<?= $profil->facebook ?>" target="_blank" rel="noopener" class="topbar-social" aria-label="Facebook">
+                                <i data-feather="facebook" class="w-3 h-3"></i>
+                            </a>
+                        <?php endif; ?>
+                        <?php if (isset($profil) && $profil && $profil->instagram): ?>
+                            <a href="<?= $profil->instagram ?>" target="_blank" rel="noopener" class="topbar-social" aria-label="Instagram">
+                                <i data-feather="instagram" class="w-3 h-3"></i>
+                            </a>
+                        <?php endif; ?>
+                        <?php if (isset($profil) && $profil && $profil->youtube): ?>
+                            <a href="<?= $profil->youtube ?>" target="_blank" rel="noopener" class="topbar-social" aria-label="YouTube">
+                                <i data-feather="youtube" class="w-3 h-3"></i>
+                            </a>
+                        <?php endif; ?>
+                        <?php if (isset($profil) && $profil && $profil->whatsapp): ?>
+                            <a href="https://wa.me/<?= $profil->whatsapp ?>" target="_blank" rel="noopener" class="topbar-social" aria-label="WhatsApp">
+                                <i data-feather="message-circle" class="w-3 h-3"></i>
+                            </a>
+                        <?php endif; ?>
+                        <?php if (isset($profil) && $profil && !empty($profil->tiktok)): ?>
+                            <a href="<?= htmlspecialchars($profil->tiktok, ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer" class="topbar-social" aria-label="TikTok">
+                                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.96a8.22 8.22 0 0 0 4.81 1.54V7.07a4.85 4.85 0 0 1-1.04-.38z" />
+                                </svg>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- NAVBAR                                                        -->
     <!-- ============================================================ -->
     <nav id="navbar" class="fixed top-0 left-0 right-0 z-50">
         <div id="navbar-wrap" class="container mx-auto px-4 lg:px-8">
@@ -706,8 +811,7 @@
                             <img src="<?= base_url('assets/images/uploads/profil/' . $profil->logo) ?>" alt="Logo"
                                 class="h-10 w-10 object-contain">
                         <?php else: ?>
-                            <div
-                                class="w-10 h-10 bg-hijau-800 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-hijau-800/30 transition-shadow">
+                            <div class="w-10 h-10 bg-hijau-800 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-hijau-800/30 transition-shadow">
                                 <span class="text-white font-arabic text-lg font-bold">ر</span>
                             </div>
                         <?php endif; ?>
@@ -740,13 +844,12 @@
                         foreach ($nav_items as $item):
                             if (!empty($item['children'])):
                                 $first_child_url = $item['children'][0]['url'];
-                            ?>
+                        ?>
                                 <div class="nav-dropdown group">
                                     <a href="<?= $first_child_url ?>" class="nav-link-front nav-dropdown-toggle px-4 py-2 rounded-xl text-sm font-semibold relative group">
                                         <?= $item['label'] ?>
                                         <i data-feather="chevron-down" class="nav-dropdown-caret w-4 h-4"></i>
-                                        <span
-                                            class="nav-indicator absolute bottom-1 left-4 right-4 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left rounded-full"></span>
+                                        <span class="nav-indicator absolute bottom-1 left-4 right-4 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left rounded-full"></span>
                                     </a>
                                     <div class="nav-dropdown-menu">
                                         <?php foreach ($item['children'] as $child): ?>
@@ -764,8 +867,7 @@
                                     <?= $scroll_top_attr ?>
                                     class="nav-link-front px-4 py-2 rounded-xl text-sm font-semibold relative group">
                                     <?= $item['label'] ?>
-                                    <span
-                                        class="nav-indicator absolute bottom-1 left-4 right-4 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left rounded-full"></span>
+                                    <span class="nav-indicator absolute bottom-1 left-4 right-4 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left rounded-full"></span>
                                 </a>
                             <?php endif; ?>
                         <?php endforeach; ?>
@@ -783,8 +885,7 @@
                 </div>
 
                 <!-- Mobile Menu -->
-                <div id="mobile-menu"
-                    class="lg:hidden bg-white/95 backdrop-blur-xl border-t border-hijau-100/50 rounded-b-2xl">
+                <div id="mobile-menu" class="lg:hidden bg-white/95 backdrop-blur-xl border-t border-hijau-100/50 rounded-b-2xl">
                     <div class="py-4 space-y-1">
                         <?php foreach ($nav_items as $item): ?>
                             <?php if (!empty($item['children'])): ?>

@@ -392,7 +392,9 @@ class Admin extends CI_Controller
                         $files_to_delete[] = 'profil/' . $existing->$slide_field;
                     }
                 } else {
-                    foreach ($uploaded_files as $path) { $this->_delete_file($path); }
+                    foreach ($uploaded_files as $path) {
+                        $this->_delete_file($path);
+                    }
                     $this->_json('error', $up['message']);
                 }
             }
@@ -510,13 +512,14 @@ class Admin extends CI_Controller
 
         $slug = $this->_make_unique_struktur_anggota_slug($nama);
 
+        $status_input = $this->input->post('status', TRUE);
         $data = [
             'nama' => $nama,
             'jabatan' => $jabatan,
             'slug' => $slug,
             'deskripsi_lengkap' => $this->input->post('deskripsi_lengkap'),
             'urutan' => $this->input->post('urutan', TRUE) ?: 1,
-            'status' => $this->input->post('status', TRUE) ?: 1,
+            'status' => ($status_input === null || $status_input === '') ? 1 : (int) $status_input,
         ];
 
         if (!empty($_FILES['foto']['name'])) {
@@ -549,13 +552,14 @@ class Admin extends CI_Controller
 
         $slug = $this->_make_unique_struktur_anggota_slug($nama, $id);
 
+        $status_input = $this->input->post('status', TRUE);
         $data = [
             'nama' => $nama,
             'jabatan' => $jabatan,
             'slug' => $slug,
             'deskripsi_lengkap' => $this->input->post('deskripsi_lengkap'),
             'urutan' => $this->input->post('urutan', TRUE) ?: 1,
-            'status' => $this->input->post('status', TRUE) ?: 1,
+            'status' => ($status_input === null || $status_input === '') ? 1 : (int) $status_input,
         ];
 
         if (!empty($_FILES['foto']['name'])) {
@@ -614,11 +618,14 @@ class Admin extends CI_Controller
     public function sejarah_store()
     {
         $this->_check_auth();
+        $tahun = trim((string) $this->input->post('tahun', TRUE));
+        $status_input = $this->input->post('status', TRUE);
         $data = [
             'judul'  => $this->input->post('judul', TRUE),
+            'tahun'  => $tahun !== '' ? $tahun : null,
             'konten' => $this->input->post('konten', TRUE),
             'urutan' => $this->input->post('urutan', TRUE) ?: 1,
-            'status' => $this->input->post('status', TRUE) ?: 1,
+            'status' => ($status_input === null || $status_input === '') ? 1 : (int) $status_input,
         ];
 
         if (!empty($_FILES['gambar']['name'])) {
@@ -634,11 +641,14 @@ class Admin extends CI_Controller
     {
         $this->_check_auth();
         $item = $this->model->get_by_id('sejarah', $id);
+        $tahun = trim((string) $this->input->post('tahun', TRUE));
+        $status_input = $this->input->post('status', TRUE);
         $data = [
             'judul'  => $this->input->post('judul', TRUE),
+            'tahun'  => $tahun !== '' ? $tahun : null,
             'konten' => $this->input->post('konten', TRUE),
             'urutan' => $this->input->post('urutan', TRUE) ?: 1,
-            'status' => $this->input->post('status', TRUE) ?: 1,
+            'status' => ($status_input === null || $status_input === '') ? 1 : (int) $status_input,
         ];
 
         if (!empty($_FILES['gambar']['name'])) {
@@ -756,13 +766,14 @@ class Admin extends CI_Controller
     public function visi_misi_store()
     {
         $this->_check_auth();
+        $status_input = $this->input->post('status', TRUE);
         $data = [
             'tipe'   => $this->input->post('tipe', TRUE),
             'judul'  => $this->input->post('judul', TRUE),
             'konten' => $this->input->post('konten', TRUE),
             'ikon'   => $this->input->post('ikon', TRUE),
             'urutan' => $this->input->post('urutan', TRUE) ?: 1,
-            'status' => $this->input->post('status', TRUE) ?: 1,
+            'status' => ($status_input === null || $status_input === '') ? 1 : (int) $status_input,
         ];
         $this->model->insert('visi_misi', $data);
         $this->_json('success', 'Data visi/misi berhasil ditambahkan!');
@@ -771,13 +782,14 @@ class Admin extends CI_Controller
     public function visi_misi_update($id)
     {
         $this->_check_auth();
+        $status_input = $this->input->post('status', TRUE);
         $data = [
             'tipe'   => $this->input->post('tipe', TRUE),
             'judul'  => $this->input->post('judul', TRUE),
             'konten' => $this->input->post('konten', TRUE),
             'ikon'   => $this->input->post('ikon', TRUE),
             'urutan' => $this->input->post('urutan', TRUE) ?: 1,
-            'status' => $this->input->post('status', TRUE) ?: 1,
+            'status' => ($status_input === null || $status_input === '') ? 1 : (int) $status_input,
         ];
         $this->model->update('visi_misi', $data, $id);
         $this->_json('success', 'Data visi/misi berhasil diperbarui!');
@@ -898,6 +910,7 @@ class Admin extends CI_Controller
         $this->_check_auth();
         $nama = trim((string) $this->input->post('nama', TRUE));
         $slug = $this->_make_unique_ekskul_slug($nama);
+        $status_input = $this->input->post('status', TRUE);
         $data = [
             'nama'           => $nama,
             'slug'           => $slug,
@@ -907,7 +920,7 @@ class Admin extends CI_Controller
             'jadwal'         => $this->input->post('jadwal', TRUE),
             'pembina'        => $this->input->post('pembina', TRUE),
             'urutan'         => $this->input->post('urutan', TRUE) ?: 1,
-            'status'         => $this->input->post('status', TRUE) ?: 1,
+            'status'         => ($status_input === null || $status_input === '') ? 1 : (int) $status_input,
         ];
 
         if (!empty($_FILES['gambar']['name'])) {
@@ -925,6 +938,7 @@ class Admin extends CI_Controller
         $item = $this->model->get_by_id('ekskul', $id);
         $nama = trim((string) $this->input->post('nama', TRUE));
         $slug = $this->_make_unique_ekskul_slug($nama, (int) $id);
+        $status_input = $this->input->post('status', TRUE);
         $data = [
             'nama'           => $nama,
             'slug'           => $slug,
@@ -934,7 +948,7 @@ class Admin extends CI_Controller
             'jadwal'         => $this->input->post('jadwal', TRUE),
             'pembina'        => $this->input->post('pembina', TRUE),
             'urutan'         => $this->input->post('urutan', TRUE) ?: 1,
-            'status'         => $this->input->post('status', TRUE) ?: 1,
+            'status'         => ($status_input === null || $status_input === '') ? 1 : (int) $status_input,
         ];
 
         if (!empty($_FILES['gambar']['name'])) {
@@ -951,11 +965,20 @@ class Admin extends CI_Controller
         $this->_json('success', 'Ekskul berhasil diperbarui!');
     }
 
-    public function ekskul_delete($id)
+    public function ekskul_delete($id = null)
     {
         $this->_check_auth();
+        $id = $id ? (int) $id : (int) $this->input->post('id', TRUE);
+        if ($id <= 0) {
+            $this->_json('error', 'ID ekskul tidak valid.');
+        }
+
         $item = $this->model->get_by_id('ekskul', $id);
-        if ($item && $item->gambar) $this->_delete_file('ekskul/' . $item->gambar);
+        if (!$item) {
+            $this->_json('error', 'Data ekskul tidak ditemukan.');
+        }
+
+        if (!empty($item->gambar)) $this->_delete_file('ekskul/' . $item->gambar);
         $this->model->delete('ekskul', $id);
         $this->_json('success', 'Ekskul berhasil dihapus!');
     }
@@ -992,6 +1015,7 @@ class Admin extends CI_Controller
             $slug = $base_slug . '-' . $counter++;
         }
 
+        $status_input = $this->input->post('status', TRUE);
         $data = [
             'judul'           => $judul,
             'slug'            => $slug,
@@ -1000,7 +1024,7 @@ class Admin extends CI_Controller
             'kategori'        => $this->input->post('kategori', TRUE) ?: 'berita',
             'penulis'         => $this->input->post('penulis', TRUE),
             'tanggal_publish' => $this->input->post('tanggal_publish', TRUE) ?: date('Y-m-d'),
-            'status'          => $this->input->post('status', TRUE) ?: 1,
+            'status'          => ($status_input === null || $status_input === '') ? 1 : (int) $status_input,
         ];
 
         if (!empty($_FILES['gambar']['name'])) {
@@ -1025,6 +1049,7 @@ class Admin extends CI_Controller
             $slug = $base_slug . '-' . $counter++;
         }
 
+        $status_input = $this->input->post('status', TRUE);
         $data = [
             'judul'           => $judul,
             'slug'            => $slug,
@@ -1033,7 +1058,7 @@ class Admin extends CI_Controller
             'kategori'        => $this->input->post('kategori', TRUE) ?: 'berita',
             'penulis'         => $this->input->post('penulis', TRUE),
             'tanggal_publish' => $this->input->post('tanggal_publish', TRUE) ?: date('Y-m-d'),
-            'status'          => $this->input->post('status', TRUE) ?: 1,
+            'status'          => ($status_input === null || $status_input === '') ? 1 : (int) $status_input,
         ];
 
         if (!empty($_FILES['gambar']['name'])) {
@@ -1623,11 +1648,11 @@ class Admin extends CI_Controller
 
         if ($this->upload->do_upload($field_name)) {
             $upload_data = $this->upload->data();
-            
+
             // Auto-convert process
             $final_path      = $this->_auto_convert_to_webp($upload_data['full_path']);
             $final_file_name = basename((string)$final_path);
-            
+
             return ['status' => TRUE, 'file_name' => $final_file_name];
         }
 
@@ -1639,7 +1664,7 @@ class Admin extends CI_Controller
         $ext = strtolower(pathinfo((string)$file_path, PATHINFO_EXTENSION));
         // Skip formats that don't need or natively support webp conversion cleanly via simple GD.
         if (in_array($ext, ['webp', 'svg', 'gif', 'mp4', 'webm', 'ogg'])) {
-            return $file_path; 
+            return $file_path;
         }
 
         $image = null;
