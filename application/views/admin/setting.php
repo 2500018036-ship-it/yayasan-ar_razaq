@@ -1,12 +1,15 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <?php
-$can_role_create = in_array('setting.role.create', $permission_codes ?? [], true);
-$can_role_edit = in_array('setting.role.edit', $permission_codes ?? [], true);
-$can_role_delete = in_array('setting.role.delete', $permission_codes ?? [], true);
-$can_user_create = in_array('setting.user.create', $permission_codes ?? [], true);
-$can_user_edit = in_array('setting.user.edit', $permission_codes ?? [], true);
-$can_user_delete = in_array('setting.user.delete', $permission_codes ?? [], true);
-$current_admin_id = (int) $this->session->userdata('admin_id');
+$_perm_codes = isset($permission_codes) && is_array($permission_codes) ? $permission_codes : [];
+$can_role_create = in_array('setting.role.create', $_perm_codes, true);
+$can_role_edit   = in_array('setting.role.edit',   $_perm_codes, true);
+$can_role_delete = in_array('setting.role.delete', $_perm_codes, true);
+$can_user_create = in_array('setting.user.create', $_perm_codes, true);
+$can_user_edit   = in_array('setting.user.edit',   $_perm_codes, true);
+$can_user_delete = in_array('setting.user.delete', $_perm_codes, true);
+/** @var CI_Controller $CI */
+$CI =& get_instance();
+$current_admin_id = (int) $CI->session->userdata('admin_id');
 
 $permission_groups = [];
 if (!empty($permissions)) {

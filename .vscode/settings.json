@@ -1,0 +1,27 @@
+{
+    "intelephense.diagnostics.enable": true,
+    "intelephense.diagnostics.undefinedVariables": true,
+    "intelephense.diagnostics.undefinedTypes": false,
+    "intelephense.diagnostics.undefinedProperties": false,
+    "intelephense.diagnostics.undefinedMethods": false,
+    "php.validate.executablePath": null,
+    "intelephense.files.exclude": [
+        "**/vendor/**",
+        "**/node_modules/**",
+        "**/.git/**",
+        "**/system/**",
+        "**/tests/**"
+    ],
+    "php.problems.files.exclude": [
+        "**/system/**",
+        "**/tests/**"
+    ],
+    "intelephense.environment.phpVersion": "7.4.0",
+    "intelephense.environment.includePaths": [
+        ".phpstubs"
+    ],
+    "[php]": {
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true
+    }
+}

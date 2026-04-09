@@ -420,18 +420,15 @@
            CARD EFFECTS
            ============================================================ */
         .card-hover {
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-                box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .card-hover:hover {
-            transform: translateY(-10px) scale(1.01);
-            box-shadow: 0 30px 60px rgba(5, 46, 22, 0.12);
+            transform: translateY(-6px);
         }
 
         .card-hover-soft:hover {
-            transform: translateY(-6px) scale(1.005);
-            box-shadow: 0 16px 32px rgba(5, 46, 22, 0.1);
+            transform: translateY(-4px);
         }
 
         .card-3d {
@@ -472,15 +469,8 @@
         }
 
         @keyframes pulse-glow {
-
-            0%,
-            100% {
-                box-shadow: 0 0 20px rgba(234, 179, 8, 0.3);
-            }
-
-            50% {
-                box-shadow: 0 0 40px rgba(234, 179, 8, 0.6);
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.88; }
         }
 
         @keyframes shimmer {

@@ -37,7 +37,7 @@ $about_media_ext = strtolower(pathinfo($about_media_file, PATHINFO_EXTENSION));
 $about_media_is_video = in_array($about_media_ext, ['mp4', 'webm', 'ogg'], true);
 $about_media_url = $about_media_file !== ''
     ? base_url('assets/images/uploads/profil/' . $about_media_file)
-    : base_url('assets/images/placeholder.jpg');
+    : base_url('assets/images/placeholder.webp');
 
 $history_items = !empty($sejarah) && is_array($sejarah) ? $sejarah : [];
 ?>

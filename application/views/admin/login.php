@@ -569,8 +569,9 @@
         // Check flashdata error on page load (CI sets it on failed login)
         // If the URL has ?err=1, it means we were redirected back after failed login
         window.addEventListener('DOMContentLoaded', () => {
-            <?php if ($this->session->flashdata('error')): ?>
-                showAlert('<?= $this->session->flashdata('error') ?>', false);
+            <?php /** @var Admin $CI_login */ $CI_login = get_instance(); ?>
+            <?php if ($CI_login->session->flashdata('error')): ?>
+                showAlert('<?= $CI_login->session->flashdata('error') ?>', false);
             <?php endif; ?>
         });
     </script>

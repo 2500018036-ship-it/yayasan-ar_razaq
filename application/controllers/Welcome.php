@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+/**
+ * @property CI_Loader $load
+ */
 class Welcome extends CI_Controller {
 
 	/**

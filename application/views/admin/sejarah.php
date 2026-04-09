@@ -22,7 +22,7 @@ $can_delete = in_array('sejarah.delete', $permission_codes, true);
                 <div class="flex items-start justify-between gap-4">
                     <div class="flex items-start gap-4 flex-1 min-w-0">
                         <div class="w-12 h-12 bg-hijau-900 text-kuning-400 rounded-xl flex items-center justify-center flex-shrink-0 font-display font-bold text-sm">
-                            <?= $s->tahun ?? '#' ?>
+                            <?= isset($s->tahun) && $s->tahun !== null ? $s->tahun : '#' ?>
                         </div>
                         <div class="flex-1 min-w-0">
                             <h3 class="font-semibold text-gray-900 mb-1"><?= $s->judul ?></h3>

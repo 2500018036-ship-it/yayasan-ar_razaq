@@ -1,6 +1,10 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 
-<?php $item = $ekskul_item; ?>
+<?php
+/** @var object|null $ekskul_item Data ekskul dari controller */
+$item = isset($ekskul_item) ? $ekskul_item : null;
+if (!$item) return;
+?>
 
 <section class="relative pt-32 pb-16 md:pt-40 md:pb-24 bg-hijau-950 overflow-hidden grain">
     <div class="absolute inset-0 pattern-bg opacity-20"></div>

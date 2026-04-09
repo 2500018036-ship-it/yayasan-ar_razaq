@@ -1,5 +1,6 @@
 <?php
-$p = $profil;
+/** @var object|null $profil Data profil yayasan dari controller */
+$p = isset($profil) ? $profil : null;
 $permission_codes = isset($permission_codes) && is_array($permission_codes) ? $permission_codes : [];
 $can_edit = in_array('profil.edit', $permission_codes, true);
 
@@ -122,6 +123,11 @@ $about_media_is_video = in_array($about_media_ext, ['mp4', 'webm', 'ogg'], true)
                     <input type="text" id="f-whatsapp" value="<?= $p ? html_escape($p->whatsapp) : '' ?>" placeholder="6281234567890"
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
                 </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">TikTok URL</label>
+                    <input type="url" id="f-tiktok" value="<?= $p && !empty($p->tiktok) ? html_escape($p->tiktok) : '' ?>" placeholder="https://tiktok.com/@..."
+                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
+                </div>
             </div>
 
             <hr class="border-gray-100">
@@ -192,6 +198,16 @@ $about_media_is_video = in_array($about_media_ext, ['mp4', 'webm', 'ogg'], true)
                         <?php endif; ?>
                     </div>
                 </div>
+            </div>
+
+            <!-- YouTube Embed URL for About Section -->
+            <div class="rounded-2xl border border-dashed border-blue-200 bg-blue-50/40 p-5">
+                <h4 class="text-sm font-semibold text-gray-800 mb-1">Video YouTube — Section Profil Singkat</h4>
+                <p class="text-xs text-gray-500 mb-3">Isi URL video YouTube jika ingin menampilkan video embed di kolom kiri section Sejarah &amp; Profil. Jika diisi, URL ini diutamakan di atas upload gambar/video.</p>
+                <input type="url" id="f-about-video-url"
+                    value="<?= $p && !empty($p->about_section_video_url) ? html_escape($p->about_section_video_url) : '' ?>"
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    class="w-full px-4 py-2.5 border border-blue-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white">
             </div>
 
             <hr class="border-gray-100">
@@ -302,6 +318,30 @@ $about_media_is_video = in_array($about_media_ext, ['mp4', 'webm', 'ogg'], true)
                     </div>
                 </div>
             </div>
+
+            <!-- Hero Slider Images -->
+            <div class="rounded-xl border border-dashed border-hijau-200 bg-hijau-50/40 p-5">
+                <h4 class="text-sm font-semibold text-gray-800 mb-1">🖼️ Slider Gambar Hero (maks. 5)</h4>
+                <p class="text-xs text-gray-500 mb-4">Hero Image 1 sudah diset di atas. Tambahkan gambar 2–5 di bawah ini untuk mengaktifkan slider otomatis. Gambar yang kosong akan dilewati.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <?php
+                    $slider_fields = ['hero_image_2', 'hero_image_3', 'hero_image_4', 'hero_image_5'];
+                    foreach ($slider_fields as $sf_idx => $sf):
+                        $sf_num = $sf_idx + 2;
+                    ?>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Gambar <?= $sf_num ?></label>
+                        <?php if ($p && !empty($p->$sf)): ?>
+                            <img src="<?= base_url('assets/images/uploads/profil/' . $p->$sf) ?>"
+                                 class="w-full h-20 object-cover mb-2 rounded-lg border border-gray-100">
+                        <?php endif; ?>
+                        <input type="file" id="f-hero-<?= $sf_num ?>" accept="image/*" onchange="previewImage(this,'img-hero-<?= $sf_num ?>')"
+                            class="w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-hijau-50 file:text-hijau-700 hover:file:bg-hijau-100">
+                        <img id="img-hero-<?= $sf_num ?>" src="" class="hidden w-full h-20 object-cover mt-2 rounded-lg border border-gray-100">
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
         </div>
 
         <?php if ($can_edit): ?>
@@ -396,10 +436,14 @@ $about_media_is_video = in_array($about_media_ext, ['mp4', 'webm', 'ogg'], true)
         fd.append('instagram', document.getElementById('f-instagram').value);
         fd.append('youtube', document.getElementById('f-youtube').value);
         fd.append('whatsapp', document.getElementById('f-whatsapp').value);
+        const tiktokEl = document.getElementById('f-tiktok');
+        if (tiktokEl) fd.append('tiktok', tiktokEl.value);
         fd.append('hero_overlay_color', document.getElementById('f-hero-color').value);
         fd.append('hero_overlay_opacity', document.getElementById('f-hero-opacity').value);
         fd.append('hero_title', document.getElementById('f-hero-title').value);
         fd.append('hero_subtitle', document.getElementById('f-hero-subtitle').value);
+        const aboutVideoUrlEl = document.getElementById('f-about-video-url');
+        if (aboutVideoUrlEl) fd.append('about_section_video_url', aboutVideoUrlEl.value);
 
         const logo = document.getElementById('f-logo').files[0];
         const hero = document.getElementById('f-hero').files[0];
@@ -410,6 +454,12 @@ $about_media_is_video = in_array($about_media_ext, ['mp4', 'webm', 'ogg'], true)
         if (hero) fd.append('hero_image', hero);
         if (struktur) fd.append('struktur_organisasi_gambar', struktur);
         if (aboutMedia) fd.append('about_section_media', aboutMedia);
+
+        // Hero slider images 2–5
+        [2, 3, 4, 5].forEach(n => {
+            const sliderInput = document.getElementById('f-hero-' + n);
+            if (sliderInput && sliderInput.files[0]) fd.append('hero_image_' + n, sliderInput.files[0]);
+        });
 
         await ajaxSubmit('<?= base_url('panel-admin/profil/save') ?>', fd, () => {
             setTimeout(() => location.reload(), 800);

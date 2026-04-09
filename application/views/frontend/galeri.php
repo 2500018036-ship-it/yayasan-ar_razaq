@@ -61,7 +61,7 @@ $filter_items = array_values(array_unique(array_filter($filter_items)));
                     <?php if ($foto->gambar && strpos($foto->gambar, 'placeholder') === false): ?>
                         <img src="<?= base_url('assets/images/uploads/galeri/' . $foto->gambar) ?>" alt="<?= $foto->judul ?>"
                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                            onerror="this.src='<?= base_url('assets/images/placeholder.jpg') ?>'">
+                            onerror="this.src='<?= base_url('assets/images/placeholder.webp') ?>'">
                     <?php else: ?>
                         <div class="w-full h-full bg-gradient-to-br from-hijau-100 to-hijau-200 flex items-center justify-center">
                             <i data-feather="image" class="w-12 h-12 text-hijau-300"></i>

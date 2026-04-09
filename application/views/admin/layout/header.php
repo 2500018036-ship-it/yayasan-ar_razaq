@@ -518,13 +518,15 @@
     <!-- ============================================================ -->
     <?php
     $current_uri = uri_string();
-    $admin_nama  = $this->session->userdata('admin_nama') ?: 'Admin';
-    $admin_role  = $this->session->userdata('admin_role_name') ?: 'Tanpa Role';
-    $admin_foto  = $this->session->userdata('admin_foto');
+    /** @var Admin $CI_header */
+    $CI_header   = get_instance();
+    $admin_nama  = $CI_header->session->userdata('admin_nama') ?: 'Admin';
+    $admin_role  = $CI_header->session->userdata('admin_role_name') ?: 'Tanpa Role';
+    $admin_foto  = $CI_header->session->userdata('admin_foto');
     $admin_inisial = strtoupper(substr($admin_nama, 0, 1));
     $permission_codes = isset($permission_codes) && is_array($permission_codes)
         ? $permission_codes
-        : ((array) $this->session->userdata('admin_permissions'));
+        : ((array) $CI_header->session->userdata('admin_permissions'));
     $can = function ($perm) use ($permission_codes) {
         return in_array($perm, $permission_codes, true);
     };
@@ -555,7 +557,7 @@
             <div class="px-4 py-5 border-b border-white/[0.06]">
                 <div class="flex items-center gap-2.5">
                     <div class="w-9 h-9 bg-kuning-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-kuning-500/20">
-                        <img src="<?= base_url('assets/images/logo.png') ?>" alt="Logo Ar-Razaq" class="w-5 h-5 object-contain">
+                        <img src="<?= base_url('assets/images/logo.webp') ?>" alt="Logo Ar-Razaq" class="w-5 h-5 object-contain">
                     </div>
                     <div class="sidebar-logo-text">
                         <div class="font-display text-white font-bold text-sm leading-tight">Ar-Razaq</div>

@@ -48,6 +48,13 @@
                                 <i data-feather="message-circle" class="w-4 h-4"></i>
                             </a>
                         <?php endif; ?>
+                        <?php if (!empty($profil->tiktok)): ?>
+                            <a href="<?= htmlspecialchars($profil->tiktok, ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-white/[0.04] hover:bg-kuning-500 rounded-xl flex items-center justify-center text-hijau-400/60 hover:text-hijau-950 transition-all duration-500">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.96a8.22 8.22 0 0 0 4.81 1.54V7.07a4.85 4.85 0 0 1-1.04-.38z"/>
+                                </svg>
+                            </a>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </div>
             </div>

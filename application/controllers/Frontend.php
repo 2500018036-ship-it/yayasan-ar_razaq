@@ -1,6 +1,10 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+/**
+ * @property CI_Loader  $load
+ * @property Main_model $model
+ */
 class Frontend extends CI_Controller
 {
 

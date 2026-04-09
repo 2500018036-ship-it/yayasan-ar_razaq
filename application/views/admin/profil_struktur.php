@@ -1,5 +1,6 @@
 <?php
-$p = $profil;
+/** @var object|null $profil Data profil yayasan dari controller */
+$p = isset($profil) ? $profil : null;
 $permission_codes = isset($permission_codes) && is_array($permission_codes) ? $permission_codes : [];
 $can_edit = in_array('profil.edit', $permission_codes, true);
 ?>

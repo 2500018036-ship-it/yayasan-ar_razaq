@@ -1,6 +1,15 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+/**
+ * @property CI_Loader           $load
+ * @property CI_Session          $session
+ * @property CI_Security         $security
+ * @property CI_Input            $input
+ * @property CI_Router           $router
+ * @property CI_Upload           $upload
+ * @property Main_model          $model
+ */
 class Admin extends CI_Controller
 {
 
@@ -282,12 +291,8 @@ class Admin extends CI_Controller
 
     public function profil_tentang_kami()
     {
-        return $this->profil();
-        $data['title']  = 'Profil Yayasan • Tentang Kami';
-        $data['profil'] = $this->model->get_profil();
-        $this->load->view('admin/layout/header', $data);
-        // Legacy alias kept for backward compatibility.
-        $this->load->view('admin/layout/footer');
+        // Legacy alias – delegate to profil().
+        $this->profil();
     }
 
     public function profil_struktur()
@@ -328,6 +333,7 @@ class Admin extends CI_Controller
             'instagram'                     => $this->_post_or_existing('instagram', $existing ? $existing->instagram : null, TRUE),
             'youtube'                       => $this->_post_or_existing('youtube', $existing ? $existing->youtube : null, TRUE),
             'whatsapp'                      => $this->_post_or_existing('whatsapp', $existing ? $existing->whatsapp : null, TRUE),
+            'tiktok'                        => $this->_post_or_existing('tiktok', ($existing && isset($existing->tiktok)) ? $existing->tiktok : null, TRUE),
             'maps_embed'                    => $this->_post_or_existing('maps_embed', $existing ? $existing->maps_embed : null, TRUE),
             'hero_overlay_color'            => $hero_overlay_color,
             'hero_overlay_opacity'          => $hero_overlay_opacity,
@@ -337,6 +343,7 @@ class Admin extends CI_Controller
             'about_section_badge'           => $this->_post_or_existing('about_section_badge', $existing ? $existing->about_section_badge : null, TRUE),
             'about_section_cta_text'        => $this->_post_or_existing('about_section_cta_text', $existing ? $existing->about_section_cta_text : null, TRUE),
             'about_section_cta_link'        => $this->_post_or_existing('about_section_cta_link', $existing ? $existing->about_section_cta_link : null, TRUE),
+            'about_section_video_url'       => $this->_post_or_existing('about_section_video_url', ($existing && isset($existing->about_section_video_url)) ? $existing->about_section_video_url : null, TRUE),
             'struktur_organisasi_judul'     => $this->_post_or_existing('struktur_organisasi_judul', $existing ? $existing->struktur_organisasi_judul : null, TRUE),
             'struktur_organisasi_deskripsi' => $this->_post_or_existing('struktur_organisasi_deskripsi', $existing ? $existing->struktur_organisasi_deskripsi : null, FALSE),
         ];
@@ -370,6 +377,24 @@ class Admin extends CI_Controller
                     $this->_delete_file($path);
                 }
                 $this->_json('error', $upload_result['message']);
+            }
+        }
+
+        // Hero slider images 2-5
+        foreach ([2, 3, 4, 5] as $slide_n) {
+            $slide_field = 'hero_image_' . $slide_n;
+            if (!empty($_FILES[$slide_field]['name'])) {
+                $up = $this->_upload_file($slide_field, 'profil');
+                if ($up['status']) {
+                    $update_data[$slide_field] = $up['file_name'];
+                    $uploaded_files[] = 'profil/' . $up['file_name'];
+                    if ($existing && !empty($existing->$slide_field) && $existing->$slide_field !== $up['file_name']) {
+                        $files_to_delete[] = 'profil/' . $existing->$slide_field;
+                    }
+                } else {
+                    foreach ($uploaded_files as $path) { $this->_delete_file($path); }
+                    $this->_json('error', $up['message']);
+                }
             }
         }
 
@@ -1598,10 +1623,48 @@ class Admin extends CI_Controller
 
         if ($this->upload->do_upload($field_name)) {
             $upload_data = $this->upload->data();
-            return ['status' => TRUE, 'file_name' => $upload_data['file_name']];
+            
+            // Auto-convert process
+            $final_path      = $this->_auto_convert_to_webp($upload_data['full_path']);
+            $final_file_name = basename((string)$final_path);
+            
+            return ['status' => TRUE, 'file_name' => $final_file_name];
         }
 
         return ['status' => FALSE, 'message' => $this->upload->display_errors('', '')];
+    }
+
+    private function _auto_convert_to_webp($file_path)
+    {
+        $ext = strtolower(pathinfo((string)$file_path, PATHINFO_EXTENSION));
+        // Skip formats that don't need or natively support webp conversion cleanly via simple GD.
+        if (in_array($ext, ['webp', 'svg', 'gif', 'mp4', 'webm', 'ogg'])) {
+            return $file_path; 
+        }
+
+        $image = null;
+        if ($ext === 'jpeg' || $ext === 'jpg') {
+            $image = @imagecreatefromjpeg($file_path);
+        } elseif ($ext === 'png') {
+            $image = @imagecreatefrompng($file_path);
+            if ($image) {
+                @imagepalettetotruecolor($image);
+                @imagealphablending($image, true);
+                @imagesavealpha($image, true);
+            }
+        }
+
+        if ($image) {
+            $new_path = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', (string)$file_path);
+            if (@imagewebp($image, $new_path, 80)) {
+                @imagedestroy($image);
+                @unlink($file_path);
+                return $new_path;
+            }
+            @imagedestroy($image);
+        }
+
+        return $file_path; // Fallback to original if conversion fails
     }
 
     // ============================================================
@@ -1609,7 +1672,7 @@ class Admin extends CI_Controller
     // ============================================================
     private function _upload_file($field_name, $subfolder = '')
     {
-        return $this->_handle_upload($field_name, $subfolder, 'jpg|jpeg|png|gif|webp', 5120);
+        return $this->_handle_upload($field_name, $subfolder, 'jpg|jpeg|png|gif|webp|svg', 5120);
     }
 
     // ============================================================
@@ -1657,6 +1720,6 @@ class Admin extends CI_Controller
 
     private function _upload_media($field_name, $subfolder = '')
     {
-        return $this->_handle_upload($field_name, $subfolder, 'jpg|jpeg|png|gif|webp|mp4|webm|ogg', 51200);
+        return $this->_handle_upload($field_name, $subfolder, 'jpg|jpeg|png|gif|webp|svg|mp4|webm|ogg', 51200);
     }
 }

@@ -56,6 +56,21 @@ class Main_model extends CI_Model
             if (!$this->db->field_exists('about_section_media', 'profil')) {
                 $this->db->query("ALTER TABLE `profil` ADD COLUMN `about_section_media` VARCHAR(255) NULL DEFAULT NULL");
             }
+            // Hero slider images 2-5
+            foreach ([2, 3, 4, 5] as $slide_n) {
+                $col = 'hero_image_' . $slide_n;
+                if (!$this->db->field_exists($col, 'profil')) {
+                    $this->db->query("ALTER TABLE `profil` ADD COLUMN `{$col}` VARCHAR(255) NULL DEFAULT NULL");
+                }
+            }
+            // YouTube embed URL for About section
+            if (!$this->db->field_exists('about_section_video_url', 'profil')) {
+                $this->db->query("ALTER TABLE `profil` ADD COLUMN `about_section_video_url` VARCHAR(255) NULL DEFAULT NULL");
+            }
+            // TikTok social media link
+            if (!$this->db->field_exists('tiktok', 'profil')) {
+                $this->db->query("ALTER TABLE `profil` ADD COLUMN `tiktok` VARCHAR(255) NULL DEFAULT NULL");
+            }
         }
 
         if ($this->db->table_exists('galeri') && !$this->db->field_exists('label', 'galeri')) {

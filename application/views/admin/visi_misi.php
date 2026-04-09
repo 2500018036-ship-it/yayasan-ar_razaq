@@ -146,7 +146,8 @@ $_perms = (isset($permission_codes) && is_array($permission_codes)) ? $permissio
 
         <div class="card-body">
             <form id="form-visimisi-bg" enctype="multipart/form-data">
-                <input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
+                <?php /** @var Admin $CI_vm */ $CI_vm = get_instance(); ?>
+                <input type="hidden" name="<?= $CI_vm->security->get_csrf_token_name() ?>" value="<?= $CI_vm->security->get_csrf_hash() ?>">
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
