@@ -83,107 +83,103 @@
                 <?php endif; ?>
             </div>
 
-            <!-- Syarat Pendaftaran -->
-            <?php if (!empty($ppdb->syarat)): ?>
-            <div class="mb-16 reveal">
-                <div class="bg-white rounded-3xl border border-gray-100/80 shadow-sm overflow-hidden">
-                    <div class="px-8 py-6 bg-hijau-800 relative overflow-hidden">
-                        <div class="absolute inset-0 pattern-bg opacity-10"></div>
-                        <h3 class="font-display text-xl font-bold text-white relative z-10 flex items-center gap-3">
-                            <i data-feather="clipboard" class="w-5 h-5 text-kuning-400"></i>
-                            Syarat Pendaftaran
-                        </h3>
-                    </div>
-                    <div class="p-8 text-gray-600 leading-relaxed prose max-w-none">
-                        <?= nl2br($ppdb->syarat) ?>
-                    </div>
-                </div>
-            </div>
-            <?php endif; ?>
-
-            <!-- Alur Pendaftaran -->
-            <?php if (!empty($ppdb->alur_pendaftaran)): ?>
-            <div class="mb-16 reveal">
-                <div class="bg-white rounded-3xl border border-gray-100/80 shadow-sm overflow-hidden">
-                    <div class="px-8 py-6 bg-kuning-500 relative overflow-hidden">
-                        <div class="absolute inset-0 pattern-bg opacity-10"></div>
-                        <h3 class="font-display text-xl font-bold text-hijau-950 relative z-10 flex items-center gap-3">
-                            <i data-feather="git-branch" class="w-5 h-5"></i>
-                            Alur Pendaftaran
-                        </h3>
-                    </div>
-                    <div class="p-8 text-gray-600 leading-relaxed prose max-w-none">
-                        <?= nl2br($ppdb->alur_pendaftaran) ?>
-                    </div>
-                </div>
-            </div>
-            <?php endif; ?>
-
-            <!-- Kontak Info -->
-            <?php if (!empty($ppdb->kontak_info)): ?>
-            <div class="mb-16 reveal">
-                <div class="bg-white rounded-3xl border border-gray-100/80 shadow-sm overflow-hidden">
-                    <div class="px-8 py-6 bg-hijau-800 relative overflow-hidden">
-                        <div class="absolute inset-0 pattern-bg opacity-10"></div>
-                        <h3 class="font-display text-xl font-bold text-white relative z-10 flex items-center gap-3">
-                            <i data-feather="phone" class="w-5 h-5 text-kuning-400"></i>
-                            Informasi Kontak
-                        </h3>
-                    </div>
-                    <div class="p-8 md:p-10">
-                        <?php
-                        $kontak_lines = preg_split('/\r\n|\r|\n/', trim((string) $ppdb->kontak_info));
-                        $kontak_lines = array_values(array_filter(array_map('trim', $kontak_lines), static function ($line) {
-                            return $line !== '';
-                        }));
-                        ?>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <?php if (!empty($kontak_lines)): ?>
-                                <?php foreach ($kontak_lines as $line): ?>
-                                    <div class="flex items-start gap-3 bg-hijau-50/70 border border-hijau-100 rounded-2xl px-5 py-4">
-                                        <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-hijau-100 text-hijau-700 inline-flex items-center justify-center">
-                                            <i data-feather="chevron-right" class="w-4 h-4"></i>
-                                        </span>
-                                        <p class="text-gray-700 leading-relaxed"><?= htmlspecialchars($line, ENT_QUOTES) ?></p>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <p class="text-gray-600 leading-relaxed"><?= nl2br(htmlspecialchars($ppdb->kontak_info, ENT_QUOTES)) ?></p>
-                            <?php endif; ?>
+            <?php if (!empty($ppdb->syarat) || !empty($ppdb->alur_pendaftaran) || !empty($ppdb->kontak_info) || !empty($ppdb->maps_url)): ?>
+            <div class="mb-16 reveal relative left-1/2 w-[min(1560px,calc(100vw-2rem))] -translate-x-1/2">
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-6">
+                    <!-- Syarat Pendaftaran -->
+                    <?php if (!empty($ppdb->syarat)): ?>
+                    <div class="w-full xl:col-span-3">
+                        <div class="bg-white rounded-3xl border border-gray-100/80 shadow-sm overflow-hidden h-full">
+                            <div class="px-8 py-6 bg-hijau-800 relative overflow-hidden">
+                                <div class="absolute inset-0 pattern-bg opacity-10"></div>
+                                <h3 class="font-display text-xl font-bold text-white relative z-10 flex items-center gap-3">
+                                    <i data-feather="clipboard" class="w-5 h-5 text-kuning-400"></i>
+                                    Syarat Pendaftaran
+                                </h3>
+                            </div>
+                            <div class="p-8 text-gray-600 leading-relaxed prose max-w-none">
+                                <?= nl2br($ppdb->syarat) ?>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <?php endif; ?>
+                    <?php endif; ?>
 
-            <!-- Google Maps Preview -->
-            <?php if (!empty($ppdb->maps_url)): ?>
-            <div class="mb-16 reveal">
-                <div class="bg-white rounded-3xl border border-gray-100/80 shadow-sm overflow-hidden">
-                    <div class="px-8 py-6 bg-hijau-800 relative overflow-hidden">
-                        <div class="absolute inset-0 pattern-bg opacity-10"></div>
-                        <h3 class="font-display text-xl font-bold text-white relative z-10 flex items-center gap-3">
-                            <i data-feather="map-pin" class="w-5 h-5 text-kuning-400"></i>
-                            Lokasi Yayasan
-                        </h3>
+                    <!-- Alur Pendaftaran -->
+                    <?php if (!empty($ppdb->alur_pendaftaran)): ?>
+                    <div class="w-full xl:col-span-3">
+                        <div class="bg-white rounded-3xl border border-gray-100/80 shadow-sm overflow-hidden h-full">
+                            <div class="px-8 py-6 bg-kuning-500 relative overflow-hidden">
+                                <div class="absolute inset-0 pattern-bg opacity-10"></div>
+                                <h3 class="font-display text-xl font-bold text-hijau-950 relative z-10 flex items-center gap-3">
+                                    <i data-feather="git-branch" class="w-5 h-5"></i>
+                                    Alur Pendaftaran
+                                </h3>
+                            </div>
+                            <div class="p-8 text-gray-600 leading-relaxed prose max-w-none">
+                                <?= nl2br($ppdb->alur_pendaftaran) ?>
+                            </div>
+                        </div>
                     </div>
-                    <div class="aspect-video">
-                        <?php
-                        $maps_embed_url = $ppdb->maps_url;
-                        // Convert Google Maps URL to embed URL
-                        if (strpos($maps_embed_url, '/embed') === false) {
-                            // Use ~ delimiter so URL slashes do not break regex parsing
-                            if (preg_match('~(?:^|/)place/([^/?#]+)~', $maps_embed_url, $matches)) {
-                                $maps_embed_url = 'https://maps.google.com/maps?q=' . urlencode(urldecode($matches[1])) . '&output=embed';
-                            } elseif (preg_match('/@([\d.-]+),([\d.-]+)/', $maps_embed_url, $matches)) {
-                                $maps_embed_url = 'https://maps.google.com/maps?q=' . $matches[1] . ',' . $matches[2] . '&output=embed';
-                            } else {
-                                $maps_embed_url = 'https://maps.google.com/maps?q=' . urlencode($maps_embed_url) . '&output=embed';
-                            }
-                        }
-                        ?>
-                        <iframe src="<?= $maps_embed_url ?>" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <?php endif; ?>
+
+                    <!-- Informasi Kontak -->
+                    <?php if (!empty($ppdb->kontak_info)): ?>
+                    <div class="w-full xl:col-span-3">
+                        <div class="bg-hijau-50 rounded-3xl border border-hijau-100/70 p-8 md:p-9 h-full">
+                            <h3 class="font-display text-xl font-bold text-hijau-900 flex items-center gap-3">
+                                <i data-feather="phone" class="w-5 h-5 text-hijau-700"></i>
+                                Informasi Kontak
+                            </h3>
+                            <?php
+                            $kontak_lines = preg_split('/\r\n|\r|\n/', trim((string) $ppdb->kontak_info));
+                            $kontak_lines = array_values(array_filter(array_map('trim', $kontak_lines), static function ($line) {
+                                return $line !== '';
+                            }));
+                            ?>
+                            <div class="mt-5 space-y-1">
+                                <?php if (!empty($kontak_lines)): ?>
+                                    <?php foreach ($kontak_lines as $line): ?>
+                                        <p class="text-gray-700 leading-8 whitespace-nowrap"><?= htmlspecialchars($line, ENT_QUOTES) ?></p>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <p class="text-gray-700 leading-8 whitespace-nowrap"><?= htmlspecialchars($ppdb->kontak_info, ENT_QUOTES) ?></p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     </div>
+                    <?php endif; ?>
+
+                    <!-- Lokasi Yayasan -->
+                    <?php if (!empty($ppdb->maps_url)): ?>
+                    <div class="w-full xl:col-span-3">
+                        <div class="bg-white rounded-3xl border border-gray-100/80 shadow-sm overflow-hidden h-full">
+                            <div class="px-8 py-6 bg-hijau-800 relative overflow-hidden">
+                                <div class="absolute inset-0 pattern-bg opacity-10"></div>
+                                <h3 class="font-display text-xl font-bold text-white relative z-10 flex items-center gap-3">
+                                    <i data-feather="map-pin" class="w-5 h-5 text-kuning-400"></i>
+                                    Lokasi Yayasan
+                                </h3>
+                            </div>
+                            <div class="relative h-[260px] md:h-[300px] xl:h-[300px]">
+                                <?php
+                                $maps_embed_url = $ppdb->maps_url;
+                                // Convert Google Maps URL to embed URL
+                                if (strpos($maps_embed_url, '/embed') === false) {
+                                    // Use ~ delimiter so URL slashes do not break regex parsing
+                                    if (preg_match('~(?:^|/)place/([^/?#]+)~', $maps_embed_url, $matches)) {
+                                        $maps_embed_url = 'https://maps.google.com/maps?q=' . urlencode(urldecode($matches[1])) . '&output=embed';
+                                    } elseif (preg_match('/@([\d.-]+),([\d.-]+)/', $maps_embed_url, $matches)) {
+                                        $maps_embed_url = 'https://maps.google.com/maps?q=' . $matches[1] . ',' . $matches[2] . '&output=embed';
+                                    } else {
+                                        $maps_embed_url = 'https://maps.google.com/maps?q=' . urlencode($maps_embed_url) . '&output=embed';
+                                    }
+                                }
+                                ?>
+                                <iframe src="<?= $maps_embed_url ?>" class="absolute inset-0 w-full h-full" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
             <?php endif; ?>
