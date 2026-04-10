@@ -40,9 +40,9 @@
             </div>
 
             <!-- Info Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 stagger-parent">
+            <div class="flex gap-4 overflow-x-auto pb-4 px-1 -mx-1 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:pb-0 md:px-0 md:mx-0 mb-16 stagger-parent snap-x snap-mandatory">
                 <?php if ($ppdb->tanggal_buka && $ppdb->tanggal_tutup): ?>
-                <div class="stagger-child">
+                <div class="stagger-child min-w-[240px] sm:min-w-[270px] md:min-w-0 flex-shrink-0 md:flex-shrink snap-start">
                     <div class="bg-hijau-50 border border-hijau-100/60 rounded-3xl p-7 text-center card-hover h-full">
                         <div class="w-14 h-14 bg-hijau-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
                             <i data-feather="calendar" class="w-7 h-7 text-hijau-700"></i>
@@ -58,7 +58,7 @@
                 <?php endif; ?>
 
                 <?php if ($ppdb->kuota): ?>
-                <div class="stagger-child">
+                <div class="stagger-child min-w-[240px] sm:min-w-[270px] md:min-w-0 flex-shrink-0 md:flex-shrink snap-start">
                     <div class="bg-kuning-50 border border-kuning-100/60 rounded-3xl p-7 text-center card-hover h-full">
                         <div class="w-14 h-14 bg-kuning-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
                             <i data-feather="users" class="w-7 h-7 text-kuning-600"></i>
@@ -71,7 +71,7 @@
                 <?php endif; ?>
 
                 <?php if ($ppdb->biaya_pendaftaran): ?>
-                <div class="stagger-child">
+                <div class="stagger-child min-w-[240px] sm:min-w-[270px] md:min-w-0 flex-shrink-0 md:flex-shrink snap-start">
                     <div class="bg-hijau-50 border border-hijau-100/60 rounded-3xl p-7 text-center card-hover h-full">
                         <div class="w-14 h-14 bg-hijau-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
                             <i data-feather="credit-card" class="w-7 h-7 text-hijau-700"></i>
@@ -122,12 +122,36 @@
             <!-- Kontak Info -->
             <?php if (!empty($ppdb->kontak_info)): ?>
             <div class="mb-16 reveal">
-                <div class="bg-hijau-50 rounded-3xl border border-hijau-100/60 p-8">
-                    <h3 class="font-display text-lg font-bold text-hijau-900 mb-4 flex items-center gap-3">
-                        <i data-feather="phone" class="w-5 h-5 text-hijau-700"></i>
-                        Informasi Kontak
-                    </h3>
-                    <p class="text-gray-600 leading-relaxed"><?= nl2br($ppdb->kontak_info) ?></p>
+                <div class="bg-white rounded-3xl border border-gray-100/80 shadow-sm overflow-hidden">
+                    <div class="px-8 py-6 bg-hijau-800 relative overflow-hidden">
+                        <div class="absolute inset-0 pattern-bg opacity-10"></div>
+                        <h3 class="font-display text-xl font-bold text-white relative z-10 flex items-center gap-3">
+                            <i data-feather="phone" class="w-5 h-5 text-kuning-400"></i>
+                            Informasi Kontak
+                        </h3>
+                    </div>
+                    <div class="p-8 md:p-10">
+                        <?php
+                        $kontak_lines = preg_split('/\r\n|\r|\n/', trim((string) $ppdb->kontak_info));
+                        $kontak_lines = array_values(array_filter(array_map('trim', $kontak_lines), static function ($line) {
+                            return $line !== '';
+                        }));
+                        ?>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <?php if (!empty($kontak_lines)): ?>
+                                <?php foreach ($kontak_lines as $line): ?>
+                                    <div class="flex items-start gap-3 bg-hijau-50/70 border border-hijau-100 rounded-2xl px-5 py-4">
+                                        <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-hijau-100 text-hijau-700 inline-flex items-center justify-center">
+                                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                                        </span>
+                                        <p class="text-gray-700 leading-relaxed"><?= htmlspecialchars($line, ENT_QUOTES) ?></p>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <p class="text-gray-600 leading-relaxed"><?= nl2br(htmlspecialchars($ppdb->kontak_info, ENT_QUOTES)) ?></p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                 </div>
             </div>
             <?php endif; ?>

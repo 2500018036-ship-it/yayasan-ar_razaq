@@ -208,8 +208,8 @@
         }
 
         #navbar.scrolled #navbar-shell::after {
-            opacity: 1;
-            animation: navSweep 1.1s ease;
+            opacity: 0;
+            animation: none;
         }
 
         @keyframes navSweep {
