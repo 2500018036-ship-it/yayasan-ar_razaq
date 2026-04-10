@@ -7,7 +7,7 @@ $can_delete = in_array('berita.delete', $permission_codes, true);
 ?>
 
 <!-- Page Header -->
-<div class="flex items-center justify-between mb-6">
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
     <div>
         <p class="text-xs text-gray-400">Kelola semua artikel dan pengumuman</p>
     </div>
@@ -20,12 +20,12 @@ $can_delete = in_array('berita.delete', $permission_codes, true);
 </div>
 
 <!-- Filter / Search bar -->
-<div class="bg-white rounded-2xl border border-gray-100 mb-6 px-4 py-3 flex items-center gap-3">
+<div class="mb-6 flex flex-col gap-3 rounded-2xl border border-gray-100 bg-white px-4 py-3 sm:flex-row sm:items-center">
     <i data-feather="search" class="w-4 h-4 text-gray-300 flex-shrink-0"></i>
     <input type="text" id="search-input" placeholder="Cari judul berita…"
         class="flex-1 text-sm outline-none bg-transparent text-gray-700 placeholder-gray-300"
         oninput="filterTable()">
-    <select id="filter-kategori" onchange="filterTable()" class="text-xs text-gray-500 bg-transparent outline-none border-l border-gray-100 pl-3 cursor-pointer">
+    <select id="filter-kategori" onchange="filterTable()" class="w-full cursor-pointer border-t border-gray-100 bg-transparent pt-3 text-xs text-gray-500 outline-none sm:w-auto sm:border-l sm:border-t-0 sm:pl-3 sm:pt-0">
         <option value="">Semua Kategori</option>
         <option value="berita">Berita</option>
         <option value="pengumuman">Pengumuman</option>
@@ -118,7 +118,7 @@ $can_delete = in_array('berita.delete', $permission_codes, true);
                         <label class="form-label">Judul *</label>
                         <input type="text" name="judul" class="form-input" placeholder="Judul berita..." required>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
                             <label class="form-label">Kategori</label>
                             <select name="kategori" class="form-input form-select">
@@ -163,7 +163,7 @@ $can_delete = in_array('berita.delete', $permission_codes, true);
                         </select>
                     </div>
                 </div>
-                <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+                <div class="flex flex-col-reverse gap-3 rounded-b-2xl bg-gray-50 px-6 py-4 sm:flex-row sm:justify-end">
                     <button type="button" onclick="closeModal('modal-tambah')" class="btn btn-ghost">Batal</button>
                     <button type="button" onclick="submitTambah()" class="btn btn-primary" id="btn-tambah-submit">
                         <i data-feather="save" class="w-4 h-4"></i>
@@ -194,7 +194,7 @@ $can_delete = in_array('berita.delete', $permission_codes, true);
                         <label class="form-label">Judul *</label>
                         <input type="text" name="judul" id="edit-judul" class="form-input" required>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
                             <label class="form-label">Kategori</label>
                             <select name="kategori" id="edit-kategori" class="form-input form-select">
@@ -240,7 +240,7 @@ $can_delete = in_array('berita.delete', $permission_codes, true);
                         </select>
                     </div>
                 </div>
-                <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+                <div class="flex flex-col-reverse gap-3 rounded-b-2xl bg-gray-50 px-6 py-4 sm:flex-row sm:justify-end">
                     <button type="button" onclick="closeModal('modal-edit')" class="btn btn-ghost">Batal</button>
                     <button type="button" onclick="submitEdit()" class="btn btn-primary">
                         <i data-feather="save" class="w-4 h-4"></i>

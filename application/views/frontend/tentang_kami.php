@@ -40,6 +40,17 @@ $about_media_url = $about_media_file !== ''
     : base_url('assets/images/placeholder.webp');
 
 $history_items = !empty($sejarah) && is_array($sejarah) ? $sejarah : [];
+$article_body = $about_full !== '' ? $about_full : $about_short;
+$article_lead = ($about_short !== '' && $about_short !== $article_body) ? $about_short : '';
+$article_image_file = '';
+if ($about_media_file !== '' && !$about_media_is_video) {
+    $article_image_file = $about_media_file;
+} elseif (isset($profil) && $profil && trim((string) $profil->hero_image) !== '') {
+    $article_image_file = trim((string) $profil->hero_image);
+}
+$article_image_url = $article_image_file !== ''
+    ? base_url('assets/images/uploads/profil/' . $article_image_file)
+    : base_url('assets/images/placeholder.webp');
 ?>
 
 <section class="relative pt-32 pb-20 md:pt-40 md:pb-28 bg-hijau-950 overflow-hidden grain">
@@ -56,133 +67,96 @@ $history_items = !empty($sejarah) && is_array($sejarah) ? $sejarah : [];
     </div>
 </section>
 
-<section class="py-20 md:py-28 bg-gray-50 relative overflow-hidden">
-    <div class="absolute top-20 right-0 w-72 h-72 bg-hijau-50 rounded-full blur-[100px] opacity-70"></div>
-    <div class="absolute bottom-16 left-0 w-64 h-64 bg-kuning-50 rounded-full blur-[90px] opacity-60"></div>
-
-    <div class="container mx-auto px-4 lg:px-8 relative z-10 space-y-14">
-        <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] gap-10 lg:gap-14 items-center">
-            <div class="reveal-left relative">
-                <div class="absolute -top-5 -right-5 w-24 h-24 rounded-[28px] bg-kuning-100/70 blur-2xl"></div>
-                <div class="absolute -bottom-8 -left-8 w-28 h-28 rounded-full bg-hijau-100/70 blur-3xl"></div>
-
-                <div class="relative overflow-hidden rounded-[32px] border border-hijau-100/70 bg-hijau-950 shadow-[0_40px_80px_rgba(5,46,22,0.14)]">
-                    <?php if ($about_media_is_video): ?>
-                        <video autoplay muted loop playsinline preload="metadata" controls
-                            class="w-full h-[320px] sm:h-[420px] lg:h-[520px] object-cover bg-hijau-950">
-                            <source src="<?= $about_media_url ?>" type="video/<?= html_escape($about_media_ext) ?>">
-                        </video>
-                    <?php else: ?>
-                        <img src="<?= $about_media_url ?>" alt="<?= html_escape($about_name) ?>"
-                            class="w-full h-[320px] sm:h-[420px] lg:h-[520px] object-cover">
-                    <?php endif; ?>
-
-                    <div class="absolute inset-0 bg-gradient-to-tr from-hijau-950 via-hijau-950/40 to-transparent pointer-events-none"></div>
-                    <div class="absolute inset-x-0 bottom-0 p-6 md:p-8 pointer-events-none">
-                        <div class="inline-flex items-center gap-2 rounded-full bg-white/12 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur">
-                            <i data-feather="<?= $about_media_is_video ? 'video' : 'image' ?>" class="w-3.5 h-3.5"></i>
-                            <?= $about_media_is_video ? 'Video Profil' : 'Visual Profil' ?>
-                        </div>
-                        <h2 class="mt-4 font-display text-3xl md:text-4xl font-bold text-white leading-tight"><?= html_escape($about_name) ?></h2>
-                        <p class="mt-3 text-sm md:text-base text-white/78 max-w-lg leading-relaxed"><?= html_escape($about_tagline) ?></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="reveal-right">
-                <div class="inline-flex items-center gap-2 rounded-full bg-kuning-50 px-4 py-2 text-sm font-semibold text-kuning-700 border border-kuning-100">
-                    <i data-feather="sparkles" class="w-4 h-4"></i>
-                    <?= html_escape($about_label) ?>
+<section class="py-16 md:py-24 bg-white relative">
+    <div class="container mx-auto px-4 lg:px-8">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_280px] gap-10 xl:gap-12 items-start">
+            <article class="min-w-0">
+                <div class="rounded-[32px] overflow-hidden border border-gray-100 shadow-xl shadow-hijau-900/8 bg-white reveal">
+                    <img src="<?= $article_image_url ?>" alt="<?= html_escape($about_name) ?>"
+                        class="w-full aspect-[16/9] object-cover"
+                        onerror="this.src='<?= base_url('assets/images/placeholder.webp') ?>'">
                 </div>
 
-                <div class="mt-5 flex flex-wrap items-center gap-3">
-                    <span class="inline-flex items-center gap-2 rounded-full bg-hijau-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-hijau-700 border border-hijau-100">
-                        Sejarah &amp; Profil
+                <div class="mt-8 flex flex-wrap items-center gap-3 text-xs font-semibold reveal">
+                    <span class="inline-flex items-center gap-2 rounded-full bg-hijau-50 px-4 py-2 text-hijau-700 border border-hijau-100">
+                        <i data-feather="book-open" class="w-3.5 h-3.5"></i>
+                        <?= html_escape($about_label) ?>
                     </span>
-                    <span class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-semibold text-gray-600 border border-gray-200">
-                        <i data-feather="book-open" class="w-3.5 h-3.5 text-hijau-700"></i>
+                    <span class="inline-flex items-center gap-2 rounded-full bg-gray-50 px-4 py-2 text-gray-500 border border-gray-100">
+                        <i data-feather="file-text" class="w-3.5 h-3.5"></i>
                         <?= html_escape($about_badge) ?>
                     </span>
                 </div>
 
-                <h2 class="mt-6 font-display text-4xl md:text-5xl font-bold text-hijau-900 leading-tight"><?= html_escape($about_name) ?></h2>
-                <p class="mt-6 text-gray-600 text-base md:text-lg leading-[1.95]"><?= nl2br(html_escape($about_short)) ?></p>
+                <header class="mt-6 reveal">
+                    <h2 class="font-display text-4xl md:text-5xl font-bold text-hijau-900 leading-tight"><?= html_escape($about_name) ?></h2>
+                    <?php if ($about_tagline !== ''): ?>
+                        <p class="mt-5 text-lg text-gray-500 leading-relaxed max-w-3xl"><?= html_escape($about_tagline) ?></p>
+                    <?php endif; ?>
+                </header>
 
-                <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="rounded-3xl border border-hijau-100 bg-white p-5 shadow-sm">
-                        <div class="text-xs uppercase tracking-[0.22em] font-bold text-hijau-700 mb-2">Profil Singkat</div>
-                        <p class="text-sm text-gray-600 leading-relaxed">Konten utama section ini dikelola dari menu Profil pada dashboard admin.</p>
-                    </div>
-                    <div class="rounded-3xl border border-kuning-100 bg-white p-5 shadow-sm">
-                        <div class="text-xs uppercase tracking-[0.22em] font-bold text-kuning-700 mb-2">Data Sejarah</div>
-                        <p class="text-sm text-gray-600 leading-relaxed"><?= count($history_items) ?> data sejarah aktif ditampilkan otomatis pada halaman ini.</p>
-                    </div>
-                </div>
+                <div class="mt-10 rounded-[32px] border border-gray-100 bg-white shadow-sm p-8 md:p-10 reveal">
+                    <?php if ($article_lead !== ''): ?>
+                        <p class="text-xl text-hijau-900 leading-relaxed font-medium pb-8 mb-8 border-b border-gray-100"><?= nl2br(html_escape($article_lead)) ?></p>
+                    <?php endif; ?>
 
-                <div class="mt-8 flex flex-col sm:flex-row sm:items-center gap-4">
-                    <a href="<?= $about_cta_link ?>"
-                        class="magnetic-btn inline-flex items-center justify-center gap-3 rounded-2xl bg-[#6d3138] px-7 py-4 text-sm font-bold uppercase tracking-wide text-white shadow-[0_18px_40px_rgba(109,49,56,0.22)] transition-all duration-500 hover:-translate-y-1 hover:bg-[#5a272d]">
-                        <?= html_escape($about_cta_text) ?>
-                        <i data-feather="arrow-right" class="w-4 h-4"></i>
-                    </a>
-                    <p class="text-sm text-gray-500 max-w-md">Perubahan teks, gambar, atau video di dashboard akan langsung tersinkron ke area ini.</p>
-                </div>
-            </div>
-        </div>
-
-        <?php if ($about_full !== ''): ?>
-            <div class="bg-white rounded-[32px] border border-gray-100 shadow-sm p-8 md:p-10 reveal">
-                <div class="flex flex-col md:flex-row md:items-start gap-5 md:gap-8">
-                    <div class="w-14 h-14 rounded-2xl bg-hijau-100 text-hijau-800 flex items-center justify-center flex-shrink-0">
-                        <i data-feather="feather" class="w-7 h-7"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-display text-2xl md:text-3xl font-bold text-hijau-900 mb-4">Cerita Lengkap Yayasan</h3>
-                        <p class="text-gray-600 leading-[1.95] text-base md:text-lg"><?= nl2br(html_escape($about_full)) ?></p>
+                    <div class="prose prose-lg max-w-none text-gray-700" style="font-size: 1.05rem; line-height: 1.95;">
+                        <?= nl2br(html_escape($article_body)) ?>
                     </div>
                 </div>
-            </div>
-        <?php endif; ?>
 
-        <?php if (!empty($history_items)): ?>
-            <div class="reveal">
-                <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
-                    <div>
-                        <div class="text-xs uppercase tracking-[0.24em] font-bold text-hijau-700 mb-2">Jejak Yayasan</div>
-                        <h3 class="font-display text-3xl md:text-4xl font-bold text-hijau-900">Perjalanan yang Terus Bertumbuh</h3>
-                    </div>
-                    <p class="text-sm text-gray-500 max-w-xl">Setiap data sejarah yang aktif dari dashboard admin akan langsung muncul sebagai rangkaian perjalanan yayasan.</p>
-                </div>
+                <?php if ($about_cta_text !== '' || !empty($history_items)): ?>
+                <?php endif; ?>
+            </article>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 stagger-parent">
-                    <?php foreach ($history_items as $idx => $item): ?>
-                        <?php
-                        $history_plain = trim(preg_replace('/\s+/', ' ', strip_tags((string) $item->konten)));
-                        if (function_exists('mb_strlen') && function_exists('mb_substr')) {
-                            $history_excerpt = mb_strlen($history_plain, 'UTF-8') > 170 ? rtrim(mb_substr($history_plain, 0, 170, 'UTF-8')) . '...' : $history_plain;
-                        } else {
-                            $history_excerpt = strlen($history_plain) > 170 ? rtrim(substr($history_plain, 0, 170)) . '...' : $history_plain;
-                        }
-                        ?>
-                        <article class="stagger-child rounded-[28px] bg-white border border-gray-100 shadow-sm overflow-hidden card-hover-soft">
-                            <?php if (!empty($item->gambar)): ?>
-                                <div class="aspect-[16/10] overflow-hidden bg-hijau-50">
-                                    <img src="<?= base_url('assets/images/uploads/sejarah/' . $item->gambar) ?>" alt="<?= html_escape($item->judul) ?>"
-                                        class="w-full h-full object-cover transition-transform duration-700 hover:scale-105">
-                                </div>
-                            <?php endif; ?>
+            <aside class="reveal-right">
+                <div class="xl:sticky xl:top-32 space-y-5">
+                    <div class="rounded-[28px] border border-hijau-100 bg-hijau-50 p-6">
+                        <div class="text-xs uppercase tracking-[0.24em] font-bold text-hijau-700">Profil Singkat</div>
+                        <p class="mt-3 text-sm text-gray-600 leading-relaxed"><?= nl2br(html_escape($about_short)) ?></p>
 
-                            <div class="p-6">
-                                <div class="inline-flex items-center gap-2 rounded-full bg-hijau-50 px-3 py-1 text-xs font-semibold text-hijau-700 mb-4">
-                                    Periode <?= str_pad($idx + 1, 2, '0', STR_PAD_LEFT) ?>
-                                </div>
-                                <h4 class="font-display text-2xl font-bold text-hijau-900 mb-3"><?= html_escape($item->judul) ?></h4>
-                                <p class="text-sm text-gray-600 leading-relaxed"><?= html_escape($history_excerpt) ?></p>
+                        <div class="mt-5 space-y-3">
+                            <div class="rounded-2xl border border-white/80 bg-white px-4 py-3">
+                                <div class="text-[11px] uppercase tracking-[0.18em] font-bold text-gray-400">Nama Yayasan</div>
+                                <div class="mt-1 text-sm font-semibold text-hijau-900"><?= html_escape($about_name) ?></div>
                             </div>
-                        </article>
-                    <?php endforeach; ?>
+                            <div class="rounded-2xl border border-white/80 bg-white px-4 py-3">
+                                <div class="text-[11px] uppercase tracking-[0.18em] font-bold text-gray-400">Tagline</div>
+                                <div class="mt-1 text-sm leading-relaxed text-gray-600"><?= html_escape($about_tagline) ?></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php if (!empty($history_items)): ?>
+                        <div class="rounded-[28px] border border-gray-100 bg-white p-6 shadow-sm">
+                            <div class="text-xs uppercase tracking-[0.24em] font-bold text-hijau-700">Jejak Perjalanan</div>
+                            <div class="mt-5 space-y-4">
+                                <?php foreach (array_slice($history_items, 0, 4) as $history_item): ?>
+                                    <?php
+                                    $history_excerpt = trim(preg_replace('/\s+/', ' ', strip_tags((string) $history_item->konten)));
+                                    if (function_exists('mb_strlen') && function_exists('mb_substr')) {
+                                        $history_excerpt = mb_strlen($history_excerpt, 'UTF-8') > 90 ? rtrim(mb_substr($history_excerpt, 0, 90, 'UTF-8')) . '...' : $history_excerpt;
+                                    } else {
+                                        $history_excerpt = strlen($history_excerpt) > 90 ? rtrim(substr($history_excerpt, 0, 90)) . '...' : $history_excerpt;
+                                    }
+                                    ?>
+                                    <div class="flex gap-4">
+                                        <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-hijau-900 text-xs font-bold text-kuning-400">
+                                            <?= html_escape((string) ($history_item->tahun ?: '-')) ?>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <h4 class="text-sm font-semibold text-hijau-900"><?= html_escape((string) $history_item->judul) ?></h4>
+                                            <?php if ($history_excerpt !== ''): ?>
+                                                <p class="mt-1 text-xs leading-relaxed text-gray-500"><?= html_escape($history_excerpt) ?></p>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
-            </div>
-        <?php endif; ?>
+            </aside>
+        </div>
     </div>
 </section>

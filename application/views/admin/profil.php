@@ -133,9 +133,9 @@ $about_media_is_video = in_array($about_media_ext, ['mp4', 'webm', 'ogg'], true)
             <hr class="border-gray-100">
 
             <!-- Media uploads -->
-            <h3 class="font-semibold text-gray-800 text-sm">Logo &amp; Hero Image</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
+            <h3 class="font-semibold text-gray-800 text-sm">Logo Yayasan</h3>
+            <div class="grid grid-cols-1 gap-5">
+                <div class="max-w-md">
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Logo Yayasan</label>
                     <?php if ($p && $p->logo): ?>
                         <img src="<?= base_url('assets/images/uploads/profil/' . $p->logo) ?>" class="w-16 h-16 object-contain mb-2 rounded-lg border border-gray-100">
@@ -143,15 +143,6 @@ $about_media_is_video = in_array($about_media_ext, ['mp4', 'webm', 'ogg'], true)
                     <input type="file" id="f-logo" accept="image/*" onchange="previewImage(this,'img-logo')"
                         class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-hijau-50 file:text-hijau-700 hover:file:bg-hijau-100">
                     <img id="img-logo" src="" class="hidden w-16 h-16 object-contain mt-2 rounded-lg border border-gray-100">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Hero Image (Background)</label>
-                    <?php if ($p && $p->hero_image): ?>
-                        <img src="<?= base_url('assets/images/uploads/profil/' . $p->hero_image) ?>" class="w-full h-20 object-cover mb-2 rounded-lg border border-gray-100">
-                    <?php endif; ?>
-                    <input type="file" id="f-hero" accept="image/*" onchange="previewImage(this,'img-hero')"
-                        class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-hijau-50 file:text-hijau-700 hover:file:bg-hijau-100">
-                    <img id="img-hero" src="" class="hidden w-full h-20 object-cover mt-2 rounded-lg border border-gray-100">
                 </div>
             </div>
 
@@ -210,31 +201,6 @@ $about_media_is_video = in_array($about_media_ext, ['mp4', 'webm', 'ogg'], true)
                     class="w-full px-4 py-2.5 border border-blue-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white">
             </div>
 
-            <hr class="border-gray-100">
-
-            <!-- Struktur organisasi -->
-            <h3 class="font-semibold text-gray-800 text-sm">Struktur Organisasi (Halaman Struktur)</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Judul Struktur</label>
-                    <input type="text" id="f-struktur-judul" value="<?= $p ? html_escape($p->struktur_organisasi_judul) : '' ?>" placeholder="Contoh: Struktur Organisasi Yayasan"
-                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500">
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Deskripsi Struktur</label>
-                    <textarea id="f-struktur-deskripsi" rows="4" placeholder="Deskripsi singkat struktur organisasi..."
-                        class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500 resize-y"><?= $p ? html_escape($p->struktur_organisasi_deskripsi) : '' ?></textarea>
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Gambar Struktur Organisasi</label>
-                    <?php if ($p && $p->struktur_organisasi_gambar): ?>
-                        <img src="<?= base_url('assets/images/uploads/profil/' . $p->struktur_organisasi_gambar) ?>" class="w-full max-w-xl h-auto mb-2 rounded-lg border border-gray-100 object-cover">
-                    <?php endif; ?>
-                    <input type="file" id="f-struktur-gambar" accept="image/*" onchange="previewImage(this,'img-struktur')"
-                        class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-hijau-50 file:text-hijau-700 hover:file:bg-hijau-100">
-                    <img id="img-struktur" src="" class="hidden w-full max-w-xl h-auto mt-2 rounded-lg border border-gray-100 object-cover">
-                </div>
-            </div>
         </div>
 
         <?php if ($can_edit): ?>
@@ -263,23 +229,34 @@ $about_media_is_video = in_array($about_media_ext, ['mp4', 'webm', 'ogg'], true)
             </div>
         </div>
         <div class="p-6 space-y-6">
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Preview Hero Section</label>
-                <div class="rounded-2xl overflow-hidden border border-gray-200 relative" style="height: 240px;" id="hero-preview">
-                    <img src="<?= $p && $p->hero_image ? base_url('assets/images/uploads/profil/' . $p->hero_image) : '' ?>"
-                        class="w-full h-full object-cover absolute inset-0" id="hero-preview-bg"
-                        onerror="this.style.display='none'">
-                    <div class="absolute inset-0 flex items-center justify-center" id="hero-preview-overlay"
-                        style="background: <?= $p && $p->hero_overlay_color ? $p->hero_overlay_color : '#052e16' ?>; opacity: <?= $p && $p->hero_overlay_opacity ? ($p->hero_overlay_opacity / 100) : '0.8' ?>;">
+            <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-6 items-start">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Preview Hero Section</label>
+                    <div class="rounded-2xl overflow-hidden border border-gray-200 relative" style="height: 240px;" id="hero-preview">
+                        <img src="<?= $p && $p->hero_image ? base_url('assets/images/uploads/profil/' . $p->hero_image) : '' ?>"
+                            class="w-full h-full object-cover absolute inset-0" id="hero-preview-bg"
+                            onerror="this.style.display='none'">
+                        <div class="absolute inset-0 flex items-center justify-center" id="hero-preview-overlay"
+                            style="background: <?= $p && $p->hero_overlay_color ? $p->hero_overlay_color : '#052e16' ?>; opacity: <?= $p && $p->hero_overlay_opacity ? ($p->hero_overlay_opacity / 100) : '0.8' ?>;">
+                        </div>
+                        <div class="relative z-10 flex flex-col items-center justify-center h-full text-center p-6">
+                            <h3 class="font-display text-2xl md:text-3xl font-bold text-white mb-2" id="hero-preview-title">
+                                <?= $p && $p->hero_title ? $p->hero_title : ($p ? $p->nama_yayasan : 'Yayasan Ar-Razaq') ?>
+                            </h3>
+                            <p class="text-white/70 text-sm" id="hero-preview-subtitle">
+                                <?= $p && $p->hero_subtitle ? $p->hero_subtitle : ($p ? $p->tagline : 'Membentuk Generasi Qurani') ?>
+                            </p>
+                        </div>
                     </div>
-                    <div class="relative z-10 flex flex-col items-center justify-center h-full text-center p-6">
-                        <h3 class="font-display text-2xl md:text-3xl font-bold text-white mb-2" id="hero-preview-title">
-                            <?= $p && $p->hero_title ? $p->hero_title : ($p ? $p->nama_yayasan : 'Yayasan Ar-Razaq') ?>
-                        </h3>
-                        <p class="text-white/70 text-sm" id="hero-preview-subtitle">
-                            <?= $p && $p->hero_subtitle ? $p->hero_subtitle : ($p ? $p->tagline : 'Membentuk Generasi Qurani') ?>
-                        </p>
-                    </div>
+                </div>
+
+                <div class="rounded-2xl border border-dashed border-hijau-200 bg-hijau-50/50 p-5">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Gambar Hero Utama</label>
+                    <img id="hero-upload-preview"
+                        src="<?= $p && $p->hero_image ? base_url('assets/images/uploads/profil/' . $p->hero_image) : '' ?>"
+                        class="<?= $p && $p->hero_image ? '' : 'hidden ' ?>w-full h-28 object-cover rounded-xl border border-gray-100 mb-3">
+                    <input type="file" id="f-hero" accept="image/*" onchange="handleHeroImageChange(this)"
+                        class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-hijau-100 file:text-hijau-800 hover:file:bg-hijau-200">
                 </div>
             </div>
 

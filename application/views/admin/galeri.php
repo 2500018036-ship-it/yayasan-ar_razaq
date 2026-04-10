@@ -7,7 +7,7 @@ $can_delete = in_array('galeri.delete', $permission_codes, true);
 ?>
 
 <!-- Page Header -->
-<div class="flex items-center justify-between mb-6">
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
     <div>
         <p class="text-xs text-gray-400">Kelola foto dan dokumentasi kegiatan</p>
     </div>
@@ -20,7 +20,7 @@ $can_delete = in_array('galeri.delete', $permission_codes, true);
 </div>
 
 <!-- Filter -->
-<div class="bg-white rounded-2xl border border-gray-100 mb-6 px-4 py-3 flex items-center gap-3">
+<div class="mb-6 flex flex-col gap-3 rounded-2xl border border-gray-100 bg-white px-4 py-3 sm:flex-row sm:items-center">
     <i data-feather="filter" class="w-4 h-4 text-gray-300 flex-shrink-0"></i>
     <select id="filter-kategori" onchange="filterGaleri()" class="text-sm text-gray-600 bg-transparent outline-none cursor-pointer">
         <option value="">Semua Kategori</option>
@@ -29,7 +29,7 @@ $can_delete = in_array('galeri.delete', $permission_codes, true);
         <option value="fasilitas">Fasilitas</option>
         <option value="prestasi">Prestasi</option>
     </select>
-    <div class="ml-auto text-xs text-gray-400"><?= count($galeri) ?> foto</div>
+    <div class="text-xs text-gray-400 sm:ml-auto"><?= count($galeri) ?> foto</div>
 </div>
 
 <!-- Grid -->
@@ -121,7 +121,7 @@ $can_delete = in_array('galeri.delete', $permission_codes, true);
                     <label class="form-label">Judul Foto *</label>
                     <input type="text" name="judul" class="form-input" placeholder="Judul atau keterangan foto…" required>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                         <label class="form-label">Kategori</label>
                         <select name="kategori" class="form-input form-select">
@@ -136,7 +136,7 @@ $can_delete = in_array('galeri.delete', $permission_codes, true);
                         <input type="text" name="label" class="form-input" placeholder="Contoh: Kegiatan Santri">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                         <label class="form-label">Urutan</label>
                         <input type="number" name="urutan" class="form-input" value="1" min="1">
@@ -155,7 +155,7 @@ $can_delete = in_array('galeri.delete', $permission_codes, true);
                     </select>
                 </div>
             </div>
-            <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+            <div class="flex flex-col-reverse gap-3 rounded-b-2xl bg-gray-50 px-6 py-4 sm:flex-row sm:justify-end">
                 <button type="button" onclick="closeModal('modal-tambah')" class="btn btn-ghost">Batal</button>
                 <button type="button" onclick="submitTambah()" id="btn-tambah-submit" class="btn btn-primary">
                     <i data-feather="upload-cloud" class="w-4 h-4"></i>
@@ -197,7 +197,7 @@ $can_delete = in_array('galeri.delete', $permission_codes, true);
                     <label class="form-label">Judul Foto *</label>
                     <input type="text" name="judul" id="edit-judul" class="form-input" required>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                         <label class="form-label">Kategori</label>
                         <select name="kategori" id="edit-kategori" class="form-input form-select">
@@ -212,7 +212,7 @@ $can_delete = in_array('galeri.delete', $permission_codes, true);
                         <input type="text" name="label" id="edit-label" class="form-input" placeholder="Contoh: Prestasi">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                         <label class="form-label">Urutan</label>
                         <input type="number" name="urutan" id="edit-urutan" class="form-input" min="1">
@@ -231,7 +231,7 @@ $can_delete = in_array('galeri.delete', $permission_codes, true);
                     </select>
                 </div>
             </div>
-            <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+            <div class="flex flex-col-reverse gap-3 rounded-b-2xl bg-gray-50 px-6 py-4 sm:flex-row sm:justify-end">
                 <button type="button" onclick="closeModal('modal-edit')" class="btn btn-ghost">Batal</button>
                 <button type="button" onclick="submitEdit()" class="btn btn-primary">
                     <i data-feather="save" class="w-4 h-4"></i>

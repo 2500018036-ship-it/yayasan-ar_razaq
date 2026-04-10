@@ -1,4 +1,8 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
+<?php
+$share_url = current_url();
+$share_title = $berita->judul;
+?>
 
 <!-- ============================================================ -->
 <!-- ARTICLE HERO -->
@@ -31,12 +35,6 @@
             <?php endif; ?>
         </div>
     </div>
-
-    <div class="wave-divider wave-bottom">
-        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,60 C360,120 720,0 1080,60 C1260,90 1380,80 1440,60 L1440,120 L0,120 Z" fill="white"/>
-        </svg>
-    </div>
 </section>
 
 <!-- ============================================================ -->
@@ -60,19 +58,40 @@
             </article>
 
             <!-- Share / Back -->
-            <div class="mt-14 pt-8 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-5 reveal">
+            <div class="mt-14 pt-8 border-t border-gray-100 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between reveal">
                 <a href="<?= base_url('berita') ?>" class="inline-flex items-center gap-2 text-hijau-700 font-semibold hover:text-hijau-900 transition-colors group">
                     <i data-feather="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-300"></i>
                     Kembali ke Berita
                 </a>
-                <div class="flex items-center gap-3">
-                    <span class="text-gray-400 text-sm">Bagikan:</span>
-                    <a href="https://wa.me/?text=<?= urlencode($berita->judul . ' - ' . current_url()) ?>" target="_blank" class="w-9 h-9 bg-hijau-50 rounded-lg flex items-center justify-center text-hijau-700 hover:bg-hijau-100 transition-colors">
-                        <i data-feather="message-circle" class="w-4 h-4"></i>
-                    </a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode(current_url()) ?>" target="_blank" class="w-9 h-9 bg-hijau-50 rounded-lg flex items-center justify-center text-hijau-700 hover:bg-hijau-100 transition-colors">
-                        <i data-feather="facebook" class="w-4 h-4"></i>
-                    </a>
+                <div class="relative self-start sm:self-auto" data-share-root>
+                    <button type="button" class="share-trigger" data-share-toggle aria-expanded="false" aria-label="Bagikan artikel <?= html_escape($share_title) ?>">
+                        <i data-feather="share-2" class="w-4 h-4"></i>
+                        <span>Bagikan Artikel</span>
+                    </button>
+                    <div class="share-popover share-popover-up" data-share-popup>
+                        <div class="mb-2 px-1">
+                            <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-hijau-700">Bagikan</div>
+                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Sebarkan artikel ini melalui media sosial.</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <a href="https://wa.me/?text=<?= urlencode($share_title . ' - ' . $share_url) ?>" target="_blank" rel="noopener" class="share-platform">
+                                <i data-feather="message-circle" class="w-4 h-4"></i>
+                                <span>WhatsApp</span>
+                            </a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode($share_url) ?>" target="_blank" rel="noopener" class="share-platform">
+                                <i data-feather="facebook" class="w-4 h-4"></i>
+                                <span>Facebook</span>
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?url=<?= urlencode($share_url) ?>&text=<?= urlencode($share_title) ?>" target="_blank" rel="noopener" class="share-platform">
+                                <i data-feather="twitter" class="w-4 h-4"></i>
+                                <span>X / Twitter</span>
+                            </a>
+                            <a href="https://t.me/share/url?url=<?= urlencode($share_url) ?>&text=<?= urlencode($share_title) ?>" target="_blank" rel="noopener" class="share-platform">
+                                <i data-feather="send" class="w-4 h-4"></i>
+                                <span>Telegram</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

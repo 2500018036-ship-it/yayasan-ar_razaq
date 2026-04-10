@@ -7,7 +7,7 @@ $can = function ($perm) use ($permission_codes) {
 ?>
 
 <!-- Stat Cards -->
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
     <?php
     $cards = [
         ['label' => 'Total Berita',   'val' => $stats['total_berita'],  'icon' => 'file-text',  'color' => 'from-blue-500 to-blue-600',    'bg' => 'bg-blue-50',   'text' => 'text-blue-700'],
@@ -30,7 +30,7 @@ $can = function ($perm) use ($permission_codes) {
 </div>
 
 <!-- Quick links -->
-<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 mb-8">
     <?php
     $quick = [
         ['url' => 'panel-admin/berita',   'label' => 'Tambah Berita',   'icon' => 'plus-circle', 'color' => 'text-blue-600',   'bg' => 'bg-blue-50 hover:bg-blue-100', 'perm' => 'berita.create'],
@@ -60,6 +60,7 @@ $can = function ($perm) use ($permission_codes) {
     </div>
 
     <?php if (!empty($berita_terbaru)): ?>
+        <div class="overflow-x-auto">
         <table class="data-table">
             <thead>
                 <tr>
@@ -91,6 +92,7 @@ $can = function ($perm) use ($permission_codes) {
                 <?php endforeach; ?>
             </tbody>
         </table>
+        </div>
     <?php else: ?>
         <div class="px-6 py-12 text-center text-gray-400 text-sm">
             <i data-feather="file-text" class="w-8 h-8 mx-auto mb-3 opacity-30"></i>

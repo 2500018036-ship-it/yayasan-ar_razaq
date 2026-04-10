@@ -96,6 +96,17 @@ $_perms = (isset($permission_codes) && is_array($permission_codes)) ? $permissio
 
     @media (max-width: 640px) {
 
+        #modal-tambah .modal-footer,
+        #modal-edit .modal-footer {
+            flex-direction: column-reverse;
+            align-items: stretch;
+        }
+
+        #modal-tambah .modal-footer > *,
+        #modal-edit .modal-footer > * {
+            width: 100%;
+        }
+
         #modal-tambah .modal-header,
         #modal-edit .modal-header,
         #modal-tambah .modal-body,
@@ -112,7 +123,7 @@ $_perms = (isset($permission_codes) && is_array($permission_codes)) ? $permissio
 <!-- PAGE HEADER                                                   -->
 <!-- ============================================================ -->
 <div class="page-header mb-8">
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Manajemen Visi &amp; Misi</h1>
             <p class="text-gray-500 text-sm mt-1">Kelola visi, misi, nilai yayasan, dan background section</p>
@@ -422,7 +433,7 @@ $_perms = (isset($permission_codes) && is_array($permission_codes)) ? $permissio
                 <input type="text" id="tambah-ikon" class="form-input" placeholder="cth: check-circle, star, book">
                 <p class="text-xs text-gray-400 mt-1">Lihat daftar ikon di <a href="https://feathericons.com" target="_blank" class="text-hijau-600 underline">feathericons.com</a></p>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                     <label class="form-label">Urutan</label>
                     <input type="number" id="tambah-urutan" class="form-input" value="1" min="1">
@@ -476,7 +487,7 @@ $_perms = (isset($permission_codes) && is_array($permission_codes)) ? $permissio
                 <label class="form-label">Ikon Feather</label>
                 <input type="text" id="edit-ikon" class="form-input" placeholder="cth: check-circle, star, book">
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                     <label class="form-label">Urutan</label>
                     <input type="number" id="edit-urutan" class="form-input" min="1">

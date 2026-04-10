@@ -675,6 +675,63 @@ if ($popup_data && !empty($popup_data->gambar)):
     });
 
     // ============================================================
+    // SHARE POPOVER
+    // ============================================================
+    (function() {
+        const roots = Array.from(document.querySelectorAll('[data-share-root]'));
+        if (!roots.length) return;
+
+        const closeRoot = (root) => {
+            const button = root.querySelector('[data-share-toggle]');
+            const popup = root.querySelector('[data-share-popup]');
+            if (button) button.setAttribute('aria-expanded', 'false');
+            if (popup) popup.classList.remove('open');
+        };
+
+        const closeAll = (exceptRoot = null) => {
+            roots.forEach((root) => {
+                if (root !== exceptRoot) closeRoot(root);
+            });
+        };
+
+        roots.forEach((root) => {
+            const button = root.querySelector('[data-share-toggle]');
+            const popup = root.querySelector('[data-share-popup]');
+            if (!button || !popup) return;
+
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const willOpen = !popup.classList.contains('open');
+                closeAll(root);
+
+                if (willOpen) {
+                    popup.classList.add('open');
+                    button.setAttribute('aria-expanded', 'true');
+                } else {
+                    closeRoot(root);
+                }
+            });
+
+            popup.addEventListener('click', (event) => {
+                event.stopPropagation();
+            });
+
+            popup.querySelectorAll('a').forEach((link) => {
+                link.addEventListener('click', () => {
+                    closeRoot(root);
+                });
+            });
+        });
+
+        document.addEventListener('click', () => closeAll());
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeAll();
+        });
+    })();
+
+    // ============================================================
     // REFRESH SCROLLTRIGGER ON WINDOW RESIZE (debounced)
     // ============================================================
     let resizeTimer;

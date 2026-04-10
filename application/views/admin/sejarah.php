@@ -6,7 +6,7 @@ $can_delete = in_array('sejarah.delete', $permission_codes, true);
 ?>
 <!-- SEJARAH ADMIN VIEW -->
 <!-- Header action -->
-<div class="flex items-center justify-between mb-6">
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
     <p class="text-gray-500 text-sm"><?= count($sejarah) ?> data sejarah</p>
     <?php if ($can_create): ?>
         <button onclick="openAdd()" class="inline-flex items-center gap-2 bg-hijau-800 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-hijau-700 transition-colors shadow-sm">
@@ -19,7 +19,7 @@ $can_delete = in_array('sejarah.delete', $permission_codes, true);
 <div class="space-y-4" id="sejarah-list">
     <?php if (!empty($sejarah)): foreach ($sejarah as $s): ?>
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5" id="row-<?= $s->id ?>">
-                <div class="flex items-start justify-between gap-4">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div class="flex items-start gap-4 flex-1 min-w-0">
                         <div class="w-12 h-12 bg-hijau-900 text-kuning-400 rounded-xl flex items-center justify-center flex-shrink-0 font-display font-bold text-sm">
                             <?= isset($s->tahun) && $s->tahun !== null ? $s->tahun : '#' ?>
@@ -66,7 +66,7 @@ $can_delete = in_array('sejarah.delete', $permission_codes, true);
                 <label class="block text-sm font-semibold text-gray-700 mb-1.5">Judul <span class="text-red-500">*</span></label>
                 <input type="text" id="f-judul" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500" placeholder="Pendirian Yayasan...">
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tahun</label>
                     <input type="number" id="f-tahun" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-hijau-500" placeholder="1995">
@@ -90,7 +90,7 @@ $can_delete = in_array('sejarah.delete', $permission_codes, true);
                 </div>
             </div>
         </div>
-        <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 sticky bottom-0 bg-white rounded-b-2xl">
+        <div class="sticky bottom-0 flex flex-col-reverse gap-3 rounded-b-2xl border-t border-gray-100 bg-white px-6 py-4 sm:flex-row sm:justify-end">
             <button onclick="closeModal('modal-form')" class="px-5 py-2.5 border border-gray-200 text-gray-600 rounded-xl text-sm font-semibold hover:bg-gray-50">Batal</button>
             <?php if ($can_create || $can_edit): ?>
                 <button onclick="simpan()" class="px-6 py-2.5 bg-hijau-800 text-white rounded-xl text-sm font-bold hover:bg-hijau-700 transition-colors shadow-sm flex items-center gap-2">

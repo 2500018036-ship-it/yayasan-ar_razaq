@@ -200,7 +200,7 @@
             margin-left: 64px;
         }
 
-        @media(max-width:768px) {
+        @media(max-width:1023px) {
             #main-content {
                 margin-left: 0;
             }
@@ -508,10 +508,82 @@
         .animate-spin {
             animation: spin 0.8s linear infinite;
         }
+
+        .overflow-x-auto {
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+
+        @media (max-width: 1023px) {
+            #sidebar {
+                width: min(320px, calc(100vw - 24px));
+                max-width: 86vw;
+                box-shadow: 0 24px 56px rgba(15, 23, 42, 0.18);
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            #toast-container {
+                left: 16px;
+                right: 16px;
+                bottom: 16px;
+            }
+
+            .toast {
+                max-width: none;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .modal-overlay,
+            [data-modal] {
+                align-items: flex-end !important;
+                padding: 0 !important;
+            }
+
+            .modal-box,
+            [data-modal] > div {
+                width: 100%;
+                max-width: none !important;
+                max-height: calc(100vh - 8px);
+                margin-top: auto;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+
+            .modal-box .grid.grid-cols-2,
+            [data-modal] .grid.grid-cols-2 {
+                grid-template-columns: minmax(0, 1fr) !important;
+            }
+
+            .form-input {
+                font-size: 16px;
+            }
+
+            .data-table {
+                min-width: 700px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 11px 12px;
+            }
+
+            .upload-area {
+                padding: 22px 16px;
+            }
+        }
     </style>
 </head>
 
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-50 text-gray-800 overflow-x-hidden">
 
     <!-- ============================================================ -->
     <!-- SIDEBAR -->
@@ -548,7 +620,7 @@
     ];
     ?>
 
-    <aside id="sidebar" class="fixed top-0 left-0 h-full w-56 bg-hijau-950 flex flex-col z-40 overflow-hidden">
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-[86vw] max-w-[320px] bg-hijau-950 flex flex-col z-40 overflow-hidden lg:w-56 lg:max-w-none">
         <!-- Pattern overlay -->
         <div class="absolute inset-0 opacity-[0.04]" style="background-image:url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
 
@@ -647,7 +719,7 @@
     </aside>
 
     <!-- Mobile overlay -->
-    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden" onclick="closeSidebar()"></div>
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 hidden lg:hidden" onclick="closeSidebar()"></div>
 
     <!-- ============================================================ -->
     <!-- MAIN CONTENT WRAPPER -->
@@ -655,7 +727,7 @@
     <div id="main-content">
 
         <!-- Top bar -->
-        <header class="sticky top-0 z-20 bg-white/92 backdrop-blur-xl border-b border-gray-200/80 px-6 py-4 flex items-center justify-between">
+        <header class="sticky top-0 z-20 flex flex-col gap-3 border-b border-gray-200/80 bg-white/92 px-4 py-4 backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <div class="flex items-center gap-4">
                 <!-- Sidebar toggle (all screens) -->
                 <button onclick="toggleSidebar()" class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors" title="Toggle Sidebar">
@@ -673,4 +745,4 @@
         </header>
 
         <!-- Page content starts here -->
-        <main class="p-6">
+        <main class="px-4 py-5 sm:p-6 lg:p-8">

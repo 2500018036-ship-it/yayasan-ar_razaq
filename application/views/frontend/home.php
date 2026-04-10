@@ -116,7 +116,7 @@ $hero_subtitle = isset($profil) && $profil && !empty($profil->hero_subtitle) ? $
             <span class="text-white/40 text-sm"><?= str_pad(count($hero_slides), 2, '0', STR_PAD_LEFT) ?></span>
         </div>
     <?php endif; ?>
-    
+
 </section>
 
 <!-- ============================================================ -->
@@ -195,10 +195,14 @@ $about_media_url  = $about_media_file !== ''
     : base_url('assets/images/placeholder.webp');
 
 // Extract YouTube video ID for embed
+$yt_video_id = '';
 $yt_embed_url = '';
+$yt_thumbnail_url = '';
 if ($about_yt_url !== '') {
     if (preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_\-]{11})/', $about_yt_url, $m)) {
-        $yt_embed_url = 'https://www.youtube-nocookie.com/embed/' . $m[1] . '?rel=0&modestbranding=1';
+        $yt_video_id = $m[1];
+        $yt_embed_url = 'https://www.youtube-nocookie.com/embed/' . $yt_video_id . '?autoplay=1&rel=0&modestbranding=1';
+        $yt_thumbnail_url = 'https://i.ytimg.com/vi/' . $yt_video_id . '/hqdefault.jpg';
     }
 }
 ?>
@@ -230,12 +234,21 @@ if ($about_yt_url !== '') {
                     <!-- Main media frame -->
                     <div class="relative rounded-2xl overflow-hidden bg-hijau-950 aspect-[4/3] shadow-xl shadow-hijau-900/15">
                         <?php if ($yt_embed_url !== ''): ?>
-                            <iframe src="<?= $yt_embed_url ?>"
-                                class="w-full h-full"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen
-                                loading="lazy"
-                                title="Profil Yayasan"></iframe>
+                            <button type="button"
+                                class="group relative w-full h-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-kuning-400/80"
+                                data-youtube-modal-trigger="1"
+                                data-embed-src="<?= html_escape($yt_embed_url) ?>"
+                                aria-label="Putar video profil yayasan">
+                                <img src="<?= $yt_thumbnail_url !== '' ? $yt_thumbnail_url : $about_media_url ?>"
+                                    alt="Thumbnail video <?= html_escape($about_name) ?>"
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                                <div class="absolute inset-0 bg-gradient-to-tr from-hijau-950/85 via-hijau-950/35 to-transparent"></div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="flex h-20 w-20 items-center justify-center rounded-full bg-white/90 text-hijau-900 shadow-2xl shadow-black/30 transition-all duration-300 group-hover:scale-110 group-hover:bg-kuning-400">
+                                        <i data-feather="play" class="w-8 h-8 ml-1"></i>
+                                    </span>
+                                </div>
+                            </button>
                         <?php elseif ($about_media_is_video): ?>
                             <video autoplay muted loop playsinline preload="metadata"
                                 class="w-full h-full object-cover">
@@ -355,6 +368,34 @@ if ($about_yt_url !== '') {
         <?php endif; ?>
     </div>
 </section>
+
+<?php if ($yt_embed_url !== ''): ?>
+    <div id="about-video-modal" class="fixed inset-0 z-[110] hidden bg-hijau-950/85 px-4 py-6 md:px-8">
+        <div class="flex min-h-full items-center justify-center">
+            <div class="relative w-full max-w-5xl">
+                <button type="button"
+                    id="about-video-close"
+                    class="absolute -top-12 right-0 inline-flex items-center gap-2 rounded-full bg-white/12 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition-colors hover:bg-white/20"
+                    aria-label="Tutup video">
+                    <i data-feather="x" class="w-4 h-4"></i>
+                    Tutup
+                </button>
+
+                <div class="overflow-hidden rounded-[28px] border border-white/10 bg-black shadow-[0_30px_80px_rgba(0,0,0,0.4)]">
+                    <div class="aspect-video bg-black">
+                        <iframe id="about-video-frame"
+                            src=""
+                            class="h-full w-full"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                            loading="lazy"
+                            title="Video profil yayasan"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
 
 <!-- ============================================================ -->
 <!-- VISI MISI SECTION (REDESIGNED — formal dark green)            -->
@@ -735,10 +776,8 @@ $vm_ov_alpha  = isset($profil) && $profil && isset($profil->vm_overlay_opacity) 
         <div class="absolute inset-0 bg-hijau-900"></div>
         <div class="absolute inset-0 pattern-bg opacity-[0.06]"></div>
 
-        <!-- Decorative lines -->
-        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-kuning-500/40 to-transparent"></div>
-        <div class="absolute top-12 right-12 w-40 h-40 border border-kuning-400/10 rounded-full pointer-events-none"></div>
-        <div class="absolute bottom-12 left-12 w-28 h-28 border border-white/5 rounded-full pointer-events-none"></div>
+
+       
 
         <div class="container mx-auto px-4 lg:px-8 relative z-10">
             <div class="max-w-3xl mx-auto text-center reveal">
@@ -844,6 +883,47 @@ $vm_ov_alpha  = isset($profil) && $profil && isset($profil->vm_overlay_opacity) 
 </style>
 
 <script>
+    // ============================================================
+    // ABOUT VIDEO MODAL
+    // ============================================================
+    (function() {
+        const modal = document.getElementById('about-video-modal');
+        const frame = document.getElementById('about-video-frame');
+        const closeBtn = document.getElementById('about-video-close');
+        const triggers = document.querySelectorAll('[data-youtube-modal-trigger="1"]');
+        if (!modal || !frame || !triggers.length) return;
+
+        const openModal = (src) => {
+            if (!src) return;
+            frame.src = src;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeModal = () => {
+            frame.src = '';
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        };
+
+        triggers.forEach((trigger) => {
+            trigger.addEventListener('click', () => openModal(trigger.getAttribute('data-embed-src')));
+        });
+
+        closeBtn?.addEventListener('click', closeModal);
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+    })();
+
     // ============================================================
     // LIGHTBOX
     // ============================================================

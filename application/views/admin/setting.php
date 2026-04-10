@@ -192,7 +192,7 @@ if (!empty($permissions)) {
                     </div>
                 </div>
             </div>
-            <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+            <div class="flex flex-col-reverse gap-3 rounded-b-2xl bg-gray-50 px-6 py-4 sm:flex-row sm:justify-end">
                 <button type="button" class="btn btn-ghost" onclick="closeModal('modal-role')">Batal</button>
                 <button type="button" class="btn btn-primary" onclick="submitRole()">Simpan Role</button>
             </div>
@@ -239,7 +239,7 @@ if (!empty($permissions)) {
                     <input type="file" id="user-foto" accept="image/*" class="form-input">
                 </div>
             </div>
-            <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+            <div class="flex flex-col-reverse gap-3 rounded-b-2xl bg-gray-50 px-6 py-4 sm:flex-row sm:justify-end">
                 <button type="button" class="btn btn-ghost" onclick="closeModal('modal-user')">Batal</button>
                 <button type="button" class="btn btn-primary" onclick="submitUser()">Simpan Akun</button>
             </div>

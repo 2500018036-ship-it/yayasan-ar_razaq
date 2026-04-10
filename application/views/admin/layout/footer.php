@@ -13,12 +13,13 @@
     window.adminCan = function(code) {
         return Array.isArray(window.ADMIN_PERMS) && window.ADMIN_PERMS.includes(code);
     };
+    const desktopSidebarBreakpoint = 1024;
 
     // Sidebar toggle — desktop: collapse, mobile: slide
     function toggleSidebar() {
         const s = document.getElementById('sidebar');
         const o = document.getElementById('sidebar-overlay');
-        if (window.innerWidth >= 768) {
+        if (window.innerWidth >= desktopSidebarBreakpoint) {
             // Desktop: collapse/expand
             s.classList.toggle('collapsed');
             document.body.classList.toggle('sidebar-collapsed');
@@ -38,7 +39,7 @@
     // On load: restore sidebar state
     (function() {
         const s = document.getElementById('sidebar');
-        if (window.innerWidth < 768) {
+        if (window.innerWidth < desktopSidebarBreakpoint) {
             s.classList.add('-translate-x-full');
         } else {
             if (localStorage.getItem('sidebar_collapsed') === '1') {
@@ -47,6 +48,29 @@
             }
         }
     })();
+
+    window.addEventListener('resize', () => {
+        const s = document.getElementById('sidebar');
+        const o = document.getElementById('sidebar-overlay');
+        if (!s || !o) return;
+
+        if (window.innerWidth < desktopSidebarBreakpoint) {
+            s.classList.remove('collapsed');
+            document.body.classList.remove('sidebar-collapsed');
+            s.classList.add('-translate-x-full');
+            o.classList.add('hidden');
+        } else {
+            s.classList.remove('-translate-x-full');
+            o.classList.add('hidden');
+            if (localStorage.getItem('sidebar_collapsed') === '1') {
+                s.classList.add('collapsed');
+                document.body.classList.add('sidebar-collapsed');
+            } else {
+                s.classList.remove('collapsed');
+                document.body.classList.remove('sidebar-collapsed');
+            }
+        }
+    });
 
     // Sidebar group menu (Profil Yayasan -> child menus)
     (function() {
@@ -66,7 +90,7 @@
         toggles.forEach((btn) => {
             btn.addEventListener('click', () => {
                 const sidebar = document.getElementById('sidebar');
-                if (sidebar && sidebar.classList.contains('collapsed') && window.innerWidth >= 768) {
+                if (sidebar && sidebar.classList.contains('collapsed') && window.innerWidth >= desktopSidebarBreakpoint) {
                     const firstUri = btn.getAttribute('data-first-uri');
                     if (firstUri) window.location.href = firstUri;
                     return;

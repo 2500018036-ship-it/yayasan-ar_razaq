@@ -10,7 +10,7 @@ $anggota = isset($anggota) && is_array($anggota) ? $anggota : [];
 
 <div class="space-y-6">
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div class="px-6 py-5 border-b border-gray-100 bg-gray-50 flex items-center justify-between gap-4">
+        <div class="flex flex-col gap-4 border-b border-gray-100 bg-gray-50 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <h2 class="font-display font-bold text-gray-900">Bagan Struktur Organisasi</h2>
                 <p class="text-sm text-gray-500 mt-1">Bagian ini tampil di paling atas halaman Struktur frontend.</p>
@@ -59,7 +59,7 @@ $anggota = isset($anggota) && is_array($anggota) ? $anggota : [];
     </div>
 
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div class="px-6 py-5 border-b border-gray-100 bg-gray-50 flex items-center justify-between gap-4">
+        <div class="flex flex-col gap-4 border-b border-gray-100 bg-gray-50 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <h2 class="font-display font-bold text-gray-900">Anggota Struktur Organisasi</h2>
                 <p class="text-sm text-gray-500 mt-1">Urutan terkecil = jabatan tertinggi (ditampilkan paling awal di frontend).</p>
@@ -168,7 +168,7 @@ $anggota = isset($anggota) && is_array($anggota) ? $anggota : [];
                     <label class="form-label">Deskripsi Lengkap</label>
                     <textarea name="deskripsi_lengkap" rows="5" class="form-input" placeholder="Profil lengkap anggota..."></textarea>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                         <label class="form-label">Urutan</label>
                         <input name="urutan" type="number" min="1" value="1" class="form-input">
@@ -182,7 +182,7 @@ $anggota = isset($anggota) && is_array($anggota) ? $anggota : [];
                     </div>
                 </div>
             </div>
-            <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+            <div class="flex flex-col-reverse gap-3 rounded-b-2xl bg-gray-50 px-6 py-4 sm:flex-row sm:justify-end">
                 <button type="button" class="btn btn-ghost" onclick="closeModal('modal-anggota-tambah')">Batal</button>
                 <button type="button" class="btn btn-primary" onclick="submitTambahAnggota()">Simpan</button>
             </div>
@@ -228,7 +228,7 @@ $anggota = isset($anggota) && is_array($anggota) ? $anggota : [];
                     <label class="form-label">Deskripsi Lengkap</label>
                     <textarea id="edit-deskripsi" name="deskripsi_lengkap" rows="5" class="form-input"></textarea>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                         <label class="form-label">Urutan</label>
                         <input id="edit-urutan" name="urutan" type="number" min="1" class="form-input">
@@ -242,7 +242,7 @@ $anggota = isset($anggota) && is_array($anggota) ? $anggota : [];
                     </div>
                 </div>
             </div>
-            <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+            <div class="flex flex-col-reverse gap-3 rounded-b-2xl bg-gray-50 px-6 py-4 sm:flex-row sm:justify-end">
                 <button type="button" class="btn btn-ghost" onclick="closeModal('modal-anggota-edit')">Batal</button>
                 <button type="button" class="btn btn-primary" onclick="submitEditAnggota()">Simpan Perubahan</button>
             </div>

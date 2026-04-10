@@ -170,7 +170,7 @@ $can_delete = in_array('ppdb.delete', $permission_codes, true);
                 </select>
             </div>
 
-                <div class="flex justify-end gap-3 pt-2">
+                <div class="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
                     <button type="button" onclick="closeModal('modal-ppdb')" class="btn btn-ghost">Batal</button>
                     <button type="submit" class="btn btn-primary">
                         <i data-feather="save" class="w-4 h-4"></i>
